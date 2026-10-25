@@ -585,6 +585,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
             <div class="stat"><span class="k">Size</span><span class="v">8 &times; 8</span></div>
             <div class="stat"><span class="k">Entries</span><span class="v">64</span></div>
             <div class="stat"><span class="k">Selected pixel</span><span class="v" id="pixSel">none yet</span></div>
+            <div class="stat"><span class="k">Entry</span><span class="v" id="pixName">&mdash;</span></div>
             <div class="stat"><span class="k">Value</span><span class="v" id="pixVal">&mdash;</span></div>
           </div>
         </div>
@@ -1403,13 +1404,15 @@ window.MathJax={
   function drawIntro(){
     paint(pixIntro,introM,showNums);
     var sel=document.getElementById("pixSel"),val=document.getElementById("pixVal");
-    if(selR<0){sel.textContent="none yet";val.textContent="—";return;}
+    var nameEl=document.getElementById("pixName");
+    if(selR<0){sel.textContent="none yet";nameEl.innerHTML="&mdash;";val.textContent="—";return;}
     pixIntro.querySelectorAll("div").forEach(function(d){
       var r=+d.dataset.r,c=+d.dataset.c;
       if(r===selR||c===selC)d.classList.add("lit");
       if(r===selR&&c===selC)d.classList.add("sel");
     });
     sel.textContent="row "+(selR+1)+", column "+(selC+1);
+    nameEl.innerHTML="a<sub>"+(selR+1)+","+(selC+1)+"</sub>";
     val.textContent=introM[selR][selC];
   }
   pixIntro.addEventListener("click",function(e){
