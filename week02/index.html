@@ -182,11 +182,12 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 /* dimension gallery */
 .gal{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(244px,1fr));margin-top:4px}
 .gal1{display:grid;gap:12px;grid-template-columns:1fr}
-.gal1 .flash-inner{height:124px}
+.gal1 .flash-inner{display:grid;grid-template-columns:1fr;height:auto;min-height:124px}
+.gal1 .face{position:relative;inset:auto;grid-area:1/1;min-height:0}
 .gal1 .fbtn{flex:0 0 auto}
 .face.back.ans{border-left:4px solid var(--accent)}
 .face.back.ans .ftag{color:var(--accent)}
-@media (max-width:560px){.gal1 .flash-inner{height:188px}}
+@media (max-width:560px){.gal1 .flash-inner{min-height:160px}}
 .fqmain{font-size:1rem;font-weight:500;line-height:1.45}
 .fans{font-size:.95rem;line-height:1.5}
 .fcase{display:block;margin-top:7px}
@@ -1226,20 +1227,8 @@ window.MathJax={
     inner.appendChild(front);inner.appendChild(back);card.appendChild(inner);
     rc.appendChild(card);
   });
-  /* the answer cards size themselves to the longest answer, once the maths has been set */
-  function sizeRecap(){
-    var inners=rc.querySelectorAll(".flash-inner");
-    inners.forEach(function(i){i.style.height="";});
-    var max=0;
-    rc.querySelectorAll(".face").forEach(function(f){if(f.scrollHeight>max)max=f.scrollHeight;});
-    if(max>0)inners.forEach(function(i){i.style.height=(max+16)+"px";});
-  }
-  if(window.MathJax&&window.MathJax.startup&&window.MathJax.startup.promise){
-    window.MathJax.startup.promise.then(sizeRecap).catch(sizeRecap);
-  }else{
-    setTimeout(sizeRecap,400);
-  }
-  window.addEventListener("resize",sizeRecap,{passive:true});
+  /* each recap card grows to fit its own longer face: the two faces share one grid cell,
+     so the card re-measures itself whenever the maths or the fonts finish loading */
 
   document.getElementById("rAll").addEventListener("click",function(){
     var on=this.dataset.on!=="1";
