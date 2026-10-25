@@ -313,8 +313,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     <a href="#s3"><span class="t">30&ndash;45</span><span class="n">Add &amp; scale</span></a>
     <span class="brk"><span class="t">45&ndash;55</span><span class="n">Break</span></span>
     <a href="#s4"><span class="t">55&ndash;80</span><span class="n">Multiplication</span></a>
-    <a href="#s4b"><span class="t">80&ndash;92</span><span class="n">Why it moves things</span></a>
-    <a href="#s5" class="opt"><span class="t">92&ndash;105</span><span class="n">Transformations</span></a>
+    <a href="#s4b"><span class="t">80&ndash;92</span><span class="n">Matrices in computer graphics</span></a>
+    <a href="#s5" class="opt"><span class="t">92&ndash;105</span><span class="n">Explore matrix applications</span></a>
     <a href="#s6" class="opt"><span class="t">105&ndash;111</span><span class="n">Transpose &amp; inverse</span></a>
     <a href="#s7"><span class="t">111&ndash;120</span><span class="n">Exit quiz</span></a>
   </div>
@@ -472,7 +472,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <div class="vgroup" id="vgroup3d">
         <div class="vghead">
           <h3>Question 9, in three dimensions</h3>
-          <span class="vtag">The long one</span>
+          <span class="vtag">Extended 3D question</span>
         </div>
         <p style="font-size:.93rem;color:var(--muted);margin:8px 0 16px">Let \(\mathbf{u} = (2,\,-1,\,2)\) and
           \(\mathbf{v} = (1,\,2,\,2)\). This question uses vectors with three components instead of two. The
@@ -646,7 +646,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 
   <!-- ============ 4 ============ -->
   <section class="station" id="s4">
-    <div class="station-head"><span class="num">05</span><h2>What matrix multiplication actually means</h2><span class="eyebrow">55&ndash;80 min &middot; the hard part</span></div>
+    <div class="station-head"><span class="num">05</span><h2>What matrix multiplication actually means</h2><span class="eyebrow">55&ndash;80 min</span></div>
     <p class="lede">Matrix multiplication uses rows and columns to calculate each entry of a new matrix. We will
       learn the steps, then see how this operation is used in computing.</p>
 
@@ -725,7 +725,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 
   <!-- ============ 4b ============ -->
   <section class="station" id="s4b">
-    <div class="station-head"><span class="num">06</span><h2>From numbers to movement</h2><span class="eyebrow">80&ndash;92 min &middot; the join</span></div>
+    <div class="station-head"><span class="num">06</span><h2>How matrices are used in computer graphics</h2><span class="eyebrow">80&ndash;92 min</span></div>
     <p class="lede">Matrices can also change the position and shape of objects. We will see how a matrix can move
       a point, change a shape, and combine two transformations into one.</p>
 
@@ -832,9 +832,10 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 
   <!-- ============ 5 ============ -->
   <section class="station" id="s5">
-    <div class="station-head"><span class="num">07</span><h2>Scale, rotate, translate</h2><span class="eyebrow">92&ndash;105 min</span><span class="vchip ext">Beyond Tutorial 02</span></div>
-    <p class="lede">Matrices can be used to resize, rotate and move objects. In this optional section you can
-      explore these three transformations using an interactive diagram. Nothing here is examined in Tutorial 02.</p>
+    <div class="station-head"><span class="num">07</span><h2>Using matrices to transform objects</h2><span class="eyebrow">92&ndash;105 min</span><span class="vchip ext">Optional application</span></div>
+    <p class="lede">Matrix operations are used in computer graphics to change objects on screen. For example, we
+      can use matrices to resize, rotate and move objects. Try the interactive examples to see how the calculations
+      work. Nothing here is examined in Tutorial 02.</p>
 
     <div class="panel">
       <h3>A matrix moves a point</h3>
@@ -942,7 +943,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 
   <!-- ============ 6 ============ -->
   <section class="station" id="s6">
-    <div class="station-head"><span class="num">08</span><h2>Transpose, and a first look at the inverse</h2><span class="eyebrow">105&ndash;111 min</span><span class="vchip ext">Beyond Tutorial 02</span></div>
+    <div class="station-head"><span class="num">08</span><h2>Transpose, and a first look at the inverse</h2><span class="eyebrow">105&ndash;111 min</span><span class="vchip ext">Optional application</span></div>
     <p class="lede">The transpose swaps the rows and columns of a matrix. The inverse is a matrix that reverses
       the effect of another matrix. We will look at both using simple examples.</p>
     <div class="panel">
@@ -2094,19 +2095,19 @@ window.MathJax={
   /* ---------------- 7. quiz ---------------- */
   var QS=[
     {q:"What is the size of the matrix [5 1 0; 2 7 3]?",
-     o:["2 × 3","3 × 2","6"],a:0,
+     o:["3 × 2","2 × 3","6"],a:1,
      w:"Count the rows first, then the columns. Two rows and three columns gives 2 × 3. The 6 is how many entries it holds, which is not its size."},
     {q:"A = [3 1; 0 4] and B = [2 5; 6 1]. What is the entry in row 2, column 1 of A + B?",
-     o:["6","5","7"],a:0,
+     o:["5","7","6"],a:2,
      w:"Addition pairs entries in the same position. Row 2, column 1 of A is 0 and of B is 6, so the answer is 0 + 6 = 6. No other entry is involved."},
     {q:"C = [4 −2; 1 5]. What is the entry in row 1, column 2 of 3C?",
      o:["−6","6","−2"],a:0,
      w:"A scalar multiplies every entry, and the entry in row 1, column 2 is −2. So 3 × (−2) = −6. The sign comes along with the number."},
     {q:"P is 4 × 2 and Q is 2 × 5. Can PQ be worked out, and what size would it be?",
-     o:["Yes, and it is 4 × 5","No, the sizes do not match","Yes, and it is 2 × 2"],a:0,
+     o:["No, the sizes do not match","Yes, and it is 2 × 2","Yes, and it is 4 × 5"],a:2,
      w:"The two inner numbers are both 2, so a row of P and a column of Q are the same length and the product exists. The outer numbers, 4 and 5, give its size."},
     {q:"A = [2 3; 1 0] and B = [4 1; 5 2]. What is the entry in row 1, column 1 of AB?",
-     o:["23","11","8"],a:0,
+     o:["11","23","8"],a:1,
      w:"Pair row 1 of A, which is 2 and 3, with column 1 of B, which is 4 and 5. That gives 2(4) + 3(5) = 8 + 15 = 23. The 11 comes from using row 1 of B by mistake, and the 8 from stopping after the first product."},
     {q:"A and B are both 2 × 2 matrices. Is AB always the same as BA?",
      o:["No, the order usually changes the answer","Yes, multiplication always gives the same result either way","Yes, as long as both matrices are square"],a:0,
