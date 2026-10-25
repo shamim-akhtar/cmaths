@@ -381,8 +381,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
         </div>
         <div>
           <div class="prose">
-            <p>The arrow starts at the origin \((0,\,0)\). Its tip gives the two <b>components</b> of the vector:
-              how far it reaches across, and how far it reaches up.</p>
+            <p>The arrow starts at the origin \((0,\,0)\). The tip of the arrow shows its \(x\) and \(y\)
+              <b>components</b>. These tell us how far the arrow goes horizontally and vertically.</p>
           </div>
           <div class="math-tint">
             <div class="math" id="p1eq">\[ \mathbf{a} = (3,\,2) \]</div>
@@ -397,6 +397,35 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <div class="btnrow" style="margin-top:16px">
             <button class="btn" id="p1Reset" type="button">Reset</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Position does not matter</h3>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="p1b" viewBox="0 0 340 340" role="img" aria-label="Four identical arrows drawn at different places on the grid, then moved onto the origin"></svg>
+          <div class="capt" id="p1bcap">Four arrows, four starting points</div>
+        </div>
+        <div>
+          <div class="prose">
+            <p>All four arrows below are the <b>same vector</b>. Each one goes 3 across and 2 up, so each one has
+              the same length and the same direction. Where a vector sits on the grid is not part of what it is.</p>
+            <p>Press the button and watch them slide onto the origin. The arrows overlap because they have the
+              same length and direction.</p>
+          </div>
+          <div class="math-tint">
+            <div class="math">\[ \mathbf{a} = (3,\,2) \quad\text{wherever it is drawn} \]</div>
+          </div>
+          <div class="btnrow" style="margin-top:4px">
+            <button class="btn primary" id="p1bPlay" type="button">Move them to the origin</button>
+            <button class="btn" id="p1bReset" type="button">Spread them out again</button>
+          </div>
+          <p class="prose" style="color:var(--muted);font-size:.92rem;margin-top:16px">This is why a vector is
+            written as two numbers and nothing else. A <b>point</b> needs a position, because a point is a place. A
+            vector does not, because a vector is a movement: so far across and so far up, starting from wherever
+            you happen to be.</p>
         </div>
       </div>
     </div>
@@ -476,8 +505,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 3 ============ -->
   <section class="station" id="s3">
     <div class="station-head"><span class="num">03</span><h2>Scalar multiples</h2><span class="eyebrow">20&ndash;28 min</span></div>
-    <p class="lede">Multiplying a vector by a number multiplies every component by that number. The direction stays
-      the same, but the length changes. A negative number reverses the direction.</p>
+    <p class="lede">Multiplying a vector by a number multiplies every component by that number, which changes its
+      length. A positive number keeps its direction. A negative number reverses its direction. Multiplying by zero
+      gives the zero vector.</p>
 
     <div class="panel">
       <div class="cols">
@@ -498,9 +528,10 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
             <div class="stat"><span class="k">Length of \(k\mathbf{a}\)</span><span class="v" id="p3m">7.21</span></div>
             <div class="stat"><span class="k">Direction</span><span class="v" id="p3d">Unchanged</span></div>
           </div>
-          <p class="prose" style="color:var(--muted);font-size:.92rem;margin-top:16px">Notice that the length is
-            multiplied by \(k\) without its sign. Setting \(k\) to \(-1\) gives an arrow of the same length pointing
-            the opposite way, and setting \(k\) to \(0\) gives the zero vector, which has no direction at all.</p>
+          <p class="prose" style="color:var(--muted);font-size:.92rem;margin-top:16px">The new length is the
+            original length multiplied by the absolute value of \(k\). For example, multiplying by \(-2\) doubles
+            the length and reverses the direction. Setting \(k\) to \(0\) gives the zero vector, which has no
+            direction at all.</p>
         </div>
       </div>
     </div>
@@ -509,9 +540,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 4 ============ -->
   <section class="station" id="s4">
     <div class="station-head"><span class="num">04</span><h2>Magnitude and unit vectors</h2><span class="eyebrow">28&ndash;40 min</span></div>
-    <p class="lede">The <b>magnitude</b> of a vector is its length, written \(|\mathbf{a}|\). A <b>unit vector</b> is
-      a vector of length 1. It carries the direction without the length, which is why graphics code uses unit
-      vectors to describe which way something is facing.</p>
+    <p class="lede">The <b>magnitude</b> of a vector is its length, written \(|\mathbf{a}|\). A <b>unit vector</b>
+      has length 1. It shows the direction of the original vector, which is why graphics code uses unit vectors to
+      describe which way something is facing.</p>
 
     <div class="panel">
       <h3>Magnitude comes from Pythagoras</h3>
@@ -552,8 +583,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
         </div>
         <div>
           <div class="prose">
-            <p>Divide a vector by its own length and the direction survives but the length becomes 1. The result is
-              written with a hat, \(\hat{\mathbf{a}}\), and the step is called <b>normalising</b>.</p>
+            <p>To find a unit vector, divide each component by the vector's length. The new vector has length 1
+              and points in the same direction. It is written with a hat, \(\hat{\mathbf{a}}\), and the step is
+              called <b>normalising</b>.</p>
           </div>
           <div class="math-tint">
             <div class="math">\[ \hat{\mathbf{a}} = \frac{\mathbf{a}}{|\mathbf{a}|} \]</div>
@@ -574,9 +606,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 5 ============ -->
   <section class="station" id="s5">
     <div class="station-head"><span class="num">05</span><h2>The dot product</h2><span class="eyebrow">48&ndash;66 min</span></div>
-    <p class="lede">The dot product takes two vectors and gives back a single number, not a vector. It measures how
-      much two vectors point the same way. It is the one piece of this lesson that Tutorial 02 uses most, because
-      matrix multiplication is built from it.</p>
+    <p class="lede">The dot product takes two vectors and gives back a single number, not a vector. It helps us
+      compare the directions of two vectors, and its value can be positive, zero or negative. It is also the piece of
+      this lesson that Tutorial 02 uses most, because matrix multiplication is built from it.</p>
 
     <div class="panel">
       <h3>One pair at a time</h3>
@@ -620,8 +652,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <div class="verdict ok" id="p6say" style="margin-top:14px"></div>
           <div class="math-tint">
             <div class="math">\[ \mathbf{a} \cdot \mathbf{b} = |\mathbf{a}|\,|\mathbf{b}|\cos\theta \]</div>
-            <p style="font-size:.9rem;color:var(--muted)">Both magnitudes are always positive, so the sign of the
-              dot product is the sign of \(\cos\theta\). That is the whole reason the sign is useful.</p>
+            <p style="font-size:.9rem;color:var(--muted)">For two non-zero vectors, their lengths are positive. So
+              the dot product is positive when the angle is less than 90&deg;, zero at 90&deg;, and negative when the
+              angle is greater than 90&deg;.</p>
           </div>
         </div>
       </div>
@@ -679,8 +712,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 7 ============ -->
   <section class="station" id="s7">
     <div class="station-head"><span class="num">07</span><h2>Parallel, perpendicular and collinear</h2><span class="eyebrow">78&ndash;90 min</span></div>
-    <p class="lede">Three short tests that come up again and again. Two of them are one line of working, and the
-      third is the one students most often get wrong, so it is worth being careful with.</p>
+    <p class="lede">Let's learn how to check whether two vectors are parallel or perpendicular, and whether three
+      points lie on the same straight line.</p>
 
     <div class="panel">
       <h3>The three tests</h3>
@@ -736,8 +769,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 8 ============ -->
   <section class="station" id="s8">
     <div class="station-head"><span class="num">08</span><h2>Vectors in three dimensions</h2><span class="eyebrow">90&ndash;100 min</span><span class="vchip ext">Optional application</span></div>
-    <p class="lede">Everything so far works in three dimensions too. There is one more component to carry, and every
-      rule gains one more term. Nothing else changes.</p>
+    <p class="lede">A 3D vector has three components: \(x\), \(y\) and \(z\). We can use the same methods to
+      find its length and its dot product. There is simply one more component to carry.</p>
 
     <div class="panel">
       <div class="cols">
@@ -762,9 +795,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
             </div>
           </div>
           <div class="work" id="p9work"></div>
-          <p class="prose" style="color:var(--muted);font-size:.92rem;margin-top:14px">A 3D game engine stores every
-            position, direction and velocity as a vector of three numbers, and the dot product is used thousands of
-            times a frame to work out what faces what.</p>
+          <p class="prose" style="color:var(--muted);font-size:.92rem;margin-top:14px">In 3D games, vectors are used
+            to represent positions, directions and movement. Dot products help compare directions.</p>
         </div>
       </div>
     </div>
@@ -952,15 +984,15 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
         </div>
       </div>
 
-      <div class="score" id="vscore" style="margin-top:18px">0 of 9 correct</div>
+      <div class="score" id="vscore" style="margin-top:18px">0 of 13 correct</div>
     </div>
   </section>
 
   <!-- ============ 10 ============ -->
   <section class="station" id="s10">
     <div class="station-head"><span class="num">10</span><h2>Exit quiz</h2><span class="eyebrow">112&ndash;120 min</span></div>
-    <p class="lede">Six questions to check your understanding of the lesson. None are taken from the tutorial paper,
-      so they are a fair check of whether the ideas have landed.</p>
+    <p class="lede">Answer these six questions to check what you have learnt. The questions are different from those
+      in your tutorial paper.</p>
     <div id="quiz"></div>
     <div class="score" id="score">0 of 6 answered</div>
     <div class="btnrow" style="justify-content:center;margin-top:14px">
@@ -1265,10 +1297,45 @@ window.MathJax={
     draw();
   })();
 
-  /* ---------------- 1b. three reminder cards ---------------- */
+  /* ---------------- 1b. the same vector in four places ---------------- */
+  (function(){
+    var svg=document.getElementById("p1b");if(!svg)return;
+    var P=VPlot(svg,6),t=0,timer=null;
+    var TAILS=[[0,0],[-5,-4],[-4,2],[1,-5],[2,1]];
+    var VX=3,VY=2;
+    function draw(){
+      P.clear().grid();
+      for(var i=1;i<TAILS.length;i++){
+        var tx=TAILS[i][0]*(1-t),ty=TAILS[i][1]*(1-t);
+        P.arrow(tx,ty,tx+VX,ty+VY,CB,3,false);
+        if(t<0.35)P.text(tx+VX/2-0.55,ty+VY/2+0.4,"a",CB,14);
+      }
+      if(t>0.98)P.text(VX/2-0.55,VY/2+0.45,"a",CB,15);
+      document.getElementById("p1bcap").textContent=
+        t<0.02?"Four arrows, four starting points":
+        t<0.98?"Sliding onto the origin":
+        "The arrows overlap: same length, same direction";
+    }
+    function go(to){
+      if(timer)cancelAnimationFrame(timer);
+      var from=t,t0=null;
+      (function step(ts){
+        if(t0===null)t0=ts;
+        var u=Math.min(1,(ts-t0)/1200);
+        var e=u<0.5?2*u*u:1-Math.pow(-2*u+2,2)/2;
+        t=from+(to-from)*e;draw();
+        if(u<1)timer=requestAnimationFrame(step);
+      })(performance.now());
+    }
+    document.getElementById("p1bPlay").addEventListener("click",function(){go(1);});
+    document.getElementById("p1bReset").addEventListener("click",function(){go(0);});
+    draw();
+  })();
+
+  /* ---------------- 1c. three reminder cards ---------------- */
   var W1CARDS=[
     {n:"Size and direction",t:"A vector needs both. Two arrows of the same length pointing different ways are different vectors."},
-    {n:"Where it starts does not matter",t:"Only the amount across and the amount up count. The same arrow drawn somewhere else on the grid is the same vector."},
+    {n:"Position does not matter",t:"Only the length and the direction count. The same arrow drawn somewhere else on the grid is the same vector."},
     {n:"The zero vector",t:"The vector ( 0, 0 ) has no length and no direction. It is the only vector with no direction at all."}
   ];
   (function(){
@@ -1567,7 +1634,7 @@ window.MathJax={
       var px=num("cPx",-3),py=num("cPy",-2),qx=num("cQx",-1),qy=num("cQy",1),rx=num("cRx",3),ry=num("cRy",7);
       var ux=qx-px,uy=qy-py,vx=rx-px,vy=ry-py;
       var cross=ux*vy-uy*vx;
-      var ok=Math.abs(cross)<1e-9&&(Math.abs(ux)>1e-9||Math.abs(uy)>1e-9);
+      var ok=Math.abs(cross)<1e-9;
       P.clear().grid();
       P.arrow(px,py,qx,qy,CA,3);
       P.arrow(px,py,rx,ry,CB,3);
@@ -1576,12 +1643,14 @@ window.MathJax={
       var w=document.getElementById("cWork");
       w.innerHTML="PQ = ("+ux+", "+uy+")<br>PR = ("+vx+", "+vy+")";
       var say=document.getElementById("cSay");
+      var zeroPQ=Math.abs(ux)<1e-9&&Math.abs(uy)<1e-9;
+      var zeroPR=Math.abs(vx)<1e-9&&Math.abs(vy)<1e-9;
       say.className="verdict "+(ok?"ok":"no");
-      if(ok){
+      if(zeroPQ||zeroPR){
+        say.textContent="Collinear, but only because two of the points sit on top of each other. Any two points lie on a straight line, so this case tells you nothing. Move the points apart to use the test properly.";
+      }else if(ok){
         var k=Math.abs(ux)>1e-9?vx/ux:vy/uy;
         say.textContent="Collinear. PR = "+fmt(k,2)+" × PQ, and both vectors start at P, so the three points lie on one straight line.";
-      }else if(Math.abs(ux)<1e-9&&Math.abs(uy)<1e-9){
-        say.textContent="P and Q are the same point, so there is no line to test.";
       }else{
         say.textContent="Not collinear. PR is not a multiple of PQ, so the three points do not lie on one straight line.";
       }
@@ -1641,7 +1710,7 @@ window.MathJax={
   var VHINTS=[
     "Square each component, add them, then take the square root.",
     "Add the matching components, one at a time.",
-    "Multiply every component of p by 3 first, then subtract b component by component.",
+    "Multiply each component of p by 3. Then subtract the matching components of q.",
     "Multiply the matching components, then add the two results.",
     "Divide each component of p by the magnitude you found in question 1.",
     "Find the dot product and both magnitudes, then divide one by the other.",
@@ -1673,7 +1742,7 @@ window.MathJax={
   document.getElementById("vCore").addEventListener("click",function(){
     coreOnly=!coreOnly;
     this.setAttribute("aria-pressed",String(coreOnly));
-    this.textContent=coreOnly?"Show all nine":"Core four only";
+    this.textContent=coreOnly?"Show all questions":"Core four only";
     vqs.forEach(function(q){q.hidden=coreOnly&&q.dataset.core!=="1";});
     document.getElementById("vgroup3d").hidden=coreOnly;
     vupdate();
