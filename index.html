@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Computing Mathematics Labs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap">
+<style>
+:root{
+  --bg:#f4f6f9;--surface:#ffffff;--surface-2:#eef1f6;--fg:#14171d;--muted:#5b6474;
+  --line:#d8dde6;--accent:#3d4ad8;--accent-soft:#e6e8fb;
+  --display:"Newsreader",Georgia,"Times New Roman",serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1116;--surface:#171b22;--surface-2:#1e232c;--fg:#e7eaf1;--muted:#99a2b2;
+    --line:#2b313c;--accent:#8691ff;--accent-soft:#232842;color-scheme:dark;
+  }
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;margin:0}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:56px 64px}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(2rem,1.4rem + 2.6vw,3rem);margin:12px 0 0;letter-spacing:-.01em;text-wrap:balance}
+.sub{color:var(--muted);margin:12px 0 0;max-width:58ch}
+.grid{display:grid;gap:14px;margin-top:38px}
+a.card{
+  display:block;text-decoration:none;color:inherit;background:var(--surface);
+  border:1px solid var(--line);border-radius:12px;padding:20px 22px;
+}
+a.card:hover{border-color:var(--accent);background:var(--accent-soft)}
+a.card .wk{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+a.card h2{font-family:var(--display);font-weight:600;font-size:1.4rem;margin:6px 0 8px}
+a.card p{margin:0;color:var(--muted);font-size:.93rem}
+.soon{
+  background:var(--surface-2);border:1px dashed var(--line);border-radius:12px;padding:20px 22px;
+  color:var(--muted);font-size:.93rem;
+}
+footer{margin-top:40px;color:var(--muted);font-size:.86rem;border-top:1px solid var(--line);padding-top:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="eyebrow">CMA1C03 &middot; School of Informatics &amp; IT</span>
+  <h1>Computing Mathematics Labs</h1>
+  <p class="sub">Interactive pages that go with the tutorials. Everything on them runs in your browser, so you
+    can change the numbers, step through the working and check your own answers.</p>
+
+  <div class="grid">
+    <a class="card" href="week02/">
+      <span class="wk">Week 2 &middot; Tutorial 02</span>
+      <h2>Matrices and Matrix Operations</h2>
+      <p>Vector practice, what a matrix is, addition and scalar multiplication, matrix multiplication step by
+        step, and how matrices move, rotate and resize objects on screen.</p>
+    </a>
+    <div class="soon">Later weeks will appear here as they are ready.</div>
+  </div>
+
+  <footer>Shamim Akhtar, Temasek Polytechnic.</footer>
+</div>
+</body>
+</html>
