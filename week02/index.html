@@ -102,10 +102,6 @@ section.station{padding-block:34px;border-bottom:1px solid var(--line);scroll-ma
 .station-head{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
 .num{font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:1px 7px;flex:none}
 .lede{color:var(--muted);margin-bottom:20px}
-.ask{border-left:3px solid var(--hot);background:var(--hot-soft);color:var(--fg);padding:10px 14px;border-radius:0 7px 7px 0;margin-top:18px;font-size:.93rem}
-.ask b{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--hot);display:block;margin-bottom:2px}
-/* teaching notes are hidden unless the lecturer turns them on */
-body:not(.notes) .ask,body:not(.notes) .tnote,body:not(.notes) #s8{display:none}
 .theme-btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--fg)}
 .hero-btns{display:flex;gap:8px;flex-wrap:wrap}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
@@ -304,7 +300,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <span class="hero-btns">
         <button class="theme-btn" id="oneBtn" type="button" aria-pressed="false">One at a time</button>
         <button class="theme-btn" id="presentBtn" type="button" aria-pressed="false">Present</button>
-        <button class="theme-btn" id="notesBtn" type="button" aria-pressed="false">Teaching notes</button>
         <button class="theme-btn" id="themeBtn" type="button">Theme</button>
       </span>
     </div>
@@ -516,9 +511,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       </div>
 
       <div class="score" id="vscore">0 of 13 correct</div>
-      <div class="ask"><b>Ask before moving on</b>Question 3 is a row of numbers meeting a column of numbers.
-        Tell them to hold on to that, because in fifty minutes they will be doing it four times over and calling
-        it something else.</div>
     </div>
   </section>
 
@@ -553,8 +545,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
         <p style="font-size:.92rem;margin-bottom:6px">An entry is named by its row first, then its column:</p>
         <div class="math">\[ A \;=\; \bigl[a_{ij}\bigr] \qquad\text{where } i \text{ is the row and } j \text{ the column.} \]</div>
       </div>
-      <div class="ask"><b>Ask</b>So what does changing \(a_{13}\) do to the picture, and why is that not the same
-        pixel as \(a_{31}\)?</div>
     </div>
   </section>
 
@@ -597,9 +587,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           0 and 255, because that is all an 8-bit pixel can show. Matrix arithmetic itself has no such limit. The
           clamping belongs to the picture, not to the mathematics.</p>
       </div>
-      <div class="ask"><b>Ask</b>Set the mode to subtract and \(k\) to 2. The panel is now computing \(B - 2A\),
-        which is exactly the shape of question 1(b), \(X - 2W\). Ask which operation happens first and whether it
-        matters. Then set \(k\) to 0 and ask what the result should be before they look.</div>
     </div>
 
     <div class="panel">
@@ -624,9 +611,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <p style="font-size:.88rem;color:var(--muted);margin-top:16px;text-align:center">Both matrices are the same
         size, which is the whole requirement. Make them different sizes and some entry would have no partner, so
         the sum would simply not exist.</p>
-      <div class="ask"><b>Ask</b>Change one entry of \(B\) to something large and negative, then ask which entries
-        of the answer change. Only one does. Addition never lets one entry reach across to another, which is
-        exactly what makes it easy and multiplication hard.</div>
     </div>
   </section>
 
@@ -652,9 +636,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <p class="prose" style="color:var(--muted);font-size:.93rem">Written out in full for two 2 &times; 2 matrices,
         with nothing hidden:</p>
       <div class="math">\[ \begin{bmatrix} a_{11} & a_{12} \\ a_{21} & a_{22} \end{bmatrix} \begin{bmatrix} b_{11} & b_{12} \\ b_{21} & b_{22} \end{bmatrix} = \begin{bmatrix} a_{11}b_{11} + a_{12}b_{21} & a_{11}b_{12} + a_{12}b_{22} \\ a_{21}b_{11} + a_{22}b_{21} & a_{21}b_{12} + a_{22}b_{22} \end{bmatrix} \]</div>
-      <div class="ask"><b>Say this plainly</b>Right now the rule looks arbitrary, and students are entitled to
-        think so. Tell them it is defined this way for a reason, that the reason is station 06, and that they only
-        have to hold the mechanics in their head until then.</div>
     </div>
 
     <div class="panel">
@@ -761,18 +742,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <div class="work" id="bAWork" style="text-align:left;place-items:start;line-height:1.95"></div>
         </div>
       </div>
-      <div class="ask"><b>Ask</b>Move the point to the origin, (0, 0). Whatever matrix you pick, it refuses to
-        budge. Tell them to remember that, because in station 07 it is the whole reason translation needs a bigger
-        matrix.</div>
-      <div class="ask"><b>Worth saying once</b>The sliding motion is a teaching aid, not part of the arithmetic.
-        Multiplying by a matrix is instant: a point goes in and its image comes out, with no in-between. What the
-        animation shows is a route from doing nothing to doing \(M\), so that the class can see which way things
-        travel.</div>
-      <div class="ask"><b>One to try</b>Press <b>Flip in y</b> and watch the grid flatten onto a single line
-        halfway through, then open out the other way round. That is not a fault in the page. A reflection turns the
-        plane over, so any continuous route to it has to pass through a moment where the determinant is zero and
-        the area is crushed flat. Rotations never do this, which is the difference between turning a sheet of paper
-        and flipping it.</div>
     </div>
 
     <div class="panel">
@@ -798,9 +767,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           </div>
         </div>
       </div>
-      <div class="ask"><b>Say this plainly</b>Nothing here is new. Every column of the answer is one row of \(M\)
-        meeting one column of \(P\), exactly as in station 05. The only thing that has changed is that a column
-        now means something: it is a corner of the shape.</div>
     </div>
 
     <div class="panel">
@@ -832,10 +798,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           </div>
         </div>
       </div>
-      <div class="ask"><b>The payoff</b>A game engine does exactly this. Rather than apply a scale, then a
-        rotation, then a translation to each of a thousand vertices, it multiplies the three matrices together once
-        and applies the single result. Matrix multiplication is defined the way it is in order to make that
-        possible. The rule came second; this came first.</div>
     </div>
   </section>
 
@@ -918,8 +880,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <div class="stat"><span class="k">Reversible</span><span class="v" id="tInv">yes</span></div>
         </div>
       </div>
-      <div class="ask"><b>Ask</b>Set \(s_y\) to 0. The determinant falls to zero and the shape flattens onto a line.
-        What has been thrown away that no instruction could ever put back?</div>
     </div>
 
     <div class="panel">
@@ -975,8 +935,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <div class="capt" id="iCap">At rest</div>
         </div>
       </div>
-      <div class="ask"><b>Ask</b>A matrix with determinant zero has no inverse. Point back at the flattened shape
-        from station 07 and ask why no amount of cleverness could recover it.</div>
     </div>
   </section>
 
@@ -992,27 +950,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     </div>
   </section>
 
-  <!-- ============ 8 ============ -->
-  <section class="station" id="s8" style="border-bottom:0">
-    <div class="station-head"><span class="num">10</span><h2>Before the lesson</h2></div>
-    <p class="lede">Nothing to build. Three things to decide.</p>
-    <div class="panel">
-      <ol class="prep">
-        <li><b>Where the tutorial paper goes.</b> Tutorial 02 is one page: question 1 is addition and scalar
-          multiplication, question 2 is two multiplications of different shapes. Station 04 prepares question 1 and
-          station 05 prepares question 2 without giving either away. The clock on this page assumes the paper goes
-          home, because the two hours are already full. If you would rather work it in class, run only as far as
-          station 06 and move stations 07 and 08 to next week, which frees about 25 minutes.</li>
-        <li><b>A second multiplication example.</b> The step-through starts at \(A = \bigl[\begin{smallmatrix}1 & 2\\ 3 & 4\end{smallmatrix}\bigr]\)
-          and \(B = \bigl[\begin{smallmatrix}2 & 0\\ 1 & 3\end{smallmatrix}\bigr]\). Have a second pair ready with a
-          zero in it, so the class sees an entry collapse.</li>
-        <li><b>One game example for station 06.</b> Any sprite that turns or slides on screen. The point to land is
-          that the engine multiplies matrices every frame, and the class has now done by hand what it does sixty
-          times a second. If you only have time for one station after the break, make it 05 and 06 together, since
-          06 is what makes 05 worth learning.</li>
-      </ol>
-    </div>
-  </section>
 
   <footer>
     Computing Mathematics, Tutorial 02. Values, worked examples and quiz answers are set in the page, so it behaves
@@ -1045,13 +982,6 @@ window.MathJax={
     root.setAttribute("data-theme",dark?"light":"dark");
   });
 
-  /* teaching notes: off by default, so a student copy shows only student-facing text */
-  document.getElementById("notesBtn").addEventListener("click",function(){
-    var on=!document.body.classList.contains("notes");
-    document.body.classList.toggle("notes",on);
-    this.setAttribute("aria-pressed",String(on));
-    this.textContent=on?"Hide teaching notes":"Teaching notes";
-  });
 
   /* present mode: one switch that scales the whole page for a projector */
   document.getElementById("presentBtn").addEventListener("click",function(){
