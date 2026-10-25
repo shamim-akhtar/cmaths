@@ -171,6 +171,8 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .mx td.rowHit,.mx td.colHit{background:var(--accent-soft)}
 .mx td.cellHit{background:var(--hot);color:#1a1205;font-weight:600}
 .mx td.done{color:var(--muted)}
+.mathview{display:flex;justify-content:center;overflow-x:auto;padding-block:4px}
+.mathview .mx td{padding:3px 6px;min-width:34px;font-size:.88rem}
 .mx input{font-family:var(--mono);font-size:.95rem;width:46px;text-align:center;background:var(--surface-2);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:3px 2px}
 .eq{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
 .eq .op{font-family:var(--mono);font-size:1.2rem;color:var(--muted)}
@@ -323,6 +325,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 .weeknav .wk{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
 .weeknav .wt{font-size:.84rem}
 .weeknav a.on .wt{color:#fff}
+.steps{margin:14px 0 0;padding-left:22px}
+.steps li{margin-bottom:7px;font-size:.95rem}
+.steps li::marker{font-family:var(--mono);color:var(--accent);font-weight:600}
 </style>
 </head>
 <body>
@@ -561,7 +566,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           </div>
           <div class="math" id="p4eq"></div>
           <div class="ctl" style="margin-top:14px">
-            <label><span>Change the vector</span><span class="v" id="p4v">(3, 4)</span></label>
+            <label><span>Drag the tip, or type the numbers</span><span class="v" id="p4v">(3, 4)</span></label>
             <div class="vrow">
               <span class="vsep">(</span>
               <input type="number" class="vin" id="p4x" value="3" min="-5" max="5" step="1" aria-label="x component">
@@ -681,6 +686,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <div class="cols" style="margin-top:4px">
         <div>
           <svg class="tbox" id="p7" viewBox="0 0 340 340" role="img" aria-label="Two vectors with the angle between them shaded"></svg>
+          <div class="capt">Drag either arrow tip, or type the numbers</div>
         </div>
         <div>
           <div class="ctl">
@@ -721,21 +727,38 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     </div>
 
     <div class="panel">
-      <h3>Are these three points collinear?</h3>
-      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 16px">Change any coordinate and the page works out
-        the two vectors and checks them. Collinear means the three points lie on one straight line.</p>
+      <h3>How to check whether three points are collinear</h3>
+      <div class="prose" style="margin-top:12px">
+        <p>Three points are collinear when they all lie on one straight line. You cannot tell by looking, so you
+          test it with vectors. There are four steps.</p>
+      </div>
+      <ol class="steps">
+        <li>Pick one of the three points as the starting point. We will use \(P\).</li>
+        <li>Find \(\overrightarrow{PQ}\). Subtract the coordinates of \(P\) from the coordinates of \(Q\).</li>
+        <li>Find \(\overrightarrow{PR}\) the same way.</li>
+        <li>Check whether one vector is a multiple of the other. If \(\overrightarrow{PR} = k\,\overrightarrow{PQ}\)
+          for some number \(k\), the three points are collinear.</li>
+      </ol>
+      <div class="math-tint">
+        <div class="math">\[ \overrightarrow{PQ} = (q_1 - p_1,\; q_2 - p_2) \qquad \overrightarrow{PR} = (r_1 - p_1,\; r_2 - p_2) \]</div>
+        <p style="font-size:.9rem;color:var(--muted)">Both vectors must start from the same point. Two parallel
+          vectors that start from different points do not make the three points collinear.</p>
+      </div>
+      <p style="color:var(--muted);font-size:.92rem;margin:16px 0">Drag the points or change any coordinate, then
+        press <b>Work it through</b> to see the four steps one at a time.</p>
       <div class="cols">
         <div>
           <svg class="tbox" id="p8" viewBox="0 0 340 340" role="img" aria-label="Three points plotted with the vectors between them"></svg>
+          <div class="capt">Drag any of the three points</div>
         </div>
         <div>
           <div class="ctl">
             <label><span>Point \(P\)</span></label>
             <div class="vrow">
               <span class="vsep">(</span>
-              <input type="number" class="vin" id="cPx" value="-3" min="-5" max="5" step="1" aria-label="P x">
+              <input type="number" class="vin" id="cPx" value="-3" min="-8" max="8" step="1" aria-label="P x">
               <span class="vsep">,</span>
-              <input type="number" class="vin" id="cPy" value="-2" min="-5" max="5" step="1" aria-label="P y">
+              <input type="number" class="vin" id="cPy" value="-2" min="-8" max="8" step="1" aria-label="P y">
               <span class="vsep">)</span>
             </div>
           </div>
@@ -743,9 +766,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
             <label><span>Point \(Q\)</span></label>
             <div class="vrow">
               <span class="vsep">(</span>
-              <input type="number" class="vin" id="cQx" value="-1" min="-5" max="5" step="1" aria-label="Q x">
+              <input type="number" class="vin" id="cQx" value="-1" min="-8" max="8" step="1" aria-label="Q x">
               <span class="vsep">,</span>
-              <input type="number" class="vin" id="cQy" value="1" min="-5" max="5" step="1" aria-label="Q y">
+              <input type="number" class="vin" id="cQy" value="1" min="-8" max="8" step="1" aria-label="Q y">
               <span class="vsep">)</span>
             </div>
           </div>
@@ -753,13 +776,19 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
             <label><span>Point \(R\)</span></label>
             <div class="vrow">
               <span class="vsep">(</span>
-              <input type="number" class="vin" id="cRx" value="3" min="-5" max="5" step="1" aria-label="R x">
+              <input type="number" class="vin" id="cRx" value="3" min="-8" max="8" step="1" aria-label="R x">
               <span class="vsep">,</span>
-              <input type="number" class="vin" id="cRy" value="7" min="-5" max="5" step="1" aria-label="R y">
+              <input type="number" class="vin" id="cRy" value="7" min="-8" max="8" step="1" aria-label="R y">
               <span class="vsep">)</span>
             </div>
           </div>
           <div class="work" id="cWork"></div>
+          <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:14px">
+            <button class="btn" id="cPrev" type="button" disabled>Back</button>
+            <span class="step" id="cStep">Step 0 of 4</span>
+            <button class="btn primary" id="cNext" type="button">Work it through</button>
+            <button class="btn" id="cRestart" type="button">Reset</button>
+          </div>
           <div class="verdict ok" id="cSay"></div>
         </div>
       </div>
@@ -1254,6 +1283,44 @@ window.MathJax={
   }
   function num(id,def){var v=parseFloat(document.getElementById(id).value);return isNaN(v)?def:v;}
 
+  /* let the figures be dragged: grab the nearest handle and move it on the grid */
+  function dragHandles(svg,P,sets,lo,hi){
+    lo=(lo===undefined)?-5:lo;hi=(hi===undefined)?5:hi;
+    var active=-1;
+    svg.style.touchAction="none";svg.style.cursor="crosshair";
+    function local(ev){
+      var r=svg.getBoundingClientRect();
+      return [(ev.clientX-r.left)/r.width*340,(ev.clientY-r.top)/r.height*340];
+    }
+    function pick(p){
+      var best=-1,bd=1e9;
+      sets.forEach(function(s,i){
+        var dx=p[0]-P.X(num(s[0],0)),dy=p[1]-P.Y(num(s[1],0));
+        var d=Math.sqrt(dx*dx+dy*dy);
+        if(d<bd){bd=d;best=i;}
+      });
+      return bd<34?best:-1;
+    }
+    function put(i,p){
+      var gx=Math.round((p[0]-P.X(0))/P.k),gy=Math.round((P.Y(0)-p[1])/P.k);
+      gx=Math.max(lo,Math.min(hi,gx));gy=Math.max(lo,Math.min(hi,gy));
+      var ex=document.getElementById(sets[i][0]),ey=document.getElementById(sets[i][1]);
+      if(+ex.value===gx&&+ey.value===gy)return;
+      ex.value=gx;ey.value=gy;
+      ey.dispatchEvent(new Event("input",{bubbles:true}));
+    }
+    svg.addEventListener("pointerdown",function(e){
+      var p=local(e),i=pick(p);
+      if(i<0)return;
+      e.preventDefault();active=i;
+      if(svg.setPointerCapture)svg.setPointerCapture(e.pointerId);
+      put(i,p);
+    });
+    svg.addEventListener("pointermove",function(e){if(active>=0)put(active,local(e));});
+    svg.addEventListener("pointerup",function(){active=-1;});
+    svg.addEventListener("pointercancel",function(){active=-1;});
+  }
+
   /* ---------------- 1. drag the tip ---------------- */
   (function(){
     var svg=document.getElementById("p1");if(!svg)return;
@@ -1446,6 +1513,7 @@ window.MathJax={
         P.line(x+sx,0,x+sx,sy,CM,1.3);P.line(x+sx,sy,x,sy,CM,1.3);
       }
       P.arrow(0,0,x,y,CB,3.4);
+      P.dot(x,y,CB,5.5);
       P.text(x/2,(y>0?-0.45:0.65),fmt(Math.abs(x),0),CM,13);
       P.text(x+(x>0?0.6:-0.6),y/2,fmt(Math.abs(y),0),CM,13);
       P.text(x/2-0.65,y/2+0.3,fmt(m,2),CB,14);
@@ -1455,6 +1523,7 @@ window.MathJax={
       retex(eq);
     }
     ["p4x","p4y"].forEach(function(id){document.getElementById(id).addEventListener("input",draw);});
+    dragHandles(svg,P,[["p4x","p4y"]]);
     draw();
   })();
 
@@ -1594,6 +1663,8 @@ window.MathJax={
       }
       P.arrow(0,0,ax,ay,CA,3.4);
       P.arrow(0,0,bx,by,CB,3.4);
+      P.dot(ax,ay,CA,5.5);
+      P.dot(bx,by,CB,5.5);
       P.text(ax/2+0.4,ay/2+0.4,"a",CA,15);
       P.text(bx/2+0.4,by/2+0.4,"b",CB,15);
       document.getElementById("p7av").textContent=vec(ax,ay);
@@ -1607,6 +1678,7 @@ window.MathJax={
     }
     ["p7ax","p7ay","p7bx","p7by"].forEach(function(id){
       document.getElementById(id).addEventListener("input",draw);});
+    dragHandles(svg,P,[["p7ax","p7ay"],["p7bx","p7by"]]);
     draw();
   })();
 
@@ -1626,37 +1698,106 @@ window.MathJax={
     });
   })();
 
-  /* ---------------- 7b. collinearity checker ---------------- */
+  /* ---------------- 7b. collinearity checker, with a stepped walkthrough ---------------- */
   (function(){
     var svg=document.getElementById("p8");if(!svg)return;
-    var P=VPlot(svg,8);
+    var P=VPlot(svg,8),cs=0,grow=1,timer=null;
+    function par(n){return n<0?"("+n+")":""+n;}
+    function pts(){
+      return {px:num("cPx",-3),py:num("cPy",-2),qx:num("cQx",-1),qy:num("cQy",1),
+              rx:num("cRx",3),ry:num("cRy",7)};
+    }
     function draw(){
-      var px=num("cPx",-3),py=num("cPy",-2),qx=num("cQx",-1),qy=num("cQy",1),rx=num("cRx",3),ry=num("cRy",7);
-      var ux=qx-px,uy=qy-py,vx=rx-px,vy=ry-py;
-      var cross=ux*vy-uy*vx;
-      var ok=Math.abs(cross)<1e-9;
-      P.clear().grid();
-      P.arrow(px,py,qx,qy,CA,3);
-      P.arrow(px,py,rx,ry,CB,3);
-      P.dot(px,py,CR,5.5);P.dot(qx,qy,CR,5.5);P.dot(rx,ry,CR,5.5);
-      P.text(px,py-0.95,"P",CR,14);P.text(qx,qy-0.95,"Q",CR,14);P.text(rx,ry-0.95,"R",CR,14);
-      var w=document.getElementById("cWork");
-      w.innerHTML="PQ = ("+ux+", "+uy+")<br>PR = ("+vx+", "+vy+")";
-      var say=document.getElementById("cSay");
+      var p=pts();
+      var ux=p.qx-p.px,uy=p.qy-p.py,vx=p.rx-p.px,vy=p.ry-p.py;
+      var ok=Math.abs(ux*vy-uy*vx)<1e-9;
       var zeroPQ=Math.abs(ux)<1e-9&&Math.abs(uy)<1e-9;
       var zeroPR=Math.abs(vx)<1e-9&&Math.abs(vy)<1e-9;
+      var gPQ=cs===0||cs>=2?1:(cs===1?grow:0);
+      var gPR=cs===0||cs>=3?1:(cs===2?grow:0);
+      P.clear().grid();
+      if(gPQ>0.01)P.arrow(p.px,p.py,p.px+ux*gPQ,p.py+uy*gPQ,CA,3.2);
+      if(gPR>0.01)P.arrow(p.px,p.py,p.px+vx*gPR,p.py+vy*gPR,CB,3.2);
+      P.dot(p.px,p.py,CR,5.5);P.dot(p.qx,p.qy,CR,5.5);P.dot(p.rx,p.ry,CR,5.5);
+      P.text(p.px-0.55,p.py-0.95,"P",CR,14);
+      P.text(p.qx-0.55,p.qy-0.95,"Q",CR,14);
+      P.text(p.rx-0.55,p.ry-0.95,"R",CR,14);
+      if(gPQ>0.5)P.text(p.px+ux/2-0.7,p.py+uy/2+0.35,"PQ",CA,13);
+      if(gPR>0.5)P.text(p.px+vx/2+0.8,p.py+vy/2-0.35,"PR",CB,13);
+
+      var L=[];
+      if(cs>=1)L.push("Step 1  PQ = Q − P",
+        "        = ("+p.qx+" − "+par(p.px)+", "+p.qy+" − "+par(p.py)+")",
+        "        = ("+ux+", "+uy+")");
+      if(cs>=2)L.push("","Step 2  PR = R − P",
+        "        = ("+p.rx+" − "+par(p.px)+", "+p.ry+" − "+par(p.py)+")",
+        "        = ("+vx+", "+vy+")");
+      if(cs>=3){
+        L.push("","Step 3  Is PR = k × PQ?");
+        if(zeroPQ||zeroPR){
+          L.push("        Two points are the same, so there",
+                 "        is no vector to compare.");
+        }else{
+          var useX=Math.abs(ux)>1e-9;
+          var k=useX?vx/ux:vy/uy;
+          var A=useX?"x":"y",B=useX?"y":"x";
+          var aV=useX?vx:vy,aU=useX?ux:uy;
+          var bU=useX?uy:ux,bV=useX?vy:vx;
+          L.push("        From the "+A+" parts: "+aV+" = k × "+aU,
+                 "        so k = "+fmt(k,3));
+          L.push("        Check the "+B+" parts: "+fmt(k,3)+" × "+bU+" = "+fmt(k*bU,3));
+          L.push(Math.abs(k*bU-bV)<1e-9?
+            "        PR's "+B+" part is "+bV+", so they agree.":
+            "        PR's "+B+" part is "+bV+", so they disagree.");
+        }
+      }
+      if(cs>=4)L.push("","Step 4  "+(ok?"PR = k × PQ, so collinear.":"PR is not a multiple of PQ."));
+      var w=document.getElementById("cWork");
+      w.style.textAlign=cs===0?"center":"left";
+      w.innerHTML=cs===0?("PQ = ("+ux+", "+uy+")<br>PR = ("+vx+", "+vy+")")
+                        :L.join("\n").replace(/ /g," ").replace(/\n/g,"<br>");
+
+      var say=document.getElementById("cSay");
+      say.hidden=(cs>=1&&cs<4);
       say.className="verdict "+(ok?"ok":"no");
       if(zeroPQ||zeroPR){
         say.textContent="Collinear, but only because two of the points sit on top of each other. Any two points lie on a straight line, so this case tells you nothing. Move the points apart to use the test properly.";
       }else if(ok){
-        var k=Math.abs(ux)>1e-9?vx/ux:vy/uy;
-        say.textContent="Collinear. PR = "+fmt(k,2)+" × PQ, and both vectors start at P, so the three points lie on one straight line.";
+        var kk=Math.abs(ux)>1e-9?vx/ux:vy/uy;
+        say.textContent="Collinear. PR = "+fmt(kk,2)+" × PQ, and both vectors start at P, so the three points lie on one straight line.";
       }else{
         say.textContent="Not collinear. PR is not a multiple of PQ, so the three points do not lie on one straight line.";
       }
+      document.getElementById("cStep").textContent="Step "+cs+" of 4";
+      document.getElementById("cPrev").disabled=cs===0;
+      var nx=document.getElementById("cNext");
+      nx.disabled=cs===4;
+      nx.textContent=cs===0?"Work it through":"Next";
     }
+    function animate(){
+      if(timer)cancelAnimationFrame(timer);
+      var t0=null;grow=0;
+      (function step(ts){
+        if(t0===null)t0=ts;
+        var t=Math.min(1,(ts-t0)/700);
+        grow=t<0.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+        draw();
+        if(t<1)timer=requestAnimationFrame(step);else{grow=1;draw();}
+      })(performance.now());
+    }
+    function go(n){
+      var was=cs;cs=Math.max(0,Math.min(4,n));
+      if((cs===1&&was!==1)||(cs===2&&was!==2))animate();else{grow=1;draw();}
+    }
+    document.getElementById("cNext").addEventListener("click",function(){go(cs+1);});
+    document.getElementById("cPrev").addEventListener("click",function(){go(cs-1);});
+    document.getElementById("cRestart").addEventListener("click",function(){go(0);});
     ["cPx","cPy","cQx","cQy","cRx","cRy"].forEach(function(id){
-      document.getElementById(id).addEventListener("input",draw);});
+      document.getElementById(id).addEventListener("input",function(){
+        if(timer)cancelAnimationFrame(timer);
+        cs=0;grow=1;draw();});
+    });
+    dragHandles(svg,P,[["cPx","cPy"],["cQx","cQy"],["cRx","cRy"]],-8,8);
     draw();
   })();
 
