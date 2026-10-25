@@ -710,6 +710,10 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
         <p>Press play and watch. The matrix does not act on one point in isolation. It takes hold of the whole
           grid and bends it, and the point goes wherever its piece of the grid goes. That is what a transformation
           is, and it is why the same matrix works for every point at once.</p>
+        <p>Watch the two short arrows. Green \(\mathbf{i}\) starts at \((1,\,0)\) and blue \(\mathbf{j}\) starts at
+          \((0,\,1)\), and where they finish is exactly the two columns of the matrix. Rotate by a quarter turn and
+          \(\mathbf{i}\) ends up pointing straight up, which is why the first column of that matrix reads
+          \(0\) then \(1\). A 2 &times; 2 matrix records nothing more than where those two arrows land.</p>
       </div>
       <div class="math-tint">
         <div class="math">\[ \underset{2\,\times\,2}{M}\;\;\underset{2\,\times\,1}{\mathbf{p}} \;=\; \underset{2\,\times\,1}{\mathbf{p}'} \]</div>
@@ -726,6 +730,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <div class="presets" id="bAPre"></div>
           <div class="btnrow" style="margin-bottom:14px">
             <button class="btn primary" id="bAPlay" type="button">Play the transformation</button>
+            <button class="btn" id="bABack" type="button">Back to the start</button>
           </div>
           <div class="eq" style="justify-content:flex-start" id="bAEq"></div>
           <div class="vrow" style="margin-top:14px">
@@ -1600,9 +1605,10 @@ window.MathJax={
     var q=PX(p);
     svg.appendChild(el("circle",{cx:q[0],cy:q[1],r:5,fill:"none",stroke:stroke,"stroke-width":2,"stroke-dasharray":"3 2"}));
   }
-  function lineBetween(svg,p,q,stroke,w){
+  function lineBetween(svg,p,q,stroke,w,dash){
     var a=PX(p),b=PX(q);
-    svg.appendChild(el("line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:stroke,"stroke-width":w}));
+    svg.appendChild(el("line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:stroke,
+      "stroke-width":w,"stroke-dasharray":dash||"0"}));
   }
   function addSeg(svg,p,q,stroke,dash){
     var a=PX(p),b=PX(q);
@@ -1641,20 +1647,30 @@ window.MathJax={
     svg.textContent="";
     for(var g=-R;g<=R;g++){
       var on=(g===0);
-      lineBetween(svg,ap2(Mt,[g,-R]),ap2(Mt,[g,R]),on?"var(--accent)":"var(--line)",on?1.8:1);
-      lineBetween(svg,ap2(Mt,[-R,g]),ap2(Mt,[R,g]),on?"var(--accent)":"var(--line)",on?1.8:1);
+      lineBetween(svg,ap2(Mt,[g,-R]),ap2(Mt,[g,R]),on?"var(--muted)":"var(--line)",on?1.6:1);
+      lineBetween(svg,ap2(Mt,[-R,g]),ap2(Mt,[R,g]),on?"var(--muted)":"var(--line)",on?1.6:1);
     }
+    /* the two columns of the matrix: where (1,0) and (0,1) have been taken */
+    var iv=ap2(Mt,[1,0]),jv=ap2(Mt,[0,1]);
+    lineBetween(svg,[0,0],iv,"var(--good)",3.4);
+    lineBetween(svg,[0,0],jv,"var(--accent)",3.4);
+    addDot(svg,iv,"var(--good)");
+    addDot(svg,jv,"var(--accent)");
+    addLabel(svg,iv,"i","var(--good)",9,18);
+    addLabel(svg,jv,"j","var(--accent)",11,-8);
     svg.appendChild(el("circle",{cx:MID,cy:MID,r:3,fill:"var(--muted)"}));
     addSeg(svg,[0,0],p,"var(--muted)","4 3");
     addRing(svg,p,"var(--muted)");
     addLabel(svg,p,"p","var(--muted)");
-    addSeg(svg,[0,0],q,"var(--hot)","0");
-    addDot(svg,q,"var(--hot)");
-    addLabel(svg,q,t>0.02?"Mp":"","var(--hot)");
+    if(t>0.02){
+      addSeg(svg,[0,0],q,"var(--hot)","0");
+      addDot(svg,q,"var(--hot)");
+      addLabel(svg,q,"Mp","var(--hot)");
+    }
     document.getElementById("bACap").textContent=
-      t<0.01?"The grid at rest, p in grey":
+      t<0.01?"At rest. i and j are where they started":
       t>0.99?"p has been carried to Mp":
-      "part way there: ("+fmt(Math.round(q[0]*10)/10)+", "+fmt(Math.round(q[1]*10)/10)+")";
+      "on the way: ("+fmt(Math.round(q[0]*10)/10)+", "+fmt(Math.round(q[1]*10)/10)+")";
   }
   function bAEquation(){
     var p=bAPoint(),q=ap2(bAM,p);
@@ -1668,13 +1684,17 @@ window.MathJax={
       "x&prime; = "+term(bAM[0][0],p[0])+" + "+term(bAM[0][1],p[1])+" = <span class='hl'>"+fmt(q[0])+"</span><br>"+
       "y&prime; = "+term(bAM[1][0],p[0])+" + "+term(bAM[1][1],p[1])+" = <span class='hl'>"+fmt(q[1])+"</span>";
   }
-  function bARefresh(){bAEquation();bADraw(1);}
-  var bARaf=null,bAStill=window.matchMedia("(prefers-reduced-motion: reduce)");
+  var bAt=0,bARaf=null,bAStill=window.matchMedia("(prefers-reduced-motion: reduce)");
+  function bARefresh(){bAEquation();bADraw(bAt);}
+  function bAPlayLabel(){
+    document.getElementById("bAPlay").textContent=bAt?"Play it again":"Play the transformation";
+  }
   function bAPlay(){
     bAEquation();
-    if(bAStill.matches){bADraw(1);return;}
     if(bARaf)cancelAnimationFrame(bARaf);
-    var t0=null,dur=1100;
+    bAt=1;bAPlayLabel();
+    if(bAStill.matches){bADraw(1);return;}
+    var t0=null,dur=1300;
     (function step(ts){
       if(t0===null)t0=ts;
       var raw=Math.min(1,(ts-t0)/dur);
@@ -1682,6 +1702,10 @@ window.MathJax={
       bADraw(e);
       if(raw<1)bARaf=requestAnimationFrame(step);else bARaf=null;
     })(performance.now());
+  }
+  function bAReset(){
+    if(bARaf)cancelAnimationFrame(bARaf);
+    bARaf=null;bAt=0;bAPlayLabel();bAEquation();bADraw(0);
   }
   var bAPre=document.getElementById("bAPre");
   bAPresets.forEach(function(p,i){
@@ -1691,11 +1715,12 @@ window.MathJax={
     b.addEventListener("click",function(){
       bAPre.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed","false");});
       b.setAttribute("aria-pressed","true");
-      bAM=p.M;bAPlay();
+      bAM=p.M;bAt=0;bAPlay();
     });
     bAPre.appendChild(b);
   });
   document.getElementById("bAPlay").addEventListener("click",bAPlay);
+  document.getElementById("bABack").addEventListener("click",bAReset);
   document.getElementById("bAx").addEventListener("input",bARefresh);
   document.getElementById("bAy").addEventListener("input",bARefresh);
   bARefresh();
