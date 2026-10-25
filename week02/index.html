@@ -4,12 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Week 2 Matrix Lab</title>
-<style>
-:root{color-scheme:light}
-html{-webkit-text-size-adjust:100%}
-img{max-width:100%}
-[hidden]{display:none!important}
-</style>
+<style>:root{color-scheme:light}html{-webkit-text-size-adjust:100%}img{max-width:100%}[hidden]{display:none!important}</style>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap">
@@ -194,6 +189,10 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 @media (max-width:560px){.gal1 .flash-inner{height:188px}}
 .fqmain{font-size:1rem;font-weight:500;line-height:1.45}
 .fans{font-size:.95rem;line-height:1.5}
+.fcase{display:block;margin-top:7px}
+.fsplit{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.fsplit>div{flex:1 1 260px;min-width:0}
+.pythag{flex:0 0 auto;width:168px;height:152px;font-family:var(--mono)}
 .flash{perspective:1100px;perspective-origin:50% 42%;min-width:0}
 .flash-inner{position:relative;width:100%;height:200px;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,.05,.25,1)}
 .flash.turned .flash-inner{transform:rotateY(180deg)}
@@ -327,8 +326,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     <div class="hero-top">
       <span class="eyebrow">Computing Mathematics &middot; Tutorial 02 &middot; Two hours</span>
       <span class="hero-btns">
-        <button class="theme-btn" id="oneBtn" type="button" aria-pressed="false"
-          title="Then use the left and right arrow keys to move between stations">One at a time</button>
+        <button class="theme-btn" id="oneBtn" type="button" aria-pressed="true"
+          title="Left and right arrow keys move between stations">Show all</button>
         <button class="theme-btn" id="themeBtn" type="button">Theme</button>
       </span>
     </div>
@@ -342,8 +341,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 1 ============ -->
   <section class="station" id="s1">
     <div class="station-head"><span class="num">01</span><h2>Vector recap</h2><span class="eyebrow">0&ndash;5 min</span></div>
-    <p class="lede">Three short questions from last week, before we move on to matrices. Turn each card over when
-      you have your answer.</p>
+    <p class="lede">Let's review three questions from the previous lesson. Turn each card over when you have your
+      answer.</p>
     <div class="panel">
       <div class="gal1" id="recap"></div>
       <div class="btnrow" style="justify-content:center;margin-top:14px">
@@ -355,10 +354,10 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 1b ============ -->
   <section class="station" id="s1b">
     <div class="station-head"><span class="num">02</span><h2>Vector practice</h2><span class="eyebrow">5&ndash;22 min, or 8 on the core four</span></div>
-    <p class="lede">Eight short questions in two dimensions, then one longer question in three. Type an answer to
-      check it, or open the working for the steps. Four are marked <b>core</b>, because today's work depends on
-      them: a magnitude, a dot product, a perpendicular condition and a collinearity check. The rest are marked
-      extension and can be left for your own time. Press <b>Core four only</b> to hide them.</p>
+    <p class="lede">Practise what you learnt about vectors. Start with the four questions marked <b>core</b>: a
+      magnitude, a dot product, a perpendicular condition and a collinearity check. You can then try the extension
+      questions, or leave them for your own time. Type your answer and press <b>Check</b>. If you need help, press
+      <b>Working</b> to see the steps.</p>
     <div class="panel">
       <p style="font-size:.95rem;margin-bottom:16px">Throughout, \(\mathbf{a} = (2,\,5)\), \(\mathbf{b} = (-3,\,1)\)
         and \(\mathbf{c} = (3,\,-4)\).</p>
@@ -403,7 +402,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <span class="vfb"></span>
           <span class="vtag">Needed in station 05</span>
         </div>
-        <div class="why vsol" hidden>\( \mathbf{a} \cdot \mathbf{b} = (2)(-3) + (5)(1) = -6 + 5 = -1 \). Multiply the matching entries, then add. This is the whole engine of matrix multiplication.</div>
+        <div class="why vsol" hidden>\( \mathbf{a} \cdot \mathbf{b} = (2)(-3) + (5)(1) = -6 + 5 = -1 \). Multiply the matching components. Then add the results.</div>
       </div>
 
       <div class="vq" data-ans="7,9" data-tol="0.01">
@@ -418,7 +417,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <button class="btn vwork" type="button">Working</button>
           <span class="vfb"></span>
         </div>
-        <div class="why vsol" hidden>\( 2\mathbf{a} = (4,\,10) \), so \( 2\mathbf{a} - \mathbf{b} = (4 - (-3),\; 10 - 1) = (7,\,9) \). Station 04 does exactly this to a grid of numbers instead of a pair.</div>
+        <div class="why vsol" hidden>\( 2\mathbf{a} = (4,\,10) \), so \( 2\mathbf{a} - \mathbf{b} = (4 - (-3),\; 10 - 1) = (7,\,9) \). Multiply each component of \(\mathbf{a}\) by 2. Then subtract the matching components of \(\mathbf{b}\).</div>
       </div>
 
       <div class="vq" data-core="1" data-ans="12" data-tol="0.01">
@@ -442,7 +441,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <button class="btn vwork" type="button">Working</button>
           <span class="vfb"></span>
         </div>
-        <div class="why vsol" hidden>\( \cos\theta = \dfrac{\mathbf{a} \cdot \mathbf{b}}{|\mathbf{a}|\,|\mathbf{b}|} = \dfrac{-1}{\sqrt{29}\,\sqrt{10}} \approx -0.0587 \), so \( \theta \approx 93^\circ \). The dot product is negative, which is why the angle comes out just past a right angle.</div>
+        <div class="why vsol" hidden>\( \cos\theta = \dfrac{\mathbf{a} \cdot \mathbf{b}}{|\mathbf{a}|\,|\mathbf{b}|} = \dfrac{-1}{\sqrt{29}\,\sqrt{10}} \approx -0.0587 \), so \( \theta \approx 93^\circ \). The dot product is negative, so the angle is greater than 90&deg;.</div>
       </div>
 
       <div class="vq" data-core="1" data-ans="2.5" data-tol="0.01">
@@ -454,7 +453,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <button class="btn vwork" type="button">Working</button>
           <span class="vfb"></span>
         </div>
-        <div class="why vsol" hidden>\( \overrightarrow{PQ} = (3-1,\,6-2) = (2,\,4) \) and \( \overrightarrow{PR} = (6-1,\,12-2) = (5,\,10) \). Since \( (5,\,10) = 2.5\,(2,\,4) \), the two vectors are parallel. They also share the point \(P\), so the three points lie on one straight line. Parallel alone is not enough for collinearity: the vectors must start from a common point.</div>
+        <div class="why vsol" hidden>\( \overrightarrow{PQ} = (3-1,\,6-2) = (2,\,4) \) and \( \overrightarrow{PR} = (6-1,\,12-2) = (5,\,10) \). Since \( (5,\,10) = 2.5\,(2,\,4) \), the two vectors lie along the same line. They also both start at \(P\), so the three points lie on one straight line. Being parallel alone is not enough. The vectors must also start from the same point.</div>
       </div>
 
       <div class="vq" data-ans="9" data-tol="0.01">
@@ -467,7 +466,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <span class="vfb"></span>
           <span class="vtag">Needed in station 07</span>
         </div>
-        <div class="why vsol" hidden>\( \overrightarrow{AB} = (3,\,6) \) and \( \overrightarrow{AC} = (t-2,\,14) \). Collinear means \( \overrightarrow{AC} = k\,\overrightarrow{AB} \). The second entries give \( 6k = 14 \), so \( k = \tfrac{7}{3} \), and then \( t - 2 = 3k = 7 \), giving \( t = 9 \). The same test written as a determinant is \( 3(14) - 6(t-2) = 0 \), and that determinant is exactly the area scale factor station 07 displays. Two parallel vectors enclose no area, so it has to be zero.</div>
+        <div class="why vsol" hidden>\( \overrightarrow{AB} = (3,\,6) \) and \( \overrightarrow{AC} = (t-2,\,14) \). Collinear means \( \overrightarrow{AC} = k\,\overrightarrow{AB} \). The second entries give \( 6k = 14 \), so \( k = \tfrac{7}{3} \), and then \( t - 2 = 3k = 7 \), giving \( t = 9 \). Find the vectors \( \overrightarrow{AB} \) and \( \overrightarrow{AC} \). Since the points lie on one straight line, one vector must be a multiple of the other.</div>
       </div>
 
       <div class="vgroup" id="vgroup3d">
@@ -476,9 +475,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <span class="vtag">The long one</span>
         </div>
         <p style="font-size:.93rem;color:var(--muted);margin:8px 0 16px">Let \(\mathbf{u} = (2,\,-1,\,2)\) and
-          \(\mathbf{v} = (1,\,2,\,2)\). Nothing new is needed. Every rule from two dimensions carries over, there is
-          simply one more entry to keep track of, which is the whole point of doing it once by hand. If the clock is
-          against you, set this one as take-home.</p>
+          \(\mathbf{v} = (1,\,2,\,2)\). This question uses vectors with three components instead of two. The
+          calculation steps are the same. You just need to include the third component.</p>
 
         <div class="vq" data-ans="3" data-tol="0.01">
           <div class="qt"><span class="qn">(a)</span>Find \(|\mathbf{u}|\).</div>
@@ -488,7 +486,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
             <button class="btn vwork" type="button">Working</button>
             <span class="vfb"></span>
           </div>
-          <div class="why vsol" hidden>\( |\mathbf{u}| = \sqrt{2^2 + (-1)^2 + 2^2} = \sqrt{4 + 1 + 4} = \sqrt{9} = 3 \). Pythagoras simply gains a third term.</div>
+          <div class="why vsol" hidden>\( |\mathbf{u}| = \sqrt{2^2 + (-1)^2 + 2^2} = \sqrt{4 + 1 + 4} = \sqrt{9} = 3 \). Square all three components and add them. Then find the square root.</div>
         </div>
 
         <div class="vq" data-ans="4" data-tol="0.01">
@@ -499,7 +497,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
             <button class="btn vwork" type="button">Working</button>
             <span class="vfb"></span>
           </div>
-          <div class="why vsol" hidden>\( \mathbf{u} \cdot \mathbf{v} = (2)(1) + (-1)(2) + (2)(2) = 2 - 2 + 4 = 4 \). Three products instead of two, added the same way.</div>
+          <div class="why vsol" hidden>\( \mathbf{u} \cdot \mathbf{v} = (2)(1) + (-1)(2) + (2)(2) = 2 - 2 + 4 = 4 \). Multiply the three pairs of matching components. Then add the results.</div>
         </div>
 
         <div class="vq" data-ans="64" data-tol="1">
@@ -511,7 +509,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
             <button class="btn vwork" type="button">Working</button>
             <span class="vfb"></span>
           </div>
-          <div class="why vsol" hidden>\( |\mathbf{v}| = \sqrt{1 + 4 + 4} = 3 \), so \( \cos\theta = \dfrac{4}{3 \times 3} = \dfrac{4}{9} \approx 0.4444 \) and \( \theta \approx 63.6^\circ \), which is \(64^\circ\) to the nearest degree. Both magnitudes came out whole, which is why these two vectors were chosen.</div>
+          <div class="why vsol" hidden>\( |\mathbf{v}| = \sqrt{1 + 4 + 4} = 3 \), so \( \cos\theta = \dfrac{4}{3 \times 3} = \dfrac{4}{9} \approx 0.4444 \) and \( \theta \approx 63.6^\circ \), which is \(64^\circ\) to the nearest degree. Find the lengths of both vectors, then use the dot product formula to calculate the angle.</div>
         </div>
 
         <div class="vq" data-ans="6" data-tol="0.01">
@@ -523,7 +521,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
             <button class="btn vwork" type="button">Working</button>
             <span class="vfb"></span>
           </div>
-          <div class="why vsol" hidden>Perpendicular means the dot product vanishes: \( (2)(\lambda) + (-1)(4) + (2)(-4) = 0 \), so \( 2\lambda - 4 - 8 = 0 \) and \( \lambda = 6 \). Check it: \( (2)(6) - 4 - 8 = 0 \).</div>
+          <div class="why vsol" hidden>The dot product is zero because the vectors are perpendicular: \( (2)(\lambda) + (-1)(4) + (2)(-4) = 0 \), so \( 2\lambda - 4 - 8 = 0 \) and \( \lambda = 6 \). Check it: \( (2)(6) - 4 - 8 = 0 \).</div>
         </div>
 
         <div class="vq" data-ans="3" data-tol="0.01">
@@ -535,7 +533,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
             <button class="btn vwork" type="button">Working</button>
             <span class="vfb"></span>
           </div>
-          <div class="why vsol" hidden>\( \overrightarrow{AB} = (2,\,3,\,4) \) and \( \overrightarrow{AC} = (6,\,9,\,12) \). Since \( (6,\,9,\,12) = 3\,(2,\,3,\,4) \), with the same \(k = 3\) in all three entries, the vectors are parallel and share the point \(A\), so the three points are collinear. In three dimensions every entry has to agree. Two out of three matching is not enough.</div>
+          <div class="why vsol" hidden>\( \overrightarrow{AB} = (2,\,3,\,4) \) and \( \overrightarrow{AC} = (6,\,9,\,12) \). Since \( (6,\,9,\,12) = 3\,(2,\,3,\,4) \), with the same \(k = 3\) in all three components, the vectors lie along the same line and both start at \(A\), so the three points are collinear. All three components must have the same multiplier. Two out of three matching is not enough.</div>
         </div>
       </div>
 
@@ -546,9 +544,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 2 ============ -->
   <section class="station" id="s2">
     <div class="station-head"><span class="num">03</span><h2>A matrix is a grid of numbers</h2><span class="eyebrow">22&ndash;30 min</span></div>
-    <p class="lede">An 8 &times; 8 greyscale image is an 8 &times; 8 matrix. Every entry is one pixel, from 0 for black
-      to 255 for white. The same numbers run all the way through this lesson, so nothing changes representation
-      halfway.</p>
+    <p class="lede">A matrix is a grid of numbers arranged in rows and columns. A greyscale image can be stored as
+      a matrix. Each number is the brightness of one pixel, where 0 means black and 255 means white. The same 8
+      &times; 8 image is used all the way through this lesson.</p>
     <div class="panel">
       <div class="cols">
         <div>
@@ -557,8 +555,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
         </div>
         <div>
           <h3>Try it yourself</h3>
-          <p style="color:var(--muted);font-size:.92rem;margin:8px 0 14px">Click a pixel to change its colour. What
-            happens to the number stored in the matrix? Its row and column light up so you can see where it sits.</p>
+          <p style="color:var(--muted);font-size:.92rem;margin:8px 0 14px">Click a pixel to change its colour and
+            watch how its value changes. Its row and column light up so you can see where it sits. Press <b>Show
+            the numbers</b> to see the values in the matrix.</p>
           <div class="btnrow">
             <button class="btn" id="numsBtn" type="button" aria-pressed="false">Show the numbers</button>
             <button class="btn" id="pixReset" type="button">Reset</button>
@@ -581,18 +580,19 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 3 ============ -->
   <section class="station" id="s3">
     <div class="station-head"><span class="num">04</span><h2>Addition, subtraction and scalar multiplication</h2><span class="eyebrow">30&ndash;45 min</span></div>
-    <p class="lede">All three work entry by entry, and all three prepare question 1 of the tutorial paper. Two
-      matrices of the same size are added by pairing up the entries that sit in the same place. A scalar multiplies
-      every entry. The panel below builds \(kA + B\), \(B - kA\) and \(kA\) out of two real 8 &times; 8 matrices,
-      which is the same shape as the question you will be asked.</p>
+    <p class="lede">We can add and subtract two matrices of the same size by working with the numbers in matching
+      positions. We can also multiply a matrix by a single number, called a scalar, which multiplies every number in
+      the matrix. The panel below builds \(kA + B\), \(B - kA\) and \(kA\) from two 8 &times; 8 matrices. This is
+      question 1 of the tutorial paper.</p>
     <div class="panel">
       <div class="math-tint">
         <div class="math">\[ \bigl[a_{ij}\bigr] + \bigl[b_{ij}\bigr] = \bigl[a_{ij} + b_{ij}\bigr] \qquad\qquad k\bigl[a_{ij}\bigr] = \bigl[k\,a_{ij}\bigr] \]</div>
         <p style="font-size:.9rem;color:var(--muted)">Matrix addition and subtraction need two matrices of exactly
-          the same size. Scalar multiplication works on a matrix of any size: multiply every entry by the scalar.</p>
+          the same size. Scalar multiplication works on a matrix of any size: multiply every number in the matrix by
+          the scalar.</p>
         <p style="font-size:.9rem;color:var(--muted);margin-top:10px">Note what is <i>not</i> allowed. You cannot
-          add a plain number to a matrix. \(A + 5\) means nothing, because there is no entry of \(5\) to pair each
-          entry of \(A\) with. A number can only multiply a matrix, never be added to one.</p>
+          add a single number directly to a matrix. \(A + 5\) is not defined, because there is no entry of \(5\) to
+          pair each entry of \(A\) with. However, you can multiply every entry of \(A\) by 5.</p>
       </div>
       <div class="cols">
         <div><div class="pix" id="pixA"></div><div class="capt">Matrix A</div></div>
@@ -613,18 +613,18 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
         <div class="btnrow" style="justify-content:center;margin-top:14px">
           <button class="btn" id="opReset" type="button">Reset</button>
         </div>
-        <p style="font-size:.85rem;color:var(--muted);margin-top:12px;text-align:center">The displayed values stop at
-          0 and 255, because that is all an 8-bit pixel can show. Matrix arithmetic itself has no such limit. The
-          clamping belongs to the picture, not to the mathematics.</p>
+        <p style="font-size:.85rem;color:var(--muted);margin-top:12px;text-align:center">Pixel values are limited to
+          0 to 255 in this example, because that is all an 8-bit pixel can show. Matrix calculations do not have
+          this limit.</p>
       </div>
     </div>
 
     <div class="panel">
       <h3>The same thing with numbers</h3>
       <div class="prose" style="margin-top:12px">
-        <p>Two small matrices, both 2 &times; 3, so every entry of one has a partner sitting in the same position in
-          the other. Step through the six entries and watch each pair combine. All twelve numbers are editable, so
-          you can try whichever example you like.</p>
+        <p>Both matrices have 2 rows and 3 columns, so every number in one has a partner in the same position in the
+          other. Press <b>Start</b> to calculate the answer one entry at a time. You can also change the numbers in
+          either matrix.</p>
       </div>
       <div class="btnrow" style="justify-content:center;margin:18px 0">
         <button class="btn" id="addPlus" type="button" aria-pressed="true">\(A + B\)</button>
@@ -653,15 +653,15 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     <div class="panel">
       <h3>One entry at a time</h3>
       <div class="prose" style="margin-top:12px">
-        <p>Take one <b>row</b> from the left matrix and one <b>column</b> from the right. Multiply the matching
-          numbers. Then add the results. That single number is one entry of the answer, and it sits in the row you
-          took from \(A\) and the column you took from \(B\). Repeat for every row and column pair.</p>
+        <p>Choose a <b>row</b> from matrix \(A\) and a <b>column</b> from matrix \(B\). Multiply the matching
+          numbers. Add the results to get one number in the answer matrix. It sits in the row you took from \(A\)
+          and the column you took from \(B\). Repeat for the remaining rows and columns.</p>
         <p>You already know this operation. It is the dot product from last week, done over and over.</p>
       </div>
       <div class="math-tint">
         <div class="math">\[ (AB)_{ij} \;=\; \sum_{k=1}^{n} a_{ik}\,b_{kj} \;=\; a_{i1}b_{1j} + a_{i2}b_{2j} + \cdots + a_{in}b_{nj} \]</div>
-        <p style="font-size:.9rem;color:var(--muted)">Read it out loud as: the entry in row \(i\), column \(j\) of
-          the answer is row \(i\) of \(A\) dotted with column \(j\) of \(B\).</p>
+        <p style="font-size:.9rem;color:var(--muted)">To find the entry in row \(i\), column \(j\) of the answer,
+          multiply row \(i\) of \(A\) by column \(j\) of \(B\) and add the results.</p>
       </div>
       <p class="prose" style="color:var(--muted);font-size:.93rem">Written out in full for two 2 &times; 2 matrices,
         with nothing hidden:</p>
@@ -687,12 +687,12 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <h3>Which pairs can be multiplied at all?</h3>
       <div class="math-tint">
         <div class="math">\[ \underset{m\,\times\,n}{A} \;\; \underset{n\,\times\,p}{B} \;=\; \underset{m\,\times\,p}{C} \]</div>
-        <p style="font-size:.9rem;color:var(--muted)">The two <span class="inner-mark">inner</span> numbers must
-          match, because a row of \(A\) and a column of \(B\) have to be the same length to pair up. The two
-          outer numbers give the size of the answer.</p>
+        <p style="font-size:.9rem;color:var(--muted)">To multiply two matrices, the number of columns in \(A\) must
+          equal the number of rows in \(B\). These are the two <span class="inner-mark">inner</span> numbers. The
+          answer has the same number of rows as \(A\) and the same number of columns as \(B\).</p>
       </div>
       <p style="font-size:.92rem;color:var(--muted);margin-bottom:14px">Look at the size of each matrix. Can they
-        be multiplied? Decide before revealing the answer. Two of them are harder than they look.</p>
+        be multiplied? Decide before revealing the answer.</p>
       <div class="gal" id="gallery"></div>
       <div class="btnrow" style="justify-content:center;margin-top:16px">
         <button class="btn" id="fAll" type="button">Turn them all over</button>
@@ -726,29 +726,28 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 4b ============ -->
   <section class="station" id="s4b">
     <div class="station-head"><span class="num">06</span><h2>From numbers to movement</h2><span class="eyebrow">80&ndash;92 min &middot; the join</span></div>
-    <p class="lede">Station 05 was arithmetic. Station 07 is pictures. This station is the join between them, and
-      it is the part that is usually skipped. Three steps: a point is a column, a shape is a pile of columns, and
-      two instructions multiply into one.</p>
+    <p class="lede">Matrices can also change the position and shape of objects. We will see how a matrix can move
+      a point, change a shape, and combine two transformations into one.</p>
 
     <div class="panel">
       <h3>Step one: a point is a column of numbers</h3>
       <div class="prose" style="margin-top:12px">
-        <p>In station 05 you multiplied a matrix by a matrix. A point is simply a very thin matrix, its two
-          coordinates written down one column. So you can multiply a matrix by a point, and nothing new is needed
-          to do it. The size rule already tells you it will work.</p>
-        <p>Press play and watch. The matrix does not act on one point in isolation. It takes hold of the whole
-          grid and bends it, and the point goes wherever its piece of the grid goes. That is what a transformation
-          is, and it is why the same matrix works for every point at once.</p>
-        <p>Watch the two short arrows. Green \(\mathbf{i}\) starts at \((1,\,0)\) and blue \(\mathbf{j}\) starts at
-          \((0,\,1)\), and where they finish is exactly the two columns of the matrix. Rotate by a quarter turn and
-          \(\mathbf{i}\) ends up pointing straight up, which is why the first column of that matrix reads
-          \(0\) then \(1\). A 2 &times; 2 matrix records nothing more than where those two arrows land.</p>
+        <p>A point has two coordinates, \(x\) and \(y\). We can write them as a column matrix. Multiplying that
+          column by a 2 &times; 2 matrix gives a new position for the point. Nothing new is needed, because the
+          size rule already says the product exists.</p>
+        <p>Press Play to see how the matrix changes the point's position. Watch how the grid changes as well. The
+          matrix moves the whole grid, and the point travels with it. That is why one matrix works for every point
+          at once.</p>
+        <p>The green arrow represents \((1,\,0)\). The blue arrow represents \((0,\,1)\). When we apply a matrix,
+          both arrows can change direction or length. Their new positions are the two columns of the matrix. After a
+          quarter turn the green arrow points straight up, which is why the first column of that matrix reads
+          \(0\) then \(1\).</p>
       </div>
       <div class="math-tint">
         <div class="math">\[ \underset{2\,\times\,2}{M}\;\;\underset{2\,\times\,1}{\mathbf{p}} \;=\; \underset{2\,\times\,1}{\mathbf{p}'} \]</div>
         <p style="font-size:.9rem;color:var(--muted)">The inner numbers both read 2, so the product exists, and the
-          outer numbers say the answer is another 2 &times; 1. A transformation changes where a point sits, and a
-          matrix is one way of writing such a change down.</p>
+          outer numbers say the answer is another 2 &times; 1. A transformation changes where a point sits. A matrix
+          is one way of writing that change down.</p>
       </div>
       <div class="cols">
         <div>
@@ -775,12 +774,12 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     </div>
 
     <div class="panel">
-      <h3>Step two: a shape is a pile of columns</h3>
+      <h3>Step two: a shape is a set of points</h3>
       <div class="prose" style="margin-top:12px">
-        <p>A shape is nothing but a list of corners. Stand those corners side by side as the columns of one matrix
-          and a single multiplication moves all of them at once. The square below has four corners, so its matrix
-          \(P\) is 2 &times; 4, and \(MP\) is a (2 &times; 2)(2 &times; 4), which by the size rule comes back as
-          2 &times; 4: four new corners.</p>
+        <p>A shape is made up of points. A square has four corners. We can write the coordinates of those corners
+          as the columns of one matrix. Multiplying that matrix by a transformation matrix changes all four corners
+          at once. The square below gives a 2 &times; 4 matrix \(P\), so \(MP\) is (2 &times; 2)(2 &times; 4), and
+          the size rule says the answer is 2 &times; 4: four new corners.</p>
       </div>
       <div class="cols">
         <div>
@@ -800,13 +799,13 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     </div>
 
     <div class="panel">
-      <h3>Step three: two instructions multiply into one</h3>
+      <h3>Step three: combining transformations</h3>
       <div class="prose" style="margin-top:12px">
-        <p>We often want to change an object twice. Here the point \(\mathbf{p} = (2,\,1)\) is stretched along
-          \(x\) by \(S\), then turned a quarter circle by \(R\). That is one matrix at a time.</p>
+        <p>Sometimes we want to apply more than one transformation. Here the point \(\mathbf{p} = (2,\,1)\) is
+          stretched along \(x\) by \(S\), then turned a quarter circle by \(R\). That is one matrix at a time.</p>
         <p>We can also multiply \(R\) and \(S\) together first. That gives a single matrix which makes both
-          changes at once. Both routes land on the same point, and that is not a coincidence. It is the reason
-          matrix multiplication is defined the way it is.</p>
+          changes at once. Both methods give the same final position, and that is the reason matrix multiplication
+          is defined the way it is.</p>
       </div>
       <div class="math">\[ R\,(S\,\mathbf{p}) \;=\; (R\,S)\,\mathbf{p} \]</div>
       <div class="cols">
@@ -824,7 +823,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
             <p style="font-size:.92rem;font-weight:500;margin-bottom:12px">Multiply the two matrices first:</p>
             <div class="eq" style="justify-content:flex-start" id="bCEq"></div>
             <p class="why" style="margin-top:14px">Apply that single matrix to (2, 1) and you get (&minus;1, 4) in
-              one go, the same point the two separate steps reached. Two instructions have been folded into one.</p>
+              one go, the same point the two separate steps reached. Both methods give the same final position.</p>
           </div>
         </div>
       </div>
@@ -834,11 +833,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 5 ============ -->
   <section class="station" id="s5">
     <div class="station-head"><span class="num">07</span><h2>Scale, rotate, translate</h2><span class="eyebrow">92&ndash;105 min</span><span class="vchip ext">Beyond Tutorial 02</span></div>
-    <p class="lede">Nothing in this station or the next is examined in Tutorial 02, so both can be dropped without
-      leaving a gap. They are here because they are the reason the rest of the lesson matters.
-      Station 06 showed that multiplying by a matrix moves a point, and that multiplying matrices
-      chains those moves together. These are the three instructions students will actually meet, and the one of
-      the three that does not fit in a 2 &times; 2 matrix at all.</p>
+    <p class="lede">Matrices can be used to resize, rotate and move objects. In this optional section you can
+      explore these three transformations using an interactive diagram. Nothing here is examined in Tutorial 02.</p>
 
     <div class="panel">
       <h3>A matrix moves a point</h3>
@@ -856,12 +852,12 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
         </div>
       </div>
       <div class="prose" style="margin-top:20px">
-        <h3>Translation will not fit, and that is the interesting part</h3>
-        <p style="margin-top:10px">Put \(x = 0\) and \(y = 0\) into the equation above. Whatever \(a, b, c, d\) are,
-          the answer is the origin again. A 2 &times; 2 matrix can never move the origin, so it can never slide a
-          shape sideways.</p>
-        <p>The fix is the one every game engine uses. Write each point with an extra 1 on the end, go up to a
-          3 &times; 3 matrix, and the translation drops into the third column:</p>
+        <h3>Why translation needs a bigger matrix</h3>
+        <p style="margin-top:10px">A 2 &times; 2 matrix can rotate or resize an object, but it cannot move the
+          origin. Put \(x = 0\) and \(y = 0\) into the equation above. Whatever \(a, b, c, d\) are, the answer is
+          the origin again.</p>
+        <p>To move an object without changing its shape, we use a 3 &times; 3 matrix. Write each point with an extra
+          1 on the end, and the translation goes into the third column:</p>
       </div>
       <div class="math">\[ \begin{bmatrix} x' \\ y' \\ 1 \end{bmatrix} = \underbrace{\begin{bmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{bmatrix}}_{T} \begin{bmatrix} x \\ y \\ 1 \end{bmatrix} = \begin{bmatrix} x + t_x \\ y + t_y \\ 1 \end{bmatrix} \]</div>
       <p class="prose" style="color:var(--muted);font-size:.93rem">This is why a 2D engine stores 3 &times; 3
@@ -872,15 +868,15 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     <div class="panel">
       <h3>The determinant of a 2 &times; 2 matrix</h3>
       <div class="prose" style="margin-top:12px">
-        <p>One number is needed before the next panel. For a 2 &times; 2 matrix, multiply the two entries on the
-          leading diagonal, multiply the other two, and subtract. That number is called the determinant.</p>
+        <p>The determinant is a number calculated from a square matrix. For a 2 &times; 2 matrix, multiply the two
+          numbers on each diagonal, then subtract the second result from the first.</p>
       </div>
       <div class="math">\[ \det\begin{bmatrix} a & b \\ c & d \end{bmatrix} = ad - bc \qquad\qquad \det\begin{bmatrix} 3 & 1 \\ 2 & 4 \end{bmatrix} = (3)(4) - (1)(2) = 10 \]</div>
-      <p class="prose" style="color:var(--muted);font-size:.93rem">It is worth meeting now because of what it tells
-        you about a transformation. The determinant is the factor by which areas are scaled. A determinant of 1
-        leaves area alone, a determinant of 2 doubles it, and a determinant of 0 means the shape has been
-        flattened onto a line, which is the case that cannot be undone. Watch the figure change as you move the
-        sliders below.</p>
+      <p class="prose" style="color:var(--muted);font-size:.93rem">The determinant tells us how a transformation
+        changes the area of a shape. To be exact, the area scale factor is the determinant without its sign. A
+        determinant of 1 keeps the area the same. A determinant of 2 doubles it. A determinant of 0 reduces the
+        area to zero, and that is the case that cannot be undone. A negative determinant also means the shape has
+        been turned over. Watch the figure change as you move the sliders below.</p>
     </div>
 
     <div class="panel">
@@ -922,10 +918,10 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     </div>
 
     <div class="panel">
-      <h3>Order matters, and here is the proof</h3>
-      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 16px">Does rotating and then moving a shape give
-        the same result as moving and then rotating it? Compare the two diagrams. Decide what you expect before
-        you look.</p>
+      <h3>Does the order of transformations matter?</h3>
+      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 16px">The first diagram rotates the shape before
+        moving it. The second moves the shape before rotating it. Compare the two results. Decide what you expect
+        before you look.</p>
       <div class="cols">
         <div>
           <svg class="tbox" id="oboxA" viewBox="0 0 330 330" role="img" aria-label="Rotate first, then translate"></svg>
@@ -947,8 +943,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 6 ============ -->
   <section class="station" id="s6">
     <div class="station-head"><span class="num">08</span><h2>Transpose, and a first look at the inverse</h2><span class="eyebrow">105&ndash;111 min</span><span class="vchip ext">Beyond Tutorial 02</span></div>
-    <p class="lede">The transpose turns rows into columns. The inverse is the instruction that undoes another one,
-      which is where the next tutorial picks up. Keep this short.</p>
+    <p class="lede">The transpose swaps the rows and columns of a matrix. The inverse is a matrix that reverses
+      the effect of another matrix. We will look at both using simple examples.</p>
     <div class="panel">
       <div class="math-tint">
         <div class="math">\[ \bigl(A^{\mathsf{T}}\bigr)_{ij} = a_{ji} \qquad\qquad A\,A^{-1} = A^{-1}A = I \]</div>
@@ -956,8 +952,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <div class="cols">
         <div>
           <h3>Transpose</h3>
-          <p style="color:var(--muted);font-size:.92rem;margin:8px 0 14px">Press the button and watch where the
-            highlighted entry lands.</p>
+          <p style="color:var(--muted);font-size:.92rem;margin:8px 0 14px">Press Transpose it to see how the rows
+            become columns. Watch where the highlighted entry lands.</p>
           <div class="eq" id="tpEq"></div>
           <div class="btnrow" style="justify-content:center;margin-top:16px">
             <button class="btn primary" id="tpBtn" type="button">Transpose it</button>
@@ -965,8 +961,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
         </div>
         <div>
           <h3>Inverse as undo</h3>
-          <p style="color:var(--muted);font-size:.92rem;margin:8px 0 14px">Apply the rotation, then apply its
-            inverse. The shape returns to where it started.</p>
+          <p style="color:var(--muted);font-size:.92rem;margin:8px 0 14px">Press Rotate to turn the shape. Then
+            apply the inverse to return it to its starting position.</p>
           <svg class="tbox" id="ibox" viewBox="0 0 330 330" style="max-width:250px" role="img" aria-label="A shape rotated and then returned by the inverse"></svg>
           <div class="btnrow" style="justify-content:center;margin-top:10px">
             <button class="btn primary" id="invBtn" type="button">Rotate</button>
@@ -1035,7 +1031,7 @@ window.MathJax={
   function navTop(){window.scrollTo({top:0,behavior:"smooth"});}
 
   /* one station at a time: everything stays on the page, only one is shown */
-  var single=false,curIdx=0,lastSeen=0;
+  var single=true,curIdx=0,lastSeen=0;
   function showOnly(i){
     curIdx=Math.max(0,Math.min(NAV.length-1,i));
     NAV.forEach(function(n,k){
@@ -1158,6 +1154,14 @@ window.MathJax={
   window.addEventListener("resize",clockShade,{passive:true});
   clockShade();
 
+  /* the lesson opens one station at a time, honouring a #station link if there is one */
+  (function openFirst(){
+    var want=0,h=(location.hash||"").replace("#","");
+    NAV.forEach(function(n,i){if(n.id===h)want=i;});
+    showOnly(want);
+    window.scrollTo(0,0);
+  })();
+
   /* turn a card, with the lift and the direction the animation needs */
   function setTurned(card,on){
     if(card.classList.contains("turned")===on)return;
@@ -1171,11 +1175,26 @@ window.MathJax={
   /* ---------------- 1. recap ---------------- */
   var recap=[
     {q:"Two vectors are parallel. What does that make their dot product?",
-     a:"Either the product of their lengths, or minus that, depending on whether they point the same way."},
-    {q:"When is a dot product exactly zero?",
-     a:"When the two vectors meet at a right angle. That is the test an engine uses to check for perpendicular."},
-    {q:"A vector written (3, 4). How long is it?",
-     a:"5. Pythagoras on 3 and 4, which is why 3-4-5 keeps turning up in collision code."}
+     a:"When two vectors point in the same direction, their dot product is the product of their lengths, which is positive. When they point in opposite directions, the dot product is negative."+
+       "<span class='fcase'>Same direction: \\( \\mathbf{a} \\cdot \\mathbf{b} = |\\mathbf{a}|\\,|\\mathbf{b}| \\)</span>"+
+       "<span class='fcase'>Opposite directions: \\( \\mathbf{a} \\cdot \\mathbf{b} = -|\\mathbf{a}|\\,|\\mathbf{b}| \\)</span>"},
+    {q:"When is the dot product of two vectors zero?",
+     a:"When the two non-zero vectors are perpendicular, that is at 90° to each other, their dot product is zero."},
+    {q:"What is the length of the vector (3, 4)?",
+     a:"<div class='fsplit'><div>The length is 5. Use Pythagoras' theorem, \\( a^2 + b^2 = c^2 \\):"+
+       "\\[ \\sqrt{3^2 + 4^2} = \\sqrt{9 + 16} = \\sqrt{25} = 5 \\]</div>"+
+       "<svg class='pythag' viewBox='0 0 190 172' role='img' aria-label='A right-angled triangle with sides of 3 and 4 and a hypotenuse of 5'>"+
+       "<line x1='30' y1='142' x2='120' y2='142' stroke='var(--muted)' stroke-width='2'/>"+
+       "<line x1='120' y1='142' x2='120' y2='22' stroke='var(--muted)' stroke-width='2'/>"+
+       "<line x1='30' y1='142' x2='120' y2='22' stroke='var(--accent)' stroke-width='2.8'/>"+
+       "<path d='M106 142 L106 128 L120 128' fill='none' stroke='var(--muted)' stroke-width='1.6'/>"+
+       "<circle cx='30' cy='142' r='3.5' fill='var(--muted)'/>"+
+       "<circle cx='120' cy='22' r='4.5' fill='var(--accent)'/>"+
+       "<text x='75' y='160' text-anchor='middle' fill='var(--muted)' font-size='14'>3</text>"+
+       "<text x='130' y='87' fill='var(--muted)' font-size='14'>4</text>"+
+       "<text x='64' y='76' text-anchor='end' fill='var(--accent)' font-size='14' font-weight='600'>5</text>"+
+       "<text x='128' y='18' fill='var(--accent)' font-size='12'>(3, 4)</text>"+
+       "</svg></div>"}
   ];
   var rc=document.getElementById("recap");
   recap.forEach(function(item,i){
@@ -1193,7 +1212,7 @@ window.MathJax={
 
     var back=document.createElement("div");back.className="face back ans";
     var bt=document.createElement("span");bt.className="ftag";bt.textContent="Answer";
-    var ba=document.createElement("p");ba.className="fans";ba.textContent=item.a;
+    var ba=document.createElement("p");ba.className="fans";ba.innerHTML=item.a;
     back.appendChild(bt);back.appendChild(ba);
     var bb=document.createElement("div");bb.className="fbtns";
     var backBtn=document.createElement("button");
@@ -1206,6 +1225,21 @@ window.MathJax={
     inner.appendChild(front);inner.appendChild(back);card.appendChild(inner);
     rc.appendChild(card);
   });
+  /* the answer cards size themselves to the longest answer, once the maths has been set */
+  function sizeRecap(){
+    var inners=rc.querySelectorAll(".flash-inner");
+    inners.forEach(function(i){i.style.height="";});
+    var max=0;
+    rc.querySelectorAll(".face").forEach(function(f){if(f.scrollHeight>max)max=f.scrollHeight;});
+    if(max>0)inners.forEach(function(i){i.style.height=(max+16)+"px";});
+  }
+  if(window.MathJax&&window.MathJax.startup&&window.MathJax.startup.promise){
+    window.MathJax.startup.promise.then(sizeRecap).catch(sizeRecap);
+  }else{
+    setTimeout(sizeRecap,400);
+  }
+  window.addEventListener("resize",sizeRecap,{passive:true});
+
   document.getElementById("rAll").addEventListener("click",function(){
     var on=this.dataset.on!=="1";
     this.dataset.on=on?"1":"0";
@@ -1599,14 +1633,14 @@ window.MathJax={
 
   /* ---------------- 4b. dimension gallery ---------------- */
   var CASES=[
-    {a:[2,3],b:[3,4],w:"A row of A has 3 entries and a column of B has 3 entries, so they pair up."},
-    {a:[3,4],b:[2,3],w:"A row of A has 4 entries but a column of B has only 2. Nothing to pair with."},
-    {a:[2,2],b:[2,2],w:"Square matrices of the same size always multiply, in either order."},
-    {a:[1,3],b:[3,1],w:"A single row times a single column. This is the dot product, and the answer is one number."},
-    {a:[3,1],b:[1,3],w:"The same two matrices the other way round. Both work, but the answers are nothing alike."},
-    {a:[2,3],b:[2,3],w:"Same size as each other, which is what addition needs. Multiplication needs something different."},
-    {a:[4,1],b:[1,1],w:"A single number counts as a 1 × 1 matrix, so the column survives unchanged in shape."},
-    {a:[3,2],b:[2,5],w:"Every entry of the answer costs 2 multiplications and 1 addition, 15 entries in all."}
+    {a:[2,3],b:[3,4],w:"Yes. A has 3 columns and B has 3 rows. The answer is 2 × 4."},
+    {a:[3,4],b:[2,3],w:"No. A has 4 columns but B has only 2 rows. The numbers do not match."},
+    {a:[2,2],b:[2,2],w:"Yes. Both matrices are 2 × 2. The answer is also 2 × 2."},
+    {a:[1,3],b:[3,1],w:"Yes. The inner numbers match. The answer is 1 × 1, which contains one number. This is the dot product."},
+    {a:[3,1],b:[1,3],w:"Yes. The inner numbers match. The answer is 3 × 3."},
+    {a:[2,3],b:[2,3],w:"No. Both matrices are 2 × 3, but the inner numbers do not match."},
+    {a:[4,1],b:[1,1],w:"Yes. A has 1 column and B has 1 row. The answer is 4 × 1."},
+    {a:[3,2],b:[2,5],w:"Yes. A has 2 columns and B has 2 rows. The answer is 3 × 5."}
   ];
   var gal=document.getElementById("gallery"),fscoreEl=document.getElementById("fscore");
   var order=CASES.slice(),fCalled=0,fRight=0;
@@ -1693,13 +1727,12 @@ window.MathJax={
     if(ac===br){
       out.className="verdict ok";
       out.innerHTML="Yes. The inner numbers both read <span class='inner-mark'>"+ac+
-        "</span>, so the answer is "+ar+" × "+bc+", and every entry of it costs "+ac+
-        (ac===1?" multiplication.":" multiplications.");
+        "</span>. The answer is a "+ar+" × "+bc+" matrix.";
     }else{
       out.className="verdict no";
       out.innerHTML="No. A has <span class='inner-mark'>"+ac+"</span> column"+(ac===1?"":"s")+
         " but B has <span class='inner-mark'>"+br+"</span> row"+(br===1?"":"s")+
-        ". A row of A and a column of B are different lengths, so there is nothing to pair up.";
+        ", so the number of columns in A does not match the number of rows in B.";
     }
   }
   checkDim();
