@@ -171,6 +171,8 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .mx td.rowHit,.mx td.colHit{background:var(--accent-soft)}
 .mx td.cellHit{background:var(--hot);color:#1a1205;font-weight:600}
 .mx td.done{color:var(--muted)}
+.mathview{display:flex;justify-content:center;overflow-x:auto;padding-block:4px}
+.mathview .mx td{padding:3px 6px;min-width:34px;font-size:.88rem}
 .mx input{font-family:var(--mono);font-size:.95rem;width:46px;text-align:center;background:var(--surface-2);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:3px 2px}
 .eq{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
 .eq .op{font-family:var(--mono);font-size:1.2rem;color:var(--muted)}
@@ -570,13 +572,18 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <div class="cols">
         <div>
           <div class="pix" id="pixIntro"></div>
+          <div class="mathview" id="pixMath" hidden></div>
           <div class="capt" id="pixIntroCap">8 &times; 8, values 0 to 255</div>
+          <div class="btnrow" style="justify-content:center;margin-top:12px">
+            <button class="btn" id="pixView" type="button" aria-pressed="false">Show as a matrix</button>
+          </div>
         </div>
         <div>
           <h3>Try it yourself</h3>
           <p style="color:var(--muted);font-size:.92rem;margin:8px 0 14px">Click a pixel to change its colour and
             watch how its value changes. Its row and column light up so you can see where it sits. Press <b>Show
-            the numbers</b> to see the values in the matrix.</p>
+            the numbers</b> to see the values on the pixels, or <b>Show as a matrix</b> to see the same 64 numbers
+            written in matrix form.</p>
           <div class="btnrow">
             <button class="btn" id="numsBtn" type="button" aria-pressed="false">Show the numbers</button>
             <button class="btn" id="pixReset" type="button">Reset</button>
@@ -1401,8 +1408,13 @@ window.MathJax={
   }
   var introM=baseMatrix(),showNums=false,selR=-1,selC=-1;
   var pixIntro=document.getElementById("pixIntro");
+  var pixMath=document.getElementById("pixMath"),mathView=false;
   function drawIntro(){
     paint(pixIntro,introM,showNums);
+    pixMath.textContent="";
+    if(mathView)pixMath.appendChild(matrixNode(introM,{}));
+    pixIntro.hidden=mathView;
+    pixMath.hidden=!mathView;
     var sel=document.getElementById("pixSel"),val=document.getElementById("pixVal");
     var nameEl=document.getElementById("pixName");
     if(selR<0){sel.textContent="none yet";nameEl.innerHTML="&mdash;";val.textContent="—";return;}
@@ -1411,9 +1423,19 @@ window.MathJax={
       if(r===selR||c===selC)d.classList.add("lit");
       if(r===selR&&c===selC)d.classList.add("sel");
     });
+    pixMath.querySelectorAll("td").forEach(function(d){
+      var r=+d.dataset.r,c=+d.dataset.c;
+      if(r===selR&&c===selC)d.classList.add("cellHit");
+      else if(r===selR||c===selC)d.classList.add("rowHit");
+    });
     sel.textContent="row "+(selR+1)+", column "+(selC+1);
     nameEl.innerHTML="a<sub>"+(selR+1)+","+(selC+1)+"</sub>";
     val.textContent=introM[selR][selC];
+  }
+  function introCap(){
+    document.getElementById("pixIntroCap").textContent=
+      mathView?"The same 64 numbers, written as a matrix":
+      showNums?"Each square is one entry of the matrix":"8 × 8, values 0 to 255";
   }
   pixIntro.addEventListener("click",function(e){
     var t=e.target;if(!t.dataset||t.dataset.r===undefined)return;
@@ -1424,14 +1446,26 @@ window.MathJax={
   document.getElementById("numsBtn").addEventListener("click",function(){
     showNums=!showNums;this.setAttribute("aria-pressed",String(showNums));
     this.textContent=showNums?"Hide the numbers":"Show the numbers";
-    document.getElementById("pixIntroCap").textContent=showNums?
-      "Each square is one entry of the matrix":"8 × 8, values 0 to 255";
+    introCap();
     drawIntro();runOps();
+  });
+  pixMath.addEventListener("click",function(e){
+    var t=e.target.closest?e.target.closest("td"):null;
+    if(!t||t.dataset.r===undefined)return;
+    selR=+t.dataset.r;selC=+t.dataset.c;
+    introM[selR][selC]=introM[selR][selC]>128?28:212;
+    drawIntro();
+  });
+  document.getElementById("pixView").addEventListener("click",function(){
+    mathView=!mathView;this.setAttribute("aria-pressed",String(mathView));
+    this.textContent=mathView?"Show as pixels":"Show as a matrix";
+    document.getElementById("numsBtn").disabled=mathView;
+    introCap();drawIntro();
   });
   document.getElementById("pixReset").addEventListener("click",function(){
     introM=baseMatrix();selR=-1;selC=-1;drawIntro();
   });
-  drawIntro();
+  introCap();drawIntro();
 
   /* ---------------- 3. operations ---------------- */
   var opA=baseMatrix(),opMode="add";
