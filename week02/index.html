@@ -591,7 +591,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <div style="margin-top:18px">
             <div class="stat"><span class="k">Size</span><span class="v">8 &times; 8</span></div>
             <div class="stat"><span class="k">Entries</span><span class="v">64</span></div>
-            <div class="stat"><span class="k">Selected pixel</span><span class="v" id="pixSel">none yet</span></div>
+            <div class="stat"><span class="k">Row \(i\), counted from the top</span><span class="v" id="pixRow">&mdash;</span></div>
+            <div class="stat"><span class="k">Column \(j\), counted from the left</span><span class="v" id="pixCol">&mdash;</span></div>
             <div class="stat"><span class="k">Entry</span><span class="v" id="pixName">&mdash;</span></div>
             <div class="stat"><span class="k">Value</span><span class="v" id="pixVal">&mdash;</span></div>
           </div>
@@ -600,6 +601,12 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <div class="math-tint">
         <p style="font-size:.92rem;margin-bottom:6px">An entry is named by its row first, then its column:</p>
         <div class="math">\[ A \;=\; \bigl[a_{ij}\bigr] \qquad\text{where } i \text{ is the row and } j \text{ the column.} \]</div>
+        <p style="font-size:.9rem;color:var(--muted);margin-top:4px">Rows are counted from the top. Columns are
+          counted from the left. So \(a_{1,1}\) is the entry in the top left corner, and \(a_{8,1}\) is the entry in
+          the bottom left corner.</p>
+        <p style="font-size:.9rem;color:var(--muted);margin-top:10px">Take care with \(i\). It is the row number,
+          not the \(x\) direction. Row numbers increase downwards. The \(y\) axis on a graph increases upwards, so
+          the two count in opposite directions.</p>
       </div>
     </div>
   </section>
@@ -1415,9 +1422,12 @@ window.MathJax={
     if(mathView)pixMath.appendChild(matrixNode(introM,{}));
     pixIntro.hidden=mathView;
     pixMath.hidden=!mathView;
-    var sel=document.getElementById("pixSel"),val=document.getElementById("pixVal");
-    var nameEl=document.getElementById("pixName");
-    if(selR<0){sel.textContent="none yet";nameEl.innerHTML="&mdash;";val.textContent="—";return;}
+    var rowEl=document.getElementById("pixRow"),colEl=document.getElementById("pixCol");
+    var val=document.getElementById("pixVal"),nameEl=document.getElementById("pixName");
+    if(selR<0){
+      rowEl.innerHTML="&mdash;";colEl.innerHTML="&mdash;";
+      nameEl.innerHTML="&mdash;";val.textContent="—";return;
+    }
     pixIntro.querySelectorAll("div").forEach(function(d){
       var r=+d.dataset.r,c=+d.dataset.c;
       if(r===selR||c===selC)d.classList.add("lit");
@@ -1428,7 +1438,8 @@ window.MathJax={
       if(r===selR&&c===selC)d.classList.add("cellHit");
       else if(r===selR||c===selC)d.classList.add("rowHit");
     });
-    sel.textContent="row "+(selR+1)+", column "+(selC+1);
+    rowEl.textContent=selR+1;
+    colEl.textContent=selC+1;
     nameEl.innerHTML="a<sub>"+(selR+1)+","+(selC+1)+"</sub>";
     val.textContent=introM[selR][selC];
   }
