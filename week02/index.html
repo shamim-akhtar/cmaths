@@ -52,7 +52,17 @@ img{max-width:100%}
 }
 
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;margin:0;-webkit-font-smoothing:antialiased}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:1rem;line-height:1.55;margin:0;-webkit-font-smoothing:antialiased}
+/* present mode scales every rem in the page at once */
+:root.present{font-size:20px}
+:root.present .wrap{max-width:1240px}
+:root.present .pix{max-width:400px}
+:root.present .tbox{max-width:440px;max-height:440px}
+:root.present .flash-inner{height:248px}
+:root.present .gal1 .flash-inner{height:154px}
+:root.present .gal{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+:root.present .mx td{padding:6px 13px;min-width:46px}
+@media (max-width:620px){:root.present{font-size:17px}}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--surface)}
 .wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
@@ -72,6 +82,8 @@ a{color:var(--accent)}
 .clock a .t{font-family:var(--mono);font-size:.68rem;color:var(--muted);font-variant-numeric:tabular-nums}
 .clock a .n{font-size:.8rem;font-weight:500;white-space:nowrap}
 .clock a.pri{background:var(--accent-soft);border-color:var(--accent)}
+.clock a.on{background:var(--accent);border-color:var(--accent)}
+.clock a.on .n,.clock a.on .t{color:#fff}
 .clock .brk{flex:0 0 auto;border:1px dashed var(--line);border-radius:7px;padding:6px 10px;display:flex;flex-direction:column;gap:1px;color:var(--muted)}
 .clock .brk .t{font-family:var(--mono);font-size:.68rem;font-variant-numeric:tabular-nums}
 .clock .brk .n{font-size:.8rem;white-space:nowrap}
@@ -82,7 +94,11 @@ header.hero{padding-block:34px 26px;border-bottom:1px solid var(--line)}
 .theme-btn{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
 .theme-btn:hover{color:var(--fg);border-color:var(--accent)}
 
-section.station{padding-block:34px;border-bottom:1px solid var(--line)}
+section.station{padding-block:34px;border-bottom:1px solid var(--line);scroll-margin-top:92px}
+.statnav{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:30px;padding-top:18px;border-top:1px solid var(--line)}
+.statpos{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.backtop{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:18;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:9px 15px;cursor:pointer;box-shadow:0 6px 18px rgba(15,20,35,.16)}
+.backtop:hover{border-color:var(--accent);color:var(--accent)}
 .station-head{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
 .num{font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:1px 7px;flex:none}
 .lede{color:var(--muted);margin-bottom:20px}
@@ -286,6 +302,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     <div class="hero-top">
       <span class="eyebrow">Computing Mathematics &middot; Tutorial 02 &middot; Two hours</span>
       <span class="hero-btns">
+        <button class="theme-btn" id="presentBtn" type="button" aria-pressed="false">Present</button>
         <button class="theme-btn" id="notesBtn" type="button" aria-pressed="false">Teaching notes</button>
         <button class="theme-btn" id="themeBtn" type="button">Theme</button>
       </span>
@@ -320,6 +337,11 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     <div class="panel">
       <p style="font-size:.95rem;margin-bottom:16px">Throughout, \(\mathbf{a} = (2,\,5)\), \(\mathbf{b} = (-3,\,1)\)
         and \(\mathbf{c} = (3,\,-4)\).</p>
+      <div class="btnrow" style="justify-content:center;margin-bottom:20px">
+        <button class="btn" id="vCore" type="button" aria-pressed="false">Core four only</button>
+        <button class="btn" id="vReveal" type="button">Show every working</button>
+        <button class="btn" id="vReset" type="button">Clear</button>
+      </div>
 
       <div class="vq" data-core="1" data-ans="5" data-tol="0.01">
         <div class="qt"><span class="qn">1.</span>Find the magnitude \(|\mathbf{c}|\).</div>
@@ -493,11 +515,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       </div>
 
       <div class="score" id="vscore">0 of 13 correct</div>
-      <div class="btnrow" style="justify-content:center;margin-top:12px">
-        <button class="btn" id="vCore" type="button" aria-pressed="false">Core four only</button>
-        <button class="btn" id="vReveal" type="button">Show every working</button>
-        <button class="btn" id="vReset" type="button">Clear</button>
-      </div>
       <div class="ask"><b>Ask before moving on</b>Question 3 is a row of numbers meeting a column of numbers.
         Tell them to hold on to that, because in fifty minutes they will be doing it four times over and calling
         it something else.</div>
@@ -1035,6 +1052,75 @@ window.MathJax={
     this.textContent=on?"Hide teaching notes":"Teaching notes";
   });
 
+  /* present mode: one switch that scales the whole page for a projector */
+  document.getElementById("presentBtn").addEventListener("click",function(){
+    var on=!root.classList.contains("present");
+    root.classList.toggle("present",on);
+    this.setAttribute("aria-pressed",String(on));
+    this.textContent=on?"Exit present":"Present";
+  });
+
+  /* ---------------- moving between stations ---------------- */
+  var NAV=[];
+  document.querySelectorAll(".clock a[href^='#s']").forEach(function(a){
+    NAV.push({id:a.getAttribute("href").slice(1),name:a.querySelector(".n").textContent,el:a});
+  });
+  function navGo(id){
+    var s=document.getElementById(id);
+    if(s)s.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+  function navTop(){window.scrollTo({top:0,behavior:"smooth"});}
+  NAV.forEach(function(n,i){
+    var sec=document.getElementById(n.id);
+    if(!sec)return;
+    var bar=document.createElement("div");bar.className="statnav";
+    var prev=document.createElement("button");
+    prev.className="btn";prev.type="button";
+    prev.textContent=i>0?"← "+NAV[i-1].name:"← Back to the top";
+    prev.addEventListener("click",function(){
+      if(i>0)navGo(NAV[i-1].id);else navTop();
+    });
+    var pos=document.createElement("span");pos.className="statpos";
+    pos.textContent="Station "+(i+1)+" of "+NAV.length;
+    var next=document.createElement("button");
+    next.className="btn";next.type="button";
+    if(i<NAV.length-1){
+      next.textContent=NAV[i+1].name+" →";
+      next.addEventListener("click",function(){navGo(NAV[i+1].id);});
+    }else{
+      next.textContent="End of the lesson";next.disabled=true;
+    }
+    bar.appendChild(prev);bar.appendChild(pos);bar.appendChild(next);
+    sec.appendChild(bar);
+  });
+  function navActive(id){
+    NAV.forEach(function(n){
+      var on=(n.id===id);
+      n.el.classList.toggle("on",on);
+      if(on){
+        var box=n.el.parentNode;
+        var want=n.el.offsetLeft-box.clientWidth/2+n.el.clientWidth/2;
+        if(box.scrollTo)box.scrollTo({left:Math.max(0,want),behavior:"smooth"});
+      }
+    });
+  }
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){if(e.isIntersecting)navActive(e.target.id);});
+    },{rootMargin:"-96px 0px -72% 0px",threshold:0});
+    NAV.forEach(function(n){var s=document.getElementById(n.id);if(s)io.observe(s);});
+  }
+  var backTop=document.createElement("button");
+  backTop.className="backtop";backTop.type="button";
+  backTop.textContent="↑ Top";
+  backTop.setAttribute("aria-label","Back to the top of the lesson");
+  backTop.hidden=true;
+  backTop.addEventListener("click",navTop);
+  document.body.appendChild(backTop);
+  window.addEventListener("scroll",function(){
+    backTop.hidden=window.scrollY<600;
+  },{passive:true});
+
   /* turn a card, with the lift and the direction the animation needs */
   function setTurned(card,on){
     if(card.classList.contains("turned")===on)return;
@@ -1094,12 +1180,29 @@ window.MathJax={
 
   /* ---------------- 1b. vector practice ---------------- */
   var vqs=document.querySelectorAll(".vq"),coreOnly=false;
+  /* a nudge on the first wrong attempt, before the full working is offered */
+  var VHINTS=[
+    "Square each component, add them, then take the square root.",
+    "Divide each component of c by the magnitude you found in question 1.",
+    "Multiply the matching components, then add the two results.",
+    "Double every component of a first, then subtract b component by component.",
+    "Perpendicular means the dot product is zero. Write it out and solve for k.",
+    "Use cos of the angle = the dot product divided by the two magnitudes multiplied together.",
+    "Work out PQ and PR first, then ask what you multiply one by to get the other.",
+    "Write AC in terms of t, then make both components give the same multiplier.",
+    "Three squares added this time, then the square root.",
+    "Three products added, not two.",
+    "Both magnitudes come out whole. Find them first, then divide.",
+    "Set the dot product to zero and solve the equation for lambda.",
+    "All three components must give the same k, not just two of them."
+  ];
   function inScope(q){return !coreOnly||q.dataset.core==="1";}
   function vupdate(){
     var tot=0,ok=0;
     vqs.forEach(function(q){if(inScope(q)){tot++;if(q.dataset.ok==="1")ok++;}});
+    var what=coreOnly?" core questions correct":" correct";
     document.getElementById("vscore").textContent=
-      (tot&&ok===tot)?"All "+tot+" correct":ok+" of "+tot+" correct";
+      (tot&&ok===tot)?"All "+tot+what:ok+" of "+tot+what;
   }
   function buildChips(){
     vqs.forEach(function(q){
@@ -1118,7 +1221,7 @@ window.MathJax={
     document.getElementById("vgroup3d").hidden=coreOnly;
     vupdate();
   });
-  vqs.forEach(function(q){
+  vqs.forEach(function(q,vIndex){
     var ans=q.dataset.ans.split(",").map(Number);
     var tol=parseFloat(q.dataset.tol||"0.01");
     var ins=q.querySelectorAll(".vin");
@@ -1139,9 +1242,14 @@ window.MathJax={
       if(!any){fb.textContent="Type an answer first.";return;}
       if(all){
         fb.textContent="Correct.";fb.classList.add("ok");
-        q.dataset.ok="1";vupdate();
+        q.dataset.ok="1";delete q.dataset.tries;vupdate();
       }else{
-        fb.textContent="Not yet. Open the working.";fb.classList.add("no");
+        var tries=(+q.dataset.tries||0)+1;
+        q.dataset.tries=tries;
+        var hint=VHINTS[vIndex];
+        fb.textContent=(tries===1&&hint)?"Not yet. "+hint
+                                        :"Still not right. Open the working for the full steps.";
+        fb.classList.add("no");
       }
     });
     work.addEventListener("click",function(){
