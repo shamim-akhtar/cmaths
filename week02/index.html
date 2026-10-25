@@ -302,6 +302,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     <div class="hero-top">
       <span class="eyebrow">Computing Mathematics &middot; Tutorial 02 &middot; Two hours</span>
       <span class="hero-btns">
+        <button class="theme-btn" id="oneBtn" type="button" aria-pressed="false">One at a time</button>
         <button class="theme-btn" id="presentBtn" type="button" aria-pressed="false">Present</button>
         <button class="theme-btn" id="notesBtn" type="button" aria-pressed="false">Teaching notes</button>
         <button class="theme-btn" id="themeBtn" type="button">Theme</button>
@@ -1070,6 +1071,39 @@ window.MathJax={
     if(s)s.scrollIntoView({behavior:"smooth",block:"start"});
   }
   function navTop(){window.scrollTo({top:0,behavior:"smooth"});}
+
+  /* one station at a time: everything stays on the page, only one is shown */
+  var single=false,curIdx=0,lastSeen=0;
+  function showOnly(i){
+    curIdx=Math.max(0,Math.min(NAV.length-1,i));
+    NAV.forEach(function(n,k){
+      var s=document.getElementById(n.id);
+      if(s)s.hidden=(k!==curIdx);
+    });
+    var prep=document.getElementById("s8");
+    if(prep)prep.hidden=true;
+    navActive(NAV[curIdx].id);
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  function showEverything(){
+    NAV.forEach(function(n){
+      var s=document.getElementById(n.id);
+      if(s)s.hidden=false;
+    });
+    var prep=document.getElementById("s8");
+    if(prep)prep.hidden=false;
+  }
+  function goTo(i){
+    if(i<0||i>=NAV.length)return;
+    if(single)showOnly(i);else navGo(NAV[i].id);
+  }
+  document.getElementById("oneBtn").addEventListener("click",function(){
+    single=!single;
+    this.setAttribute("aria-pressed",String(single));
+    this.textContent=single?"Show all":"One at a time";
+    if(single){showOnly(lastSeen);}
+    else{showEverything();navGo(NAV[curIdx].id);}
+  });
   NAV.forEach(function(n,i){
     var sec=document.getElementById(n.id);
     if(!sec)return;
@@ -1078,7 +1112,7 @@ window.MathJax={
     prev.className="btn";prev.type="button";
     prev.textContent=i>0?"← "+NAV[i-1].name:"← Back to the top";
     prev.addEventListener("click",function(){
-      if(i>0)navGo(NAV[i-1].id);else navTop();
+      if(i>0)goTo(i-1);else navTop();
     });
     var pos=document.createElement("span");pos.className="statpos";
     pos.textContent="Station "+(i+1)+" of "+NAV.length;
@@ -1086,7 +1120,7 @@ window.MathJax={
     next.className="btn";next.type="button";
     if(i<NAV.length-1){
       next.textContent=NAV[i+1].name+" →";
-      next.addEventListener("click",function(){navGo(NAV[i+1].id);});
+      next.addEventListener("click",function(){goTo(i+1);});
     }else{
       next.textContent="End of the lesson";next.disabled=true;
     }
@@ -1104,9 +1138,19 @@ window.MathJax={
       }
     });
   }
+  NAV.forEach(function(n,i){
+    n.el.addEventListener("click",function(ev){
+      if(single){ev.preventDefault();showOnly(i);}
+    });
+  });
   if("IntersectionObserver" in window){
     var io=new IntersectionObserver(function(es){
-      es.forEach(function(e){if(e.isIntersecting)navActive(e.target.id);});
+      if(single)return;
+      es.forEach(function(e){
+        if(!e.isIntersecting)return;
+        navActive(e.target.id);
+        NAV.forEach(function(n,i){if(n.id===e.target.id){lastSeen=i;curIdx=i;}});
+      });
     },{rootMargin:"-96px 0px -72% 0px",threshold:0});
     NAV.forEach(function(n){var s=document.getElementById(n.id);if(s)io.observe(s);});
   }
