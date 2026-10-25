@@ -1,94 +1,99 @@
-# Computing Mathematics labs
+# Computing Mathematics Labs
 
-Interactive tutorial pages for CMA1C03 at Temasek Polytechnic, School of
-Informatics & IT.
+Interactive learning materials for **CMA1C03 Computing Mathematics** at Temasek Polytechnic, School of Informatics & IT.
 
-Live at **<https://shamim-akhtar.github.io/cmaths/>**
+**Website:** https://shamim-akhtar.github.io/cmaths/
 
-Each lab is a single self-contained HTML file. The maths typesetting engine
-(MathJax 3.2.2, tex-svg build) is embedded in the page, so the equations render
-with no internet connection. Students can download a lab and keep it for
-revision, and it will still work.
+These materials support the weekly tutorials. Students can explore mathematical concepts through interactive examples, practise calculations and check their understanding.
 
-There is no sign-in, no tracking and no server. Everything runs in the browser.
+Each lab is a single HTML file. Students can download it and use it without an internet connection.
 
-Every lab carries a week switcher at the top, so moving from one week to the
-next takes one click.
+No login is required. The pages do not collect or store student information.
 
 ## Week 1: Vectors and Vector Operations
 
-<https://shamim-akhtar.github.io/cmaths/week01/>
+https://shamim-akhtar.github.io/cmaths/week01/
 
-Goes with Tutorial 01. Two hours, built around things students operate rather
-than watch.
+This lab supports Tutorial 01. It covers vectors, vector operations and their applications in computing.
 
-| Station | Minutes | What it covers |
-| --- | --- | --- |
-| 01 What a vector is | 0 to 8 | Scalars against vectors, and a draggable arrow whose components update live |
-| 02 Adding and subtracting | 8 to 20 | The tip to tail picture, animated, with editable components |
-| 03 Scalar multiples | 20 to 28 | A slider from -3 to 3, with the arrow growing, shrinking and reversing |
-| 04 Magnitude and unit vectors | 28 to 40 | Pythagoras drawn on the grid, then normalising animated onto the unit circle |
-| Break | 40 to 48 | |
-| 05 The dot product | 48 to 66 | The rule stepped through one pair at a time, then a turning arrow showing what the sign means |
-| 06 Angle between two vectors | 66 to 78 | The rearranged formula, with a live calculator and a shaded angle |
-| 07 Parallel, perpendicular and collinear | 78 to 90 | The three tests, and a collinearity checker driven by three movable points |
-| 08 Vectors in three dimensions | 90 to 100 | The same rules with one more component, on a 3D figure |
-| 09 Practice questions | 100 to 112 | Eight 2D questions and one longer 3D question, marked in the page |
-| 10 Exit quiz | 112 to 120 | Six questions, none taken from the tutorial paper |
+| Station | Topic | What students can do |
+|---|---|---|
+| 01 | What a vector is | Explore vectors by moving arrows on a grid. |
+| 02 | Adding and subtracting vectors | See how vectors are added and subtracted. Change the values to try different examples. |
+| 03 | Scalar multiples | Use a slider to change a vector's length and direction. |
+| 04 | Magnitude and unit vectors | Calculate vector lengths and see how unit vectors are formed. |
+| 05 | The dot product | Follow the calculation step by step. Explore how the angle affects the answer. |
+| 06 | Angle between two vectors | Change vector values and calculate the angle between them. |
+| 07 | Parallel, perpendicular and collinear | Learn how to check whether vectors are parallel or perpendicular, and whether points lie on a straight line. |
+| 08 | Vectors in 3D | Explore vectors with three components. |
+| 09 | Practice questions | Answer questions and check the solutions. |
+| 10 | Exit quiz | Complete six questions to check your understanding. |
 
 ## Week 2: Matrices and Matrix Operations
 
-<https://shamim-akhtar.github.io/cmaths/week02/>
+https://shamim-akhtar.github.io/cmaths/week02/
 
-Goes with Tutorial 02. Two hours, in the same shape as Week 1.
+This lab supports Tutorial 02. It covers matrices, matrix operations and their applications in computer graphics.
 
-| Station | Minutes | What it covers |
-| --- | --- | --- |
-| 01 Vector recap | 0 to 5 | Three flash cards from Week 1 |
-| 02 Vector practice | 5 to 22 | Eight 2D questions and one longer 3D question, marked in the page |
-| 03 What a matrix is | 22 to 30 | An 8 x 8 greyscale image as a matrix, with clickable pixels |
-| 04 Special matrices | 30 to 38 | Square, row, column, zero, diagonal, identity and symmetric, with a naming exercise |
-| 05 Addition and scalar multiplication | 38 to 50 | Entry by entry arithmetic running on that image |
-| Break | 50 to 58 | |
-| 06 Matrix multiplication | 58 to 80 | The row by column rule, stepped through one entry at a time, plus eight flash cards on when a product exists |
-| 07 Matrices in computer graphics | 80 to 92 | A point as a column, a shape as a set of points, and two transformations combined into one |
-| 08 Using matrices to transform objects | 92 to 105 | Scale, rotate and translate, the determinant, and why translation needs a 3 x 3 matrix |
-| 09 Transpose and inverse | 105 to 111 | A first look, ahead of the next tutorial |
-| 10 Exit quiz | 111 to 120 | Six questions, none taken from the tutorial paper |
+| Station | Topic | What students can do |
+|---|---|---|
+| 01 | Vector recap | Review key concepts from Week 1 using flashcards. |
+| 02 | Vector practice | Practise vector calculations and check the solutions. |
+| 03 | What a matrix is | Explore how an image can be represented using a matrix. |
+| 04 | Special matrices | Learn to identify different types of matrices. |
+| 05 | Matrix addition and scalar multiplication | Practise calculations using matrices. |
+| 06 | Matrix multiplication | Follow the calculation step by step. Check whether two matrices can be multiplied. |
+| 07 | Matrices in computer graphics | See how matrices can change the positions of points and shapes. |
+| 08 | Using matrices to transform objects | Explore how matrices are used to resize, rotate and move objects. |
+| 09 | Transpose and inverse | Explore the transpose and inverse of a matrix. |
+| 10 | Exit quiz | Complete six questions to check your understanding. |
 
-## What is interactive
+## Interactive Features
 
-Students type answers into the practice questions and the page marks them, with
-a hint on the first wrong attempt and the full working behind a button on every
-question. Figures are driven by sliders, draggable points and editable
-coordinates, so a second example can be run without leaving the page. The flash
-cards make the class commit to an answer before turning over. Nothing is
-recorded anywhere, so students can try as often as they like.
+Both labs include interactive activities to help students learn and practise.
 
-## Two switches worth knowing
+- **Interactive diagrams:** Move points, change values and see how the results change.
+- **Worked examples:** Follow calculations one step at a time.
+- **Practice questions:** Enter answers and check whether they are correct.
+- **Hints and solutions:** Get help when needed and view the full working.
+- **Flashcards:** Review key concepts and check your understanding.
+- **Exit quizzes:** Test what you have learnt at the end of each tutorial.
 
-**Show all.** Each page opens one station at a time, which keeps the class
-together. The button at the top right switches to the whole page at once, for
-revision. The left and right arrow keys move between stations.
+Students can repeat the activities as many times as they wish.
 
-**Core four only.** Each practice station has nine questions, four of them
-marked core. The button hides the extension ones and takes the station from
-about 17 minutes to about 8.
+## Using the Labs
 
-## Scope
+Each lab is divided into stations.
 
-Both labs go slightly beyond the tutorial paper, and the extra stations are
-badged on the page, so they can be dropped without leaving a gap. In Week 1
-that is station 08, and in Week 2 it is stations 08 and 09.
+**Show all:** Displays every station on one page. This is useful for revision.
 
-## Layout
+**Arrow keys:** Use the left and right arrow keys to move between stations.
 
-    index.html          landing page listing the weeks
-    week01/index.html   Week 1, Vectors and Vector Operations
-    week02/index.html   Week 2, Matrices and Matrix Operations
-    .nojekyll           serve the files as they are, no Jekyll build
+**Core four only:** Shows the four main practice questions. Students can also attempt the additional questions.
 
-## Adding a week
+**Theme:** Switches between light and dark display modes.
 
-Create `weekNN/index.html`, add a card to `index.html`, and add the week to the
-switcher at the top of each existing lab. Pages picks it up on the next push.
+## Additional Learning
+
+Some sections provide examples beyond the tutorial questions.
+
+These sections are marked as optional. Students can explore them to see how mathematical concepts are applied in computing and computer graphics.
+
+## Repository Structure
+
+```text
+index.html          Main page with links to the weekly labs
+week01/index.html   Week 1: Vectors
+week02/index.html   Week 2: Matrices
+.nojekyll           GitHub Pages configuration
+```
+
+## Adding a New Week
+
+1. Create a new folder, such as `week03`.
+2. Add the `index.html` file to the folder.
+3. Add the new week to the main page.
+4. Update the week links in the existing labs.
+5. Upload the changes to GitHub.
+
+GitHub Pages will publish the updated website.
