@@ -255,6 +255,11 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .stat .v{font-family:var(--mono);font-variant-numeric:tabular-nums}
 
 /* quiz */
+.sgal{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(236px,1fr));margin-top:14px}
+.scard{border:1px solid var(--line);border-radius:11px;padding:14px 15px;background:var(--surface-2);display:flex;flex-direction:column;gap:7px}
+.scard h4{font-size:.95rem;font-weight:600;margin:0}
+.scard .sm{overflow-x:auto}
+.scard p{font-size:.86rem;color:var(--muted);line-height:1.45;margin:0}
 .q{border:1px solid var(--line);border-radius:10px;padding:15px;background:var(--surface);margin-bottom:12px}
 .q .qt{font-weight:500;margin-bottom:11px}
 .q .qt .qn{font-family:var(--mono);color:var(--accent);margin-right:7px}
@@ -311,9 +316,10 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     <a href="#s1"><span class="t">0&ndash;5</span><span class="n">Vector recap</span></a>
     <a href="#s1b"><span class="t">5&ndash;22</span><span class="n">Vector practice</span></a>
     <a href="#s2"><span class="t">22&ndash;30</span><span class="n">What a matrix is</span></a>
-    <a href="#s3"><span class="t">30&ndash;45</span><span class="n">Add &amp; scale</span></a>
-    <span class="brk"><span class="t">45&ndash;55</span><span class="n">Break</span></span>
-    <a href="#s4"><span class="t">55&ndash;80</span><span class="n">Multiplication</span></a>
+    <a href="#s2b"><span class="t">30&ndash;38</span><span class="n">Special matrices</span></a>
+    <a href="#s3"><span class="t">38&ndash;50</span><span class="n">Add &amp; scale</span></a>
+    <span class="brk"><span class="t">50&ndash;58</span><span class="n">Break</span></span>
+    <a href="#s4"><span class="t">58&ndash;80</span><span class="n">Multiplication</span></a>
     <a href="#s4b"><span class="t">80&ndash;92</span><span class="n">Matrices in computer graphics</span></a>
     <a href="#s5" class="opt"><span class="t">92&ndash;105</span><span class="n">Explore matrix applications</span></a>
     <a href="#s6" class="opt"><span class="t">105&ndash;111</span><span class="n">Transpose &amp; inverse</span></a>
@@ -401,7 +407,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <button class="btn vcheck" type="button">Check</button>
           <button class="btn vwork" type="button">Working</button>
           <span class="vfb"></span>
-          <span class="vtag">Needed in station 05</span>
+          <span class="vtag">Needed in station 06</span>
         </div>
         <div class="why vsol" hidden>\( \mathbf{a} \cdot \mathbf{b} = (2)(-3) + (5)(1) = -6 + 5 = -1 \). Multiply the matching components. Then add the results.</div>
       </div>
@@ -465,7 +471,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <button class="btn vcheck" type="button">Check</button>
           <button class="btn vwork" type="button">Working</button>
           <span class="vfb"></span>
-          <span class="vtag">Needed in station 07</span>
+          <span class="vtag">Needed in station 08</span>
         </div>
         <div class="why vsol" hidden>\( \overrightarrow{AB} = (3,\,6) \) and \( \overrightarrow{AC} = (t-2,\,14) \). Collinear means \( \overrightarrow{AC} = k\,\overrightarrow{AB} \). The second entries give \( 6k = 14 \), so \( k = \tfrac{7}{3} \), and then \( t - 2 = 3k = 7 \), giving \( t = 9 \). Find the vectors \( \overrightarrow{AB} \) and \( \overrightarrow{AC} \). Since the points lie on one straight line, one vector must be a multiple of the other.</div>
       </div>
@@ -578,9 +584,35 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     </div>
   </section>
 
+  <!-- ============ 2b ============ -->
+  <section class="station" id="s2b">
+    <div class="station-head"><span class="num">04</span><h2>Special matrices</h2><span class="eyebrow">30&ndash;38 min</span></div>
+    <p class="lede">Some matrices appear so often that they are given names. The name describes either the shape of
+      the matrix or the pattern of numbers inside it. You will meet all of these again later in the lesson.</p>
+
+    <div class="panel">
+      <h3>The ones with names</h3>
+      <div class="prose" style="margin-top:12px">
+        <p>Read each name, then look at what the numbers do.</p>
+      </div>
+      <div class="sgal" id="sgal"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Name the matrix</h3>
+      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 16px">Look at each matrix and choose its name.
+        Some matrices have more than one correct name, so read the explanation after you answer.</p>
+      <div id="smQuiz"></div>
+      <div class="score" id="smScore" style="margin-top:4px">0 of 5 answered</div>
+      <div class="btnrow" style="justify-content:center;margin-top:14px">
+        <button class="btn" id="smReset" type="button">Reset</button>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ 3 ============ -->
   <section class="station" id="s3">
-    <div class="station-head"><span class="num">04</span><h2>Addition, subtraction and scalar multiplication</h2><span class="eyebrow">30&ndash;45 min</span></div>
+    <div class="station-head"><span class="num">05</span><h2>Addition, subtraction and scalar multiplication</h2><span class="eyebrow">38&ndash;50 min</span></div>
     <p class="lede">We can add and subtract two matrices of the same size by working with the numbers in matching
       positions. We can also multiply a matrix by a single number, called a scalar, which multiplies every number in
       the matrix. The panel below builds \(kA + B\), \(B - kA\) and \(kA\) from two 8 &times; 8 matrices. This is
@@ -647,7 +679,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 
   <!-- ============ 4 ============ -->
   <section class="station" id="s4">
-    <div class="station-head"><span class="num">05</span><h2>What matrix multiplication actually means</h2><span class="eyebrow">55&ndash;80 min</span></div>
+    <div class="station-head"><span class="num">06</span><h2>What matrix multiplication actually means</h2><span class="eyebrow">58&ndash;80 min</span></div>
     <p class="lede">Matrix multiplication uses rows and columns to calculate each entry of a new matrix. We will
       learn the steps, then see how this operation is used in computing.</p>
 
@@ -726,7 +758,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 
   <!-- ============ 4b ============ -->
   <section class="station" id="s4b">
-    <div class="station-head"><span class="num">06</span><h2>How matrices are used in computer graphics</h2><span class="eyebrow">80&ndash;92 min</span></div>
+    <div class="station-head"><span class="num">07</span><h2>How matrices are used in computer graphics</h2><span class="eyebrow">80&ndash;92 min</span></div>
     <p class="lede">Matrices can also change the position and shape of objects. We will see how a matrix can move
       a point, change a shape, and combine two transformations into one.</p>
 
@@ -833,7 +865,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 
   <!-- ============ 5 ============ -->
   <section class="station" id="s5">
-    <div class="station-head"><span class="num">07</span><h2>Using matrices to transform objects</h2><span class="eyebrow">92&ndash;105 min</span><span class="vchip ext">Optional application</span></div>
+    <div class="station-head"><span class="num">08</span><h2>Using matrices to transform objects</h2><span class="eyebrow">92&ndash;105 min</span><span class="vchip ext">Optional application</span></div>
     <p class="lede">Matrix operations are used in computer graphics to change objects on screen. For example, we
       can use matrices to resize, rotate and move objects. Try the interactive examples to see how the calculations
       work. Nothing here is examined in Tutorial 02.</p>
@@ -944,7 +976,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 
   <!-- ============ 6 ============ -->
   <section class="station" id="s6">
-    <div class="station-head"><span class="num">08</span><h2>Transpose, and a first look at the inverse</h2><span class="eyebrow">105&ndash;111 min</span><span class="vchip ext">Optional application</span></div>
+    <div class="station-head"><span class="num">09</span><h2>Transpose, and a first look at the inverse</h2><span class="eyebrow">105&ndash;111 min</span><span class="vchip ext">Optional application</span></div>
     <p class="lede">The transpose swaps the rows and columns of a matrix. The inverse is a matrix that reverses
       the effect of another matrix. We will look at both using simple examples.</p>
     <div class="panel">
@@ -977,7 +1009,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 
   <!-- ============ 7 ============ -->
   <section class="station" id="s7">
-    <div class="station-head"><span class="num">09</span><h2>Exit quiz</h2><span class="eyebrow">111&ndash;120 min</span></div>
+    <div class="station-head"><span class="num">10</span><h2>Exit quiz</h2><span class="eyebrow">111&ndash;120 min</span></div>
     <p class="lede">Six questions to check your understanding of the lesson. None are taken from the tutorial
       paper, and every answer carries its reason. Matrices are written here with a semicolon between the rows, so
       [1 2; 3 4] has 1 and 2 on the top row and 3 and 4 on the bottom.</p>
@@ -1533,6 +1565,92 @@ window.MathJax={
     wrap.appendChild(tb);wrap.appendChild(bracket("r"));
     return wrap;
   }
+
+  /* ---------------- 3c. special matrices ---------------- */
+  var SPECIAL=[
+    {n:"Square matrix",m:[[2,7],[1,4]],
+     d:"The same number of rows as columns. This one is 2 × 2. Only square matrices have a determinant or an inverse."},
+    {n:"Row matrix",m:[[3,5,1]],
+     d:"Only one row. It is sometimes called a row vector."},
+    {n:"Column matrix",m:[[3],[5],[1]],
+     d:"Only one column. Station 07 writes every point on screen as a column matrix."},
+    {n:"Zero matrix",m:[[0,0],[0,0]],
+     d:"Every entry is 0. Adding it to a matrix of the same size leaves that matrix unchanged."},
+    {n:"Diagonal matrix",m:[[4,0,0],[0,7,0],[0,0,2]],
+     d:"Every entry away from the leading diagonal is 0. The leading diagonal runs from the top left to the bottom right."},
+    {n:"Identity matrix",m:[[1,0,0],[0,1,0],[0,0,1]],
+     d:"A diagonal matrix with 1 in every diagonal position, written I. Multiplying by I leaves a matrix unchanged, just as multiplying a number by 1 does."},
+    {n:"Symmetric matrix",m:[[1,5,2],[5,3,0],[2,0,4]],
+     d:"A mirror image of itself across the leading diagonal, so the entry in row 2, column 3 matches the entry in row 3, column 2."}
+  ];
+  var sgal=document.getElementById("sgal");
+  if(sgal){
+    SPECIAL.forEach(function(s){
+      var card=document.createElement("div");card.className="scard";
+      var h=document.createElement("h4");h.textContent=s.n;
+      var box=document.createElement("div");box.className="sm";
+      box.appendChild(matrixNode(s.m,{}));
+      var p=document.createElement("p");p.textContent=s.d;
+      card.appendChild(h);card.appendChild(box);card.appendChild(p);
+      sgal.appendChild(card);
+    });
+  }
+
+  var SMQ=[
+    {m:[[1,0],[0,1]],o:["Zero matrix","Identity matrix","Row matrix","Symmetric matrix"],a:1,
+     w:"Every entry on the leading diagonal is 1 and every other entry is 0, so this is the identity matrix. It is square, diagonal and symmetric as well, but identity is the name that describes it most closely."},
+    {m:[[0,0,0],[0,0,0]],o:["Diagonal matrix","Square matrix","Zero matrix","Identity matrix"],a:2,
+     w:"Every entry is 0, so this is the zero matrix. It is 2 × 3, so it is not square."},
+    {m:[[4,0,0],[0,7,0],[0,0,2]],o:["Identity matrix","Symmetric matrix","Row matrix","Diagonal matrix"],a:3,
+     w:"The only non-zero entries sit on the leading diagonal, so this is a diagonal matrix. It is not the identity matrix, because the diagonal entries are not all 1."},
+    {m:[[3,5,1]],o:["Row matrix","Column matrix","Square matrix","Zero matrix"],a:0,
+     w:"It has one row and three columns, so it is a row matrix. Written the other way up, as three rows and one column, it would be a column matrix."},
+    {m:[[6,2],[2,9]],o:["Zero matrix","Symmetric matrix","Identity matrix","Column matrix"],a:1,
+     w:"The entry in row 1, column 2 is 2 and so is the entry in row 2, column 1, so the matrix is a mirror image of itself across the leading diagonal. It is square too, but symmetric says more about it."}
+  ];
+  var smHost=document.getElementById("smQuiz"),smScore=document.getElementById("smScore");
+  var smAns=0,smRight=0;
+  function smUpdate(){
+    if(!smScore)return;
+    smScore.textContent=smAns===0?"0 of "+SMQ.length+" answered":
+      smAns<SMQ.length?smAns+" of "+SMQ.length+" answered":
+      "All answered — "+smRight+" of "+SMQ.length+" correct";
+  }
+  function buildSM(){
+    if(!smHost)return;
+    smHost.textContent="";smAns=0;smRight=0;smUpdate();
+    SMQ.forEach(function(item,i){
+      var card=document.createElement("div");card.className="q";
+      var t=document.createElement("div");t.className="qt";
+      var qn=document.createElement("span");qn.className="qn";qn.textContent=(i+1)+".";
+      t.appendChild(qn);t.appendChild(document.createTextNode("What is this matrix called?"));
+      card.appendChild(t);
+      var box=document.createElement("div");
+      box.style.cssText="display:flex;justify-content:center;margin:4px 0 14px;overflow-x:auto";
+      box.appendChild(matrixNode(item.m,{}));
+      card.appendChild(box);
+      var opts=document.createElement("div");opts.className="opts";
+      var why=document.createElement("p");why.className="why";why.hidden=true;why.textContent=item.w;
+      item.o.forEach(function(text,k){
+        var b=document.createElement("button");
+        b.className="opt";b.type="button";b.textContent=text;
+        b.addEventListener("click",function(){
+          if(card.dataset.done)return;
+          card.dataset.done="1";smAns++;
+          opts.querySelectorAll("button").forEach(function(x,xi){
+            x.disabled=true;if(xi===item.a)x.classList.add("right");
+          });
+          if(k!==item.a)b.classList.add("wrong");else smRight++;
+          why.hidden=false;smUpdate();
+        });
+        opts.appendChild(b);
+      });
+      card.appendChild(opts);card.appendChild(why);smHost.appendChild(card);
+    });
+  }
+  if(document.getElementById("smReset"))
+    document.getElementById("smReset").addEventListener("click",buildSM);
+  buildSM();
 
   /* ---------------- 4. step-through ---------------- */
   var A=[[1,2],[3,4]],B=[[2,0],[1,3]],step=0,mulTry=false,mulDone={};
