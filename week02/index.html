@@ -707,6 +707,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
         <p>In station 05 you multiplied a matrix by a matrix. A point is simply a very thin matrix, its two
           coordinates written down one column. So you can multiply a matrix by a point, and nothing new is needed
           to do it. The size rule already tells you it will work.</p>
+        <p>Press play and watch. The matrix does not act on one point in isolation. It takes hold of the whole
+          grid and bends it, and the point goes wherever its piece of the grid goes. That is what a transformation
+          is, and it is why the same matrix works for every point at once.</p>
       </div>
       <div class="math-tint">
         <div class="math">\[ \underset{2\,\times\,2}{M}\;\;\underset{2\,\times\,1}{\mathbf{p}} \;=\; \underset{2\,\times\,1}{\mathbf{p}'} \]</div>
@@ -717,10 +720,13 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <div class="cols">
         <div>
           <svg class="tbox" id="bA" viewBox="0 0 330 330" role="img" aria-label="A point before and after being multiplied by a matrix"></svg>
-          <div class="capt">Hollow is p, solid is Mp</div>
+          <div class="capt" id="bACap">The grid at rest</div>
         </div>
         <div>
           <div class="presets" id="bAPre"></div>
+          <div class="btnrow" style="margin-bottom:14px">
+            <button class="btn primary" id="bAPlay" type="button">Play the transformation</button>
+          </div>
           <div class="eq" style="justify-content:flex-start" id="bAEq"></div>
           <div class="vrow" style="margin-top:14px">
             <span class="vsep">p = (</span>
@@ -1594,6 +1600,10 @@ window.MathJax={
     var q=PX(p);
     svg.appendChild(el("circle",{cx:q[0],cy:q[1],r:5,fill:"none",stroke:stroke,"stroke-width":2,"stroke-dasharray":"3 2"}));
   }
+  function lineBetween(svg,p,q,stroke,w){
+    var a=PX(p),b=PX(q);
+    svg.appendChild(el("line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:stroke,"stroke-width":w}));
+  }
   function addSeg(svg,p,q,stroke,dash){
     var a=PX(p),b=PX(q);
     svg.appendChild(el("line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:stroke,"stroke-width":2,"stroke-dasharray":dash||"4 3"}));
@@ -1615,29 +1625,63 @@ window.MathJax={
     {n:"Shear",M:[[1,1],[0,1]]},
     {n:"Flip in y",M:[[-1,0],[0,1]]}
   ];
-  function bARefresh(){
+  function bAPoint(){
     var px=parseFloat(document.getElementById("bAx").value);
     var py=parseFloat(document.getElementById("bAy").value);
-    if(isNaN(px))px=0;
-    if(isNaN(py))py=0;
-    var q=ap2(bAM,[px,py]);
-    var svg=document.getElementById("bA");
-    gridBase(svg);
-    addSeg(svg,[0,0],[px,py],"var(--muted)","4 3");
-    addSeg(svg,[0,0],q,"var(--accent)","0");
-    addRing(svg,[px,py],"var(--muted)");
-    addDot(svg,q,"var(--accent)");
-    addLabel(svg,[px,py],"p","var(--muted)");
-    addLabel(svg,q,"Mp","var(--accent)");
+    return [isNaN(px)?0:px,isNaN(py)?0:py];
+  }
+  /* the matrix part way between doing nothing and doing M */
+  function bALerp(t){
+    return [[1+(bAM[0][0]-1)*t, 0+(bAM[0][1]-0)*t],
+            [0+(bAM[1][0]-0)*t, 1+(bAM[1][1]-1)*t]];
+  }
+  /* draw the whole grid carried by the matrix, so the point is seen to be taken along */
+  function bADraw(t){
+    var p=bAPoint(),Mt=bALerp(t),q=ap2(Mt,p),svg=document.getElementById("bA"),R=11;
+    svg.textContent="";
+    for(var g=-R;g<=R;g++){
+      var on=(g===0);
+      lineBetween(svg,ap2(Mt,[g,-R]),ap2(Mt,[g,R]),on?"var(--accent)":"var(--line)",on?1.8:1);
+      lineBetween(svg,ap2(Mt,[-R,g]),ap2(Mt,[R,g]),on?"var(--accent)":"var(--line)",on?1.8:1);
+    }
+    svg.appendChild(el("circle",{cx:MID,cy:MID,r:3,fill:"var(--muted)"}));
+    addSeg(svg,[0,0],p,"var(--muted)","4 3");
+    addRing(svg,p,"var(--muted)");
+    addLabel(svg,p,"p","var(--muted)");
+    addSeg(svg,[0,0],q,"var(--hot)","0");
+    addDot(svg,q,"var(--hot)");
+    addLabel(svg,q,t>0.02?"Mp":"","var(--hot)");
+    document.getElementById("bACap").textContent=
+      t<0.01?"The grid at rest, p in grey":
+      t>0.99?"p has been carried to Mp":
+      "part way there: ("+fmt(Math.round(q[0]*10)/10)+", "+fmt(Math.round(q[1]*10)/10)+")";
+  }
+  function bAEquation(){
+    var p=bAPoint(),q=ap2(bAM,p);
     var eq=document.getElementById("bAEq");eq.textContent="";
     eq.appendChild(matrixNode(bAM.map(function(r){return r.map(fmt);}),{}));
     var o=document.createElement("span");o.className="op";o.textContent="×";eq.appendChild(o);
-    eq.appendChild(matrixNode([[fmt(px)],[fmt(py)]],{}));
+    eq.appendChild(matrixNode([[fmt(p[0])],[fmt(p[1])]],{}));
     var e2=document.createElement("span");e2.className="op";e2.textContent="=";eq.appendChild(e2);
     eq.appendChild(matrixNode([[fmt(q[0])],[fmt(q[1])]],{}));
     document.getElementById("bAWork").innerHTML=
-      "x&prime; = "+term(bAM[0][0],px)+" + "+term(bAM[0][1],py)+" = <span class='hl'>"+fmt(q[0])+"</span><br>"+
-      "y&prime; = "+term(bAM[1][0],px)+" + "+term(bAM[1][1],py)+" = <span class='hl'>"+fmt(q[1])+"</span>";
+      "x&prime; = "+term(bAM[0][0],p[0])+" + "+term(bAM[0][1],p[1])+" = <span class='hl'>"+fmt(q[0])+"</span><br>"+
+      "y&prime; = "+term(bAM[1][0],p[0])+" + "+term(bAM[1][1],p[1])+" = <span class='hl'>"+fmt(q[1])+"</span>";
+  }
+  function bARefresh(){bAEquation();bADraw(1);}
+  var bARaf=null,bAStill=window.matchMedia("(prefers-reduced-motion: reduce)");
+  function bAPlay(){
+    bAEquation();
+    if(bAStill.matches){bADraw(1);return;}
+    if(bARaf)cancelAnimationFrame(bARaf);
+    var t0=null,dur=1100;
+    (function step(ts){
+      if(t0===null)t0=ts;
+      var raw=Math.min(1,(ts-t0)/dur);
+      var e=raw<0.5?4*raw*raw*raw:1-Math.pow(-2*raw+2,3)/2;
+      bADraw(e);
+      if(raw<1)bARaf=requestAnimationFrame(step);else bARaf=null;
+    })(performance.now());
   }
   var bAPre=document.getElementById("bAPre");
   bAPresets.forEach(function(p,i){
@@ -1647,10 +1691,11 @@ window.MathJax={
     b.addEventListener("click",function(){
       bAPre.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed","false");});
       b.setAttribute("aria-pressed","true");
-      bAM=p.M;bARefresh();
+      bAM=p.M;bAPlay();
     });
     bAPre.appendChild(b);
   });
+  document.getElementById("bAPlay").addEventListener("click",bAPlay);
   document.getElementById("bAx").addEventListener("input",bARefresh);
   document.getElementById("bAy").addEventListener("input",bARefresh);
   bARefresh();
