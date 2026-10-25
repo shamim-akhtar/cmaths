@@ -53,16 +53,6 @@ img{max-width:100%}
 
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:1rem;line-height:1.55;margin:0;-webkit-font-smoothing:antialiased}
-/* present mode scales every rem in the page at once */
-:root.present{font-size:20px}
-:root.present .wrap{max-width:1240px}
-:root.present .pix{max-width:400px}
-:root.present .tbox{max-width:440px;max-height:440px}
-:root.present .flash-inner{height:248px}
-:root.present .gal1 .flash-inner{height:154px}
-:root.present .gal{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
-:root.present .mx td{padding:6px 13px;min-width:46px}
-@media (max-width:620px){:root.present{font-size:17px}}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--surface)}
 .wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 
@@ -299,7 +289,6 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <span class="eyebrow">Computing Mathematics &middot; Tutorial 02 &middot; Two hours</span>
       <span class="hero-btns">
         <button class="theme-btn" id="oneBtn" type="button" aria-pressed="false">One at a time</button>
-        <button class="theme-btn" id="presentBtn" type="button" aria-pressed="false">Present</button>
         <button class="theme-btn" id="themeBtn" type="button">Theme</button>
       </span>
     </div>
@@ -982,14 +971,6 @@ window.MathJax={
     root.setAttribute("data-theme",dark?"light":"dark");
   });
 
-
-  /* present mode: one switch that scales the whole page for a projector */
-  document.getElementById("presentBtn").addEventListener("click",function(){
-    var on=!root.classList.contains("present");
-    root.classList.toggle("present",on);
-    this.setAttribute("aria-pressed",String(on));
-    this.textContent=on?"Exit present":"Present";
-  });
 
   /* ---------------- moving between stations ---------------- */
   var NAV=[];
