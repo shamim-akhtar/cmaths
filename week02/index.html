@@ -156,7 +156,14 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 
 /* pixels */
 .pix{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;width:100%;max-width:300px;aspect-ratio:1;margin-inline:auto}
-.pix div{border-radius:2px;display:grid;place-items:center;font-family:var(--mono);font-size:.56rem;font-variant-numeric:tabular-nums}
+.pix div{border-radius:2px;display:grid;place-items:center;font-family:var(--mono);font-size:.56rem;font-variant-numeric:tabular-nums;position:relative}
+.pix div.lit::after{content:"";position:absolute;inset:0;border-radius:2px;background:var(--accent);opacity:.32;pointer-events:none}
+.pix div.sel{outline:2.5px solid var(--hot);outline-offset:-1px;z-index:1}
+.sgroup{margin-bottom:18px}
+.sgroup h4{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 9px}
+.sgroup .ctl:last-child{margin-bottom:0}
+.tryrow{display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap}
+.tryrow .btn{font-size:.8rem;padding:6px 11px}
 .capt{text-align:center;font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-top:8px;letter-spacing:.06em;text-transform:uppercase}
 
 /* DOM matrices (interactive ones) */
@@ -320,7 +327,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     <div class="hero-top">
       <span class="eyebrow">Computing Mathematics &middot; Tutorial 02 &middot; Two hours</span>
       <span class="hero-btns">
-        <button class="theme-btn" id="oneBtn" type="button" aria-pressed="false">One at a time</button>
+        <button class="theme-btn" id="oneBtn" type="button" aria-pressed="false"
+          title="Then use the left and right arrow keys to move between stations">One at a time</button>
         <button class="theme-btn" id="themeBtn" type="button">Theme</button>
       </span>
     </div>
@@ -334,8 +342,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 1 ============ -->
   <section class="station" id="s1">
     <div class="station-head"><span class="num">01</span><h2>Vector recap</h2><span class="eyebrow">0&ndash;5 min</span></div>
-    <p class="lede">Three questions from last week, on the board before anyone opens a laptop. Keep it to five
-      minutes, because the practice that follows is where the recall actually happens.</p>
+    <p class="lede">Three short questions from last week, before we move on to matrices. Turn each card over when
+      you have your answer.</p>
     <div class="panel">
       <div class="gal1" id="recap"></div>
       <div class="btnrow" style="justify-content:center;margin-top:14px">
@@ -548,9 +556,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <div class="capt" id="pixIntroCap">8 &times; 8, values 0 to 255</div>
         </div>
         <div>
-          <h3>Try it on the board</h3>
-          <p style="color:var(--muted);font-size:.92rem;margin:8px 0 14px">Click any pixel to flip it between dark
-            and light. Ask the class to predict what breaks before you click.</p>
+          <h3>Try it yourself</h3>
+          <p style="color:var(--muted);font-size:.92rem;margin:8px 0 14px">Click a pixel to change its colour. What
+            happens to the number stored in the matrix? Its row and column light up so you can see where it sits.</p>
           <div class="btnrow">
             <button class="btn" id="numsBtn" type="button" aria-pressed="false">Show the numbers</button>
             <button class="btn" id="pixReset" type="button">Reset</button>
@@ -558,7 +566,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           <div style="margin-top:18px">
             <div class="stat"><span class="k">Size</span><span class="v">8 &times; 8</span></div>
             <div class="stat"><span class="k">Entries</span><span class="v">64</span></div>
-            <div class="stat"><span class="k">Entry at row 3, column 4</span><span class="v" id="a34">&mdash;</span></div>
+            <div class="stat"><span class="k">Selected pixel</span><span class="v" id="pixSel">none yet</span></div>
+            <div class="stat"><span class="k">Value</span><span class="v" id="pixVal">&mdash;</span></div>
           </div>
         </div>
       </div>
@@ -615,7 +624,7 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <div class="prose" style="margin-top:12px">
         <p>Two small matrices, both 2 &times; 3, so every entry of one has a partner sitting in the same position in
           the other. Step through the six entries and watch each pair combine. All twelve numbers are editable, so
-          you can run whichever example the class suggests.</p>
+          you can try whichever example you like.</p>
       </div>
       <div class="btnrow" style="justify-content:center;margin:18px 0">
         <button class="btn" id="addPlus" type="button" aria-pressed="true">\(A + B\)</button>
@@ -638,8 +647,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <!-- ============ 4 ============ -->
   <section class="station" id="s4">
     <div class="station-head"><span class="num">05</span><h2>What matrix multiplication actually means</h2><span class="eyebrow">55&ndash;80 min &middot; the hard part</span></div>
-    <p class="lede">Students can usually carry out the row-by-column rule within ten minutes. What they cannot do
-      is say what they have just worked out. Spend the time here on the meaning, then let the rule follow from it.</p>
+    <p class="lede">Matrix multiplication uses rows and columns to calculate each entry of a new matrix. We will
+      learn the steps, then see how this operation is used in computing.</p>
 
     <div class="panel">
       <h3>One entry at a time</h3>
@@ -661,15 +670,15 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 
     <div class="panel">
       <h3>Step through it</h3>
-      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 18px">Before each step, ask which row and which
-        column you should be pointing at. The numbers in \(A\) and \(B\) are editable, so you can run a second
-        example without leaving the page.</p>
+      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 18px">Watch how each row is multiplied by a
+        column. You can also change the numbers to try another example.</p>
       <div class="eq" id="mulEq"></div>
       <div class="work" id="mulWork">Press <b style="font-family:var(--mono)">&nbsp;Start&nbsp;</b> to take the first entry.</div>
       <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:16px">
         <button class="btn" id="mPrev" type="button" disabled>Back</button>
         <span class="step" id="mStep">Step 0 of 4</span>
         <button class="btn primary" id="mNext" type="button">Start</button>
+        <button class="btn" id="mTry" type="button" aria-pressed="false">Try it yourself</button>
         <button class="btn" id="mReset" type="button">Reset</button>
       </div>
     </div>
@@ -682,8 +691,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
           match, because a row of \(A\) and a column of \(B\) have to be the same length to pair up. The two
           outer numbers give the size of the answer.</p>
       </div>
-      <p style="font-size:.92rem;color:var(--muted);margin-bottom:14px">Eight cards. Each shows a pair of sizes.
-        Decide whether the product exists before you turn the card over. Two of them are harder than they look.</p>
+      <p style="font-size:.92rem;color:var(--muted);margin-bottom:14px">Look at the size of each matrix. Can they
+        be multiplied? Decide before revealing the answer. Two of them are harder than they look.</p>
       <div class="gal" id="gallery"></div>
       <div class="btnrow" style="justify-content:center;margin-top:16px">
         <button class="btn" id="fAll" type="button">Turn them all over</button>
@@ -692,8 +701,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       </div>
       <div class="score" id="fscore" style="margin-top:12px">0 of 8 called</div>
       <p style="font-size:.88rem;color:var(--muted);margin-top:16px">Question 2 of the tutorial paper asks for
-        \(W \times Z\) and \(Z \times Y\). Get the class to check both sizes before anyone multiplies anything,
-        and ask them what \(Z \times W\) would be.</p>
+        \(W \times Z\) and \(Z \times Y\). Check both sizes before you multiply anything, and work out what
+        \(Z \times W\) would be.</p>
     </div>
 
     <div class="panel">
@@ -885,16 +894,25 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
         </div>
         <div>
           <div class="presets" id="presets"></div>
-          <div class="ctl"><label for="pAng"><span>Rotate \(\theta\)</span><span class="v" id="pAngV">0&deg;</span></label>
-            <input type="range" id="pAng" min="-180" max="180" value="0" step="5"></div>
-          <div class="ctl"><label for="pSx"><span>Scale \(s_x\)</span><span class="v" id="pSxV">1.0</span></label>
-            <input type="range" id="pSx" min="-2" max="2.5" value="1" step="0.1"></div>
-          <div class="ctl"><label for="pSy"><span>Scale \(s_y\)</span><span class="v" id="pSyV">1.0</span></label>
-            <input type="range" id="pSy" min="-2" max="2.5" value="1" step="0.1"></div>
-          <div class="ctl"><label for="pTx"><span>Translate \(t_x\)</span><span class="v" id="pTxV">0.0</span></label>
-            <input type="range" id="pTx" min="-3" max="3" value="0" step="0.25"></div>
-          <div class="ctl"><label for="pTy"><span>Translate \(t_y\)</span><span class="v" id="pTyV">0.0</span></label>
-            <input type="range" id="pTy" min="-3" max="3" value="0" step="0.25"></div>
+          <div class="sgroup">
+            <h4>Rotation</h4>
+            <div class="ctl"><label for="pAng"><span>Angle \(\theta\)</span><span class="v" id="pAngV">0&deg;</span></label>
+              <input type="range" id="pAng" min="-180" max="180" value="0" step="5"></div>
+          </div>
+          <div class="sgroup">
+            <h4>Scaling</h4>
+            <div class="ctl"><label for="pSx"><span>Horizontal scale \(s_x\)</span><span class="v" id="pSxV">1.0</span></label>
+              <input type="range" id="pSx" min="-2" max="2.5" value="1" step="0.1"></div>
+            <div class="ctl"><label for="pSy"><span>Vertical scale \(s_y\)</span><span class="v" id="pSyV">1.0</span></label>
+              <input type="range" id="pSy" min="-2" max="2.5" value="1" step="0.1"></div>
+          </div>
+          <div class="sgroup">
+            <h4>Translation</h4>
+            <div class="ctl"><label for="pTx"><span>Horizontal movement \(t_x\)</span><span class="v" id="pTxV">0.0</span></label>
+              <input type="range" id="pTx" min="-3" max="3" value="0" step="0.25"></div>
+            <div class="ctl"><label for="pTy"><span>Vertical movement \(t_y\)</span><span class="v" id="pTyV">0.0</span></label>
+              <input type="range" id="pTy" min="-3" max="3" value="0" step="0.25"></div>
+          </div>
           <div class="eq" style="justify-content:flex-start;margin:14px 0" id="tMatrix"></div>
           <div class="stat"><span class="k">Determinant of the 2 &times; 2 part</span><span class="v" id="tDet">1</span></div>
           <div class="stat"><span class="k">Area of the shape</span><span class="v" id="tArea">unchanged</span></div>
@@ -905,9 +923,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 
     <div class="panel">
       <h3>Order matters, and here is the proof</h3>
-      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 16px">The same two instructions, a quarter turn and
-        a slide three units right, applied in each order. Students almost always say the order makes no difference.
-        Let them say it first.</p>
+      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 16px">Does rotating and then moving a shape give
+        the same result as moving and then rotating it? Compare the two diagrams. Decide what you expect before
+        you look.</p>
       <div class="cols">
         <div>
           <svg class="tbox" id="oboxA" viewBox="0 0 330 330" role="img" aria-label="Rotate first, then translate"></svg>
@@ -963,7 +981,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   <section class="station" id="s7">
     <div class="station-head"><span class="num">09</span><h2>Exit quiz</h2><span class="eyebrow">111&ndash;120 min</span></div>
     <p class="lede">Six questions to check your understanding of the lesson. None are taken from the tutorial
-      paper. Every answer carries its reason.</p>
+      paper, and every answer carries its reason. Matrices are written here with a semicolon between the rows, so
+      [1 2; 3 4] has 1 and 2 on the top row and 3 and 4 on the bottom.</p>
     <div id="quiz"></div>
     <div class="score" id="score">0 of 6 answered</div>
     <div class="btnrow" style="justify-content:center;margin-top:14px">
@@ -973,8 +992,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
 
 
   <footer>
-    Computing Mathematics, Tutorial 02. Values, worked examples and quiz answers are set in the page, so it behaves
-    the same on every machine in the room.
+    Computing Mathematics, Tutorial 02. Everything runs in your browser, so the page works the same on every
+    machine and keeps working with no internet connection.
   </footer>
 </div>
 
@@ -1109,6 +1128,23 @@ window.MathJax={
   window.addEventListener("scroll",function(){
     backTop.hidden=window.scrollY<600;
   },{passive:true});
+
+  /* arrow keys move between stations, but never while typing or dragging a slider */
+  document.addEventListener("keydown",function(e){
+    if(!single)return;
+    var t=e.target,tag=t&&t.tagName;
+    if(tag==="INPUT"||tag==="TEXTAREA"||tag==="SELECT"||(t&&t.isContentEditable))return;
+    if(e.key==="ArrowRight"){e.preventDefault();goTo(curIdx+1);}
+    else if(e.key==="ArrowLeft"){e.preventDefault();goTo(curIdx-1);}
+    else if(e.key==="Escape"){
+      e.preventDefault();
+      single=false;
+      var btn=document.getElementById("oneBtn");
+      btn.setAttribute("aria-pressed","false");
+      btn.textContent="One at a time";
+      showEverything();navGo(NAV[curIdx].id);
+    }
+  });
 
   /* fade the ends of the station bar only while there is something past them */
   var clockBar=document.querySelector(".clock"),clockBox=document.querySelector(".clock-inner");
@@ -1296,12 +1332,24 @@ window.MathJax={
       d.dataset.r=r;d.dataset.c=c;host.appendChild(d);
     }
   }
-  var introM=baseMatrix(),showNums=false;
-  var pixIntro=document.getElementById("pixIntro"),a34=document.getElementById("a34");
-  function drawIntro(){paint(pixIntro,introM,showNums);a34.textContent=introM[2][3];}
+  var introM=baseMatrix(),showNums=false,selR=-1,selC=-1;
+  var pixIntro=document.getElementById("pixIntro");
+  function drawIntro(){
+    paint(pixIntro,introM,showNums);
+    var sel=document.getElementById("pixSel"),val=document.getElementById("pixVal");
+    if(selR<0){sel.textContent="none yet";val.textContent="—";return;}
+    pixIntro.querySelectorAll("div").forEach(function(d){
+      var r=+d.dataset.r,c=+d.dataset.c;
+      if(r===selR||c===selC)d.classList.add("lit");
+      if(r===selR&&c===selC)d.classList.add("sel");
+    });
+    sel.textContent="row "+(selR+1)+", column "+(selC+1);
+    val.textContent=introM[selR][selC];
+  }
   pixIntro.addEventListener("click",function(e){
     var t=e.target;if(!t.dataset||t.dataset.r===undefined)return;
-    introM[+t.dataset.r][+t.dataset.c]=introM[+t.dataset.r][+t.dataset.c]>128?28:212;
+    selR=+t.dataset.r;selC=+t.dataset.c;
+    introM[selR][selC]=introM[selR][selC]>128?28:212;
     drawIntro();
   });
   document.getElementById("numsBtn").addEventListener("click",function(){
@@ -1311,7 +1359,9 @@ window.MathJax={
       "Each square is one entry of the matrix":"8 × 8, values 0 to 255";
     drawIntro();runOps();
   });
-  document.getElementById("pixReset").addEventListener("click",function(){introM=baseMatrix();drawIntro();});
+  document.getElementById("pixReset").addEventListener("click",function(){
+    introM=baseMatrix();selR=-1;selC=-1;drawIntro();
+  });
   drawIntro();
 
   /* ---------------- 3. operations ---------------- */
@@ -1446,7 +1496,7 @@ window.MathJax={
             var n=parseFloat(this.value);
             if(isNaN(n))return;
             opts.target[rr][cc]=n;
-            if(opts.onedit)opts.onedit();else{step=0;renderMul();}
+            if(opts.onedit)opts.onedit();else{step=0;mulDone={};renderMul();}
           });})(r,c);
           td.appendChild(inp);
         }else td.textContent=vals[r][c];
@@ -1459,7 +1509,7 @@ window.MathJax={
   }
 
   /* ---------------- 4. step-through ---------------- */
-  var A=[[1,2],[3,4]],B=[[2,0],[1,3]],step=0;
+  var A=[[1,2],[3,4]],B=[[2,0],[1,3]],step=0,mulTry=false,mulDone={};
   var ORDER=[[0,0],[0,1],[1,0],[1,1]];
   var mulEq=document.getElementById("mulEq"),mulWork=document.getElementById("mulWork");
   function product(){
@@ -1470,7 +1520,10 @@ window.MathJax={
   function renderMul(){
     mulEq.textContent="";
     var C=product(),shown=[["",""],["",""]];
-    for(var k=0;k<step;k++){var p=ORDER[k];shown[p[0]][p[1]]=C[p[0]][p[1]];}
+    for(var k=0;k<step;k++){
+      var p=ORDER[k];
+      shown[p[0]][p[1]]=(!mulTry||mulDone[k])?C[p[0]][p[1]]:"?";
+    }
     var nA=matrixNode(A,{editable:true,target:A,name:"Matrix A"});
     var nB=matrixNode(B,{editable:true,target:B,name:"Matrix B"});
     var nC=matrixNode(shown,{});
@@ -1495,16 +1548,52 @@ window.MathJax={
       mulWork.innerHTML='Press <b style="font-family:var(--mono)">&nbsp;Start&nbsp;</b> to take the first entry.';
       return;
     }
-    var p2=ORDER[step-1],ii=p2[0],jj=p2[1];
+    var p2=ORDER[step-1],ii=p2[0],jj=p2[1],sub=(ii+1)+""+(jj+1);
     var val=A[ii][0]*B[0][jj]+A[ii][1]*B[1][jj];
-    mulWork.innerHTML="(AB)<sub>"+(ii+1)+(jj+1)+"</sub> &nbsp;=&nbsp; "+
+    var full="(AB)<sub>"+sub+"</sub> &nbsp;=&nbsp; "+
       A[ii][0]+"("+B[0][jj]+")"+" + "+A[ii][1]+"("+B[1][jj]+")"+
       " = <span class='hl'>"+val+"</span>";
+    if(!mulTry||mulDone[step-1]){mulWork.innerHTML=full;return;}
+
+    /* try it yourself: work the entry out before the page shows it */
+    mulWork.textContent="";
+    var row=document.createElement("div");row.className="tryrow";
+    var lbl=document.createElement("span");
+    lbl.innerHTML="(AB)<sub>"+sub+"</sub> =";
+    var inp=document.createElement("input");
+    inp.type="number";inp.className="vin";
+    inp.setAttribute("aria-label","Your answer for entry "+sub);
+    var chk=document.createElement("button");
+    chk.className="btn";chk.type="button";chk.textContent="Check";
+    var sw=document.createElement("button");
+    sw.className="btn";sw.type="button";sw.textContent="Show working";
+    var fb=document.createElement("span");fb.className="vfb";
+    chk.addEventListener("click",function(){
+      var v=parseFloat(inp.value);
+      inp.classList.remove("ok","no");fb.classList.remove("ok","no");
+      if(isNaN(v)){fb.textContent="Type a number first.";return;}
+      if(v===val){mulDone[step-1]=true;renderMul();}
+      else{
+        inp.classList.add("no");fb.classList.add("no");
+        fb.textContent="Not quite. Pair row "+(ii+1)+" of A with column "+(jj+1)+" of B.";
+      }
+    });
+    sw.addEventListener("click",function(){mulDone[step-1]=true;renderMul();});
+    inp.addEventListener("keydown",function(ev){if(ev.key==="Enter"){ev.preventDefault();chk.click();}});
+    row.appendChild(lbl);row.appendChild(inp);row.appendChild(chk);row.appendChild(sw);row.appendChild(fb);
+    mulWork.appendChild(row);
+    inp.focus();
   }
   document.getElementById("mNext").addEventListener("click",function(){if(step<4){step++;renderMul();}});
   document.getElementById("mPrev").addEventListener("click",function(){if(step>0){step--;renderMul();}});
+  document.getElementById("mTry").addEventListener("click",function(){
+    mulTry=!mulTry;mulDone={};
+    this.setAttribute("aria-pressed",String(mulTry));
+    this.textContent=mulTry?"Just show me":"Try it yourself";
+    renderMul();
+  });
   document.getElementById("mReset").addEventListener("click",function(){
-    A=[[1,2],[3,4]];B=[[2,0],[1,3]];step=0;renderMul();
+    A=[[1,2],[3,4]];B=[[2,0],[1,3]];step=0;mulDone={};renderMul();
   });
   renderMul();
 
@@ -1971,24 +2060,24 @@ window.MathJax={
 
   /* ---------------- 7. quiz ---------------- */
   var QS=[
-    {q:"In the product AB, you pair row 2 of A with column 3 of B. Where does that number go?",
-     o:["Row 2, column 3 of the answer","Row 3, column 2 of the answer","It is added to every entry"],a:0,
-     w:"The row index always comes from the left matrix and the column index from the right one, which is why the order of the two letters matters."},
-    {q:"A is 3 × 1 and B is 1 × 4. Is AB defined?",
-     o:["No, the sizes are too different","Yes, and the answer is 1 × 1","Yes, and the answer is 3 × 4"],a:2,
-     w:"The inner numbers are both 1, so it is defined, and the outer numbers give 3 × 4. A tall column times a wide row produces a whole grid."},
-    {q:"A is 2 × 5 and B is 5 × 3. How many multiplications does one entry of AB take?",
-     o:["5","15","6"],a:0,
-     w:"One entry pairs a row of 5 numbers with a column of 5 numbers, so 5 multiplications and 4 additions. The 15 is how many entries the answer has, not the cost of one."},
-    {q:"Why can a sideways slide not be written as a 2 × 2 matrix?",
-     o:["Because a 2 × 2 matrix always leaves the origin where it is","Because sliding is not a real transformation","Because 2 × 2 matrices can only rotate"],a:0,
-     w:"Put x = 0 and y = 0 into the multiplication and the answer is the origin again, whatever the four numbers are. Going up to a 3 × 3 matrix with an extra 1 on each point is what makes translation possible."},
-    {q:"You rotate a sprite a quarter turn and then slide it right. A classmate slides it right and then rotates it. Same result?",
-     o:["Yes, the two instructions do not interfere","No, because matrix multiplication depends on the order","Yes, as long as the angle is exactly 90°"],a:1,
-     w:"The rotation swings the whole slide round with it, so the sprite lands somewhere else entirely. In general AB is not the same as BA."},
-    {q:"A transformation matrix has determinant 0. What has happened, and can it be undone?",
-     o:["The shape was flattened onto a line, and it cannot be undone","The shape doubled in area, and it can be undone","Nothing changed, so there is nothing to undo"],a:0,
-     w:"The determinant is the area scale factor. Zero area means two different points have been mapped onto the same place, so there is no way back, which is exactly when the inverse fails to exist."}
+    {q:"What is the size of the matrix [5 1 0; 2 7 3]?",
+     o:["2 × 3","3 × 2","6"],a:0,
+     w:"Count the rows first, then the columns. Two rows and three columns gives 2 × 3. The 6 is how many entries it holds, which is not its size."},
+    {q:"A = [3 1; 0 4] and B = [2 5; 6 1]. What is the entry in row 2, column 1 of A + B?",
+     o:["6","5","7"],a:0,
+     w:"Addition pairs entries in the same position. Row 2, column 1 of A is 0 and of B is 6, so the answer is 0 + 6 = 6. No other entry is involved."},
+    {q:"C = [4 −2; 1 5]. What is the entry in row 1, column 2 of 3C?",
+     o:["−6","6","−2"],a:0,
+     w:"A scalar multiplies every entry, and the entry in row 1, column 2 is −2. So 3 × (−2) = −6. The sign comes along with the number."},
+    {q:"P is 4 × 2 and Q is 2 × 5. Can PQ be worked out, and what size would it be?",
+     o:["Yes, and it is 4 × 5","No, the sizes do not match","Yes, and it is 2 × 2"],a:0,
+     w:"The two inner numbers are both 2, so a row of P and a column of Q are the same length and the product exists. The outer numbers, 4 and 5, give its size."},
+    {q:"A = [2 3; 1 0] and B = [4 1; 5 2]. What is the entry in row 1, column 1 of AB?",
+     o:["23","11","8"],a:0,
+     w:"Pair row 1 of A, which is 2 and 3, with column 1 of B, which is 4 and 5. That gives 2(4) + 3(5) = 8 + 15 = 23. The 11 comes from using row 1 of B by mistake, and the 8 from stopping after the first product."},
+    {q:"A and B are both 2 × 2 matrices. Is AB always the same as BA?",
+     o:["No, the order usually changes the answer","Yes, multiplication always gives the same result either way","Yes, as long as both matrices are square"],a:0,
+     w:"Row 1 of A meeting column 1 of B is not the same pairing as row 1 of B meeting column 1 of A, so the two products are generally different matrices. Being square does not help."}
   ];
   var answered=0,correct=0;
   var qhost=document.getElementById("quiz"),scoreEl=document.getElementById("score");
