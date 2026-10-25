@@ -746,6 +746,15 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <div class="ask"><b>Ask</b>Move the point to the origin, (0, 0). Whatever matrix you pick, it refuses to
         budge. Tell them to remember that, because in station 07 it is the whole reason translation needs a bigger
         matrix.</div>
+      <div class="ask"><b>Worth saying once</b>The sliding motion is a teaching aid, not part of the arithmetic.
+        Multiplying by a matrix is instant: a point goes in and its image comes out, with no in-between. What the
+        animation shows is a route from doing nothing to doing \(M\), so that the class can see which way things
+        travel.</div>
+      <div class="ask"><b>One to try</b>Press <b>Flip in y</b> and watch the grid flatten onto a single line
+        halfway through, then open out the other way round. That is not a fault in the page. A reflection turns the
+        plane over, so any continuous route to it has to pass through a moment where the determinant is zero and
+        the area is crushed flat. Rotations never do this, which is the difference between turning a sheet of paper
+        and flipping it.</div>
     </div>
 
     <div class="panel">
@@ -1625,12 +1634,17 @@ window.MathJax={
 
   /* panel A */
   var bAM=[[0,-1],[1,0]];
+  /* a path is the honest route from doing nothing to doing M. A rotation must travel
+     round the circle, not straight across, or the grid shrinks on the way. */
   var bAPresets=[
-    {n:"Rotate 90°",M:[[0,-1],[1,0]]},
+    {n:"Rotate 90°",M:[[0,-1],[1,0]],path:function(t){
+      var a=t*Math.PI/2,c=Math.cos(a),s=Math.sin(a);return [[c,-s],[s,c]];
+    }},
     {n:"Stretch x",M:[[2,0],[0,1]]},
     {n:"Shear",M:[[1,1],[0,1]]},
     {n:"Flip in y",M:[[-1,0],[0,1]]}
   ];
+  var bAPath=bAPresets[0].path;
   function bAPoint(){
     var px=parseFloat(document.getElementById("bAx").value);
     var py=parseFloat(document.getElementById("bAy").value);
@@ -1638,8 +1652,9 @@ window.MathJax={
   }
   /* the matrix part way between doing nothing and doing M */
   function bALerp(t){
-    return [[1+(bAM[0][0]-1)*t, 0+(bAM[0][1]-0)*t],
-            [0+(bAM[1][0]-0)*t, 1+(bAM[1][1]-1)*t]];
+    if(bAPath)return bAPath(t);
+    return [[1+(bAM[0][0]-1)*t, bAM[0][1]*t],
+            [bAM[1][0]*t, 1+(bAM[1][1]-1)*t]];
   }
   /* draw the whole grid carried by the matrix, so the point is seen to be taken along */
   function bADraw(t){
@@ -1694,7 +1709,7 @@ window.MathJax={
     if(bARaf)cancelAnimationFrame(bARaf);
     bAt=1;bAPlayLabel();
     if(bAStill.matches){bADraw(1);return;}
-    var t0=null,dur=1300;
+    var t0=null,dur=2600;
     (function step(ts){
       if(t0===null)t0=ts;
       var raw=Math.min(1,(ts-t0)/dur);
@@ -1715,7 +1730,7 @@ window.MathJax={
     b.addEventListener("click",function(){
       bAPre.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed","false");});
       b.setAttribute("aria-pressed","true");
-      bAM=p.M;bAt=0;bAPlay();
+      bAM=p.M;bAPath=p.path||null;bAt=0;bAPlay();
     });
     bAPre.appendChild(b);
   });
