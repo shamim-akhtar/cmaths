@@ -144,6 +144,14 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 
 /* dimension gallery */
 .gal{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(244px,1fr));margin-top:4px}
+.gal1{display:grid;gap:12px;grid-template-columns:1fr}
+.gal1 .flash-inner{height:124px}
+.gal1 .fbtn{flex:0 0 auto}
+.face.back.ans{border-left:4px solid var(--accent)}
+.face.back.ans .ftag{color:var(--accent)}
+@media (max-width:560px){.gal1 .flash-inner{height:188px}}
+.fqmain{font-size:1rem;font-weight:500;line-height:1.45}
+.fans{font-size:.95rem;line-height:1.5}
 .flash{perspective:900px;min-width:0}
 .flash-inner{position:relative;width:100%;height:200px;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,.1,.2,1)}
 .flash.turned .flash-inner{transform:rotateY(180deg)}
@@ -272,7 +280,12 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
     <div class="station-head"><span class="num">01</span><h2>Vector recap</h2><span class="eyebrow">0&ndash;5 min</span></div>
     <p class="lede">Three questions from last week, on the board before anyone opens a laptop. Keep it to five
       minutes, because the practice that follows is where the recall actually happens.</p>
-    <div class="panel"><div class="cols" id="recap"></div></div>
+    <div class="panel">
+      <div class="gal1" id="recap"></div>
+      <div class="btnrow" style="justify-content:center;margin-top:14px">
+        <button class="btn" id="rAll" type="button">Turn them all over</button>
+      </div>
+    </div>
   </section>
 
   <!-- ============ 1b ============ -->
@@ -961,17 +974,38 @@ window.MathJax={
   ];
   var rc=document.getElementById("recap");
   recap.forEach(function(item,i){
-    var card=document.createElement("div");
-    var qp=document.createElement("p");
-    qp.style.cssText="font-weight:500;margin-bottom:10px";
-    qp.textContent=(i+1)+". "+item.q;
-    card.appendChild(qp);
-    var b=document.createElement("button");
-    b.className="btn";b.type="button";b.textContent="Reveal";
-    var ans=document.createElement("p");
-    ans.className="why";ans.hidden=true;ans.textContent=item.a;
-    b.addEventListener("click",function(){ans.hidden=!ans.hidden;b.textContent=ans.hidden?"Reveal":"Hide";});
-    card.appendChild(b);card.appendChild(ans);rc.appendChild(card);
+    var card=document.createElement("div");card.className="flash";
+    var inner=document.createElement("div");inner.className="flash-inner";
+
+    var front=document.createElement("div");front.className="face front";
+    var ft=document.createElement("span");ft.className="ftag";ft.textContent="Question "+(i+1);
+    var fq=document.createElement("p");fq.className="fqmain";fq.textContent=item.q;
+    front.appendChild(ft);front.appendChild(fq);
+    var fb=document.createElement("div");fb.className="fbtns";
+    var turn=document.createElement("button");
+    turn.className="fbtn";turn.type="button";turn.textContent="Turn over";
+    fb.appendChild(turn);front.appendChild(fb);
+
+    var back=document.createElement("div");back.className="face back ans";
+    var bt=document.createElement("span");bt.className="ftag";bt.textContent="Answer";
+    var ba=document.createElement("p");ba.className="fans";ba.textContent=item.a;
+    back.appendChild(bt);back.appendChild(ba);
+    var bb=document.createElement("div");bb.className="fbtns";
+    var backBtn=document.createElement("button");
+    backBtn.className="fbtn small";backBtn.type="button";backBtn.textContent="Turn back";
+    bb.appendChild(backBtn);back.appendChild(bb);
+
+    turn.addEventListener("click",function(){card.classList.add("turned");});
+    backBtn.addEventListener("click",function(){card.classList.remove("turned");});
+
+    inner.appendChild(front);inner.appendChild(back);card.appendChild(inner);
+    rc.appendChild(card);
+  });
+  document.getElementById("rAll").addEventListener("click",function(){
+    var on=this.dataset.on!=="1";
+    this.dataset.on=on?"1":"0";
+    this.textContent=on?"Turn them all back":"Turn them all over";
+    rc.querySelectorAll(".flash").forEach(function(c){c.classList.toggle("turned",on);});
   });
 
   /* ---------------- 1b. vector practice ---------------- */
