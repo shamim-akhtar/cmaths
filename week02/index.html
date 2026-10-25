@@ -1102,7 +1102,8 @@ window.MathJax={
   }
   NAV.forEach(function(n,i){
     n.el.addEventListener("click",function(ev){
-      if(single){ev.preventDefault();showOnly(i);}
+      ev.preventDefault();
+      if(single)showOnly(i);else navGo(n.id);
     });
   });
   if("IntersectionObserver" in window){
@@ -1156,11 +1157,12 @@ window.MathJax={
   window.addEventListener("resize",clockShade,{passive:true});
   clockShade();
 
-  /* the lesson opens one station at a time, honouring a #station link if there is one */
+  /* the lesson always opens on station 01, whatever was left in the address bar last time */
   (function openFirst(){
-    var want=0,h=(location.hash||"").replace("#","");
-    NAV.forEach(function(n,i){if(n.id===h)want=i;});
-    showOnly(want);
+    if(location.hash&&history.replaceState){
+      history.replaceState(null,"",location.pathname+location.search);
+    }
+    showOnly(0);
     window.scrollTo(0,0);
   })();
 
