@@ -66,7 +66,14 @@ a{color:var(--accent)}
 
 /* clock */
 .clock{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;background:var(--surface);border-bottom:1px solid var(--line)}
-.clock-inner{display:flex;gap:6px;align-items:stretch;overflow-x:auto;padding-block:8px;scrollbar-width:thin}
+/* no scrollbar; a soft edge shows there is more either side */
+.clock::before,.clock::after{content:"";position:absolute;top:0;bottom:1px;width:40px;pointer-events:none;opacity:0;transition:opacity .22s ease;z-index:2}
+.clock::before{left:0;background:linear-gradient(to right,var(--surface) 20%,transparent)}
+.clock::after{right:0;background:linear-gradient(to left,var(--surface) 20%,transparent)}
+.clock.more-l::before{opacity:1}
+.clock.more-r::after{opacity:1}
+.clock-inner{display:flex;gap:6px;align-items:stretch;overflow-x:auto;padding-block:8px;scrollbar-width:none;-ms-overflow-style:none}
+.clock-inner::-webkit-scrollbar{width:0;height:0;display:none}
 .clock a{flex:1 0 auto;min-width:0;text-decoration:none;color:var(--fg);border:1px solid var(--line);border-radius:7px;background:var(--surface-2);padding:6px 10px;display:flex;flex-direction:column;gap:1px}
 .clock a:hover{border-color:var(--accent)}
 .clock a .t{font-family:var(--mono);font-size:.68rem;color:var(--muted);font-variant-numeric:tabular-nums}
@@ -1075,6 +1082,18 @@ window.MathJax={
   window.addEventListener("scroll",function(){
     backTop.hidden=window.scrollY<600;
   },{passive:true});
+
+  /* fade the ends of the station bar only while there is something past them */
+  var clockBar=document.querySelector(".clock"),clockBox=document.querySelector(".clock-inner");
+  function clockShade(){
+    if(!clockBar||!clockBox)return;
+    var x=clockBox.scrollLeft,w=clockBox.clientWidth,all=clockBox.scrollWidth;
+    clockBar.classList.toggle("more-l",x>4);
+    clockBar.classList.toggle("more-r",x+w<all-4);
+  }
+  if(clockBox)clockBox.addEventListener("scroll",clockShade,{passive:true});
+  window.addEventListener("resize",clockShade,{passive:true});
+  clockShade();
 
   /* turn a card, with the lift and the direction the animation needs */
   function setTurned(card,on){
