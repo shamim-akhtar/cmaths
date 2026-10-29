@@ -63,11 +63,9 @@ This lab supports Tutorial 03. It covers the transpose, determinants, the adjoin
 | 05 | 3×3 determinant | Expand along the first row with the row and column crossed out at each step. Pick out the correct minor. |
 | 06 | 3×3 inverse | Find all nine cofactors with feedback on sign errors, transpose into the adjoint, divide by the determinant and verify. |
 | 07 | Guided practice | Three worked problems in Learn mode, which reveals the working line by line, or Practice mode, which checks each stage. |
-| 08 | Tutorial questions and LMS quiz | Work through the Tutorial 03 questions and three extra questions stage by stage, with hints and working on request. |
+| 08 | Tutorial questions | Work through the Tutorial 03 questions and three extra questions stage by stage, with hints and working on request. |
 | 09 | Undoing a transformation | See how a game engine uses the inverse to go from screen coordinates back to a sprite, and why a flattened sprite cannot be recovered. |
 | 10 | Exit quiz | Complete six questions to check your understanding. |
-
-The official LMS quiz for Tutorial 03 is separate and is not replaced by this page.
 
 ## Interactive Features
 
