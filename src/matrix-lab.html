@@ -1,0 +1,2309 @@
+<title>Week 2 Matrix Lab</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap">
+
+<style>
+/* Layout: one column of numbered stations, each a working instrument, under a sticky lesson clock. */
+:root{
+  --bg:#f4f6f9;
+  --surface:#ffffff;
+  --surface-2:#eef1f6;
+  --fg:#14171d;
+  --muted:#5b6474;
+  --line:#d8dde6;
+  --accent:#3d4ad8;
+  --accent-soft:#e6e8fb;
+  --accent-fill:rgba(61,74,216,.18);
+  --hot:#b45309;
+  --hot-soft:#fcefdb;
+  --good:#0f7a4c;
+  --good-soft:#dff3e8;
+  --bad:#bb2d3b;
+  --bad-soft:#fbe4e6;
+  --display:"Newsreader",Georgia,"Times New Roman",serif;
+  --body:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1116;--surface:#171b22;--surface-2:#1e232c;--fg:#e7eaf1;--muted:#99a2b2;
+    --line:#2b313c;--accent:#8691ff;--accent-soft:#232842;--accent-fill:rgba(134,145,255,.22);
+    --hot:#f0ad51;--hot-soft:#3a2d18;--good:#49c489;--good-soft:#15301f;--bad:#f5737f;--bad-soft:#38191e;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1116;--surface:#171b22;--surface-2:#1e232c;--fg:#e7eaf1;--muted:#99a2b2;
+  --line:#2b313c;--accent:#8691ff;--accent-soft:#232842;--accent-fill:rgba(134,145,255,.22);
+  --hot:#f0ad51;--hot-soft:#3a2d18;--good:#49c489;--good-soft:#15301f;--bad:#f5737f;--bad-soft:#38191e;
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:1rem;line-height:1.55;margin:0;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:20;background:var(--surface)}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+h1,h2,h3{font-family:var(--display);font-weight:600;text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:clamp(1.9rem,1.3rem + 2.4vw,3rem);letter-spacing:-.01em}
+h2{font-size:clamp(1.35rem,1.1rem + 1vw,1.85rem)}
+h3{font-size:1.05rem;font-family:var(--body);font-weight:600}
+p{margin:0}
+a{color:var(--accent)}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+
+/* clock */
+.clock{position:sticky;top:env(safe-area-inset-top,0px);z-index:15;background:var(--surface);border-bottom:1px solid var(--line)}
+/* no scrollbar; a soft edge shows there is more either side */
+.clock::before,.clock::after{content:"";position:absolute;top:0;bottom:1px;width:40px;pointer-events:none;opacity:0;transition:opacity .22s ease;z-index:2}
+.clock::before{left:0;background:linear-gradient(to right,var(--surface) 20%,transparent)}
+.clock::after{right:0;background:linear-gradient(to left,var(--surface) 20%,transparent)}
+.clock.more-l::before{opacity:1}
+.clock.more-r::after{opacity:1}
+.clock-inner{display:flex;gap:6px;align-items:stretch;overflow-x:auto;padding-block:8px;scrollbar-width:none;-ms-overflow-style:none}
+.clock-inner::-webkit-scrollbar{width:0;height:0;display:none}
+.clock-title{display:none}
+
+/* wide screens get a panel down the left instead; nine stations fit down but not across */
+@media (min-width:1100px){
+  body{padding-left:252px}
+  .clock{
+    position:fixed;top:0;left:0;bottom:0;width:252px;
+    border-bottom:0;border-right:1px solid var(--line);
+    display:flex;flex-direction:column;overflow:hidden;
+    padding-top:env(safe-area-inset-top,0px);
+  }
+  .clock::before,.clock::after{display:none}
+  .clock .wrap{max-width:none;margin:0;padding-left:12px;padding-right:12px}
+  .clock-inner{flex:1;flex-direction:column;align-items:stretch;gap:4px;
+    overflow-x:hidden;overflow-y:auto;padding-block:18px}
+  .clock a,.clock .brk{flex:0 0 auto;width:100%}
+  .clock a .n,.clock .brk .n{white-space:normal;line-height:1.3}
+  .clock-title{
+    display:block;font-family:var(--display);font-size:1.05rem;font-weight:600;
+    padding:2px 10px 14px;margin-bottom:6px;border-bottom:1px solid var(--line);
+  }
+  .clock-title span{display:block;font-family:var(--mono);font-size:.64rem;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:400;margin-top:3px}
+  section.station{scroll-margin-top:28px}
+}
+.clock a{flex:1 0 auto;min-width:0;text-decoration:none;color:var(--fg);border:1px solid var(--line);border-radius:7px;background:var(--surface-2);padding:6px 10px;display:flex;flex-direction:column;gap:1px}
+.clock a:hover{border-color:var(--accent)}
+.clock a .t{font-family:var(--mono);font-size:.68rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.clock a .n{font-size:.8rem;font-weight:500;white-space:nowrap}
+.clock a.on{background:var(--accent);border-color:var(--accent);border-style:solid}
+.clock a.on .n,.clock a.on .t,.clock a.on.opt .n,.clock a.on.opt .t{color:#fff}
+.clock .brk{flex:0 0 auto;border:1px dashed var(--line);border-radius:7px;padding:6px 10px;display:flex;flex-direction:column;gap:1px;color:var(--muted)}
+.clock .brk .t{font-family:var(--mono);font-size:.68rem;font-variant-numeric:tabular-nums}
+.clock .brk .n{font-size:.8rem;white-space:nowrap}
+
+header.hero{padding-block:34px 26px;border-bottom:1px solid var(--line)}
+.hero .sub{color:var(--muted);margin-top:10px}
+.hero-top{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+.theme-btn{font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;background:var(--surface);color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+.theme-btn:hover{color:var(--fg);border-color:var(--accent)}
+
+section.station{padding-block:34px;border-bottom:1px solid var(--line);scroll-margin-top:92px}
+.statnav{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-top:30px;padding-top:18px;border-top:1px solid var(--line)}
+.statpos{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.backtop{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:18;font-family:var(--mono);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:999px;padding:9px 15px;cursor:pointer;box-shadow:0 6px 18px rgba(15,20,35,.16)}
+.backtop:hover{border-color:var(--accent);color:var(--accent)}
+.station-head{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
+.num{font-family:var(--mono);font-size:.78rem;font-weight:600;color:var(--accent);border:1px solid var(--accent);border-radius:6px;padding:1px 7px;flex:none}
+.lede{color:var(--muted);margin-bottom:20px}
+.theme-btn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent);color:var(--fg)}
+.hero-btns{display:flex;gap:8px;flex-wrap:wrap}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px}
+.panel+.panel{margin-top:18px}
+.cols{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.cols>*{min-width:0}
+.prose{max-width:none}
+.prose p+p{margin-top:12px}
+
+/* maths blocks */
+.math{overflow-x:auto;overflow-y:hidden;padding-block:6px;margin-block:14px}
+.math-tint{background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:12px 14px;margin-block:16px;overflow-x:auto}
+mjx-container{color:var(--fg)}
+mjx-container[display="true"]{margin:0 !important}
+.mathfall{font-family:var(--mono);font-size:.86rem;color:var(--muted)}
+
+/* controls */
+.ctl{display:flex;flex-direction:column;gap:5px;margin-bottom:13px}
+.ctl label{font-size:.82rem;font-weight:500;display:flex;gap:10px;align-items:baseline}
+.ctl label>span:first-child{min-width:0}
+.ctl label .v{font-family:var(--mono);color:var(--accent);font-variant-numeric:tabular-nums;margin-left:auto;flex:none}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.btn{font-family:var(--body);font-size:.85rem;font-weight:500;background:var(--surface-2);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:7px 13px;cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn[aria-pressed=true]{background:var(--accent-soft);border-color:var(--accent);color:var(--fg)}
+.btn:disabled{opacity:.42;cursor:default}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* pixels */
+.pix{display:grid;grid-template-columns:repeat(8,1fr);gap:2px;width:100%;max-width:300px;aspect-ratio:1;margin-inline:auto}
+.pix div{border-radius:2px;display:grid;place-items:center;font-family:var(--mono);font-size:.56rem;font-variant-numeric:tabular-nums;position:relative}
+.pix div.lit::after{content:"";position:absolute;inset:0;border-radius:2px;background:var(--accent);opacity:.32;pointer-events:none}
+.pix div.sel{outline:2.5px solid var(--hot);outline-offset:-1px;z-index:1}
+.sgroup{margin-bottom:18px}
+.sgroup h4{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin:0 0 9px}
+.sgroup .ctl:last-child{margin-bottom:0}
+.tryrow{display:flex;gap:9px;align-items:center;justify-content:center;flex-wrap:wrap}
+.tryrow .btn{font-size:.8rem;padding:6px 11px}
+.capt{text-align:center;font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-top:8px;letter-spacing:.06em;text-transform:uppercase}
+
+/* DOM matrices (interactive ones) */
+.mx{display:inline-flex;align-items:stretch;gap:5px;vertical-align:middle}
+.mx .br{width:8px;border:2px solid var(--muted);border-radius:2px}
+.mx .br.l{border-right:0}
+.mx .br.r{border-left:0}
+.mx table{border-collapse:collapse}
+.mx td{font-family:var(--mono);font-size:.95rem;font-variant-numeric:tabular-nums;text-align:center;padding:4px 9px;min-width:38px;border-radius:4px}
+.mx td.rowHit,.mx td.colHit{background:var(--accent-soft)}
+.mx td.cellHit{background:var(--hot);color:#1a1205;font-weight:600}
+.mx td.done{color:var(--muted)}
+.mathview{display:flex;justify-content:center;overflow-x:auto;padding-block:4px}
+.mathview .mx td{padding:3px 6px;min-width:34px;font-size:.88rem}
+.mx input{font-family:var(--mono);font-size:.95rem;width:46px;text-align:center;background:var(--surface-2);color:var(--fg);border:1px solid var(--line);border-radius:5px;padding:3px 2px}
+.eq{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center}
+.eq .op{font-family:var(--mono);font-size:1.2rem;color:var(--muted)}
+.work{font-family:var(--mono);font-size:1rem;line-height:1.75;text-align:center;margin-top:16px;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:14px 12px;display:block}
+.work sub{font-size:.72em}
+.work .hl{color:var(--hot);font-weight:600}
+.step{font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+
+/* dimension gallery */
+.gal{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(244px,1fr));margin-top:4px}
+.gal1{display:grid;gap:12px;grid-template-columns:1fr}
+.gal1 .flash-inner{display:grid;grid-template-columns:1fr;height:auto;min-height:124px}
+.gal1 .face{position:relative;inset:auto;grid-area:1/1;min-height:0}
+.gal1 .fbtn{flex:0 0 auto}
+.face.back.ans{border-left:4px solid var(--accent)}
+.face.back.ans .ftag{color:var(--accent)}
+@media (max-width:560px){.gal1 .flash-inner{min-height:160px}}
+.fqmain{font-size:1rem;font-weight:500;line-height:1.45}
+.fans{font-size:.95rem;line-height:1.5}
+.fcase{display:block;margin-top:7px}
+.fsplit{display:flex;gap:20px;align-items:center;flex-wrap:wrap}
+.fsplit>div{flex:1 1 260px;min-width:0}
+.pythag{flex:0 0 auto;width:168px;height:152px;font-family:var(--mono)}
+.flash{perspective:1100px;perspective-origin:50% 42%;min-width:0}
+.flash-inner{position:relative;width:100%;height:200px;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,.05,.25,1)}
+.flash.turned .flash-inner{transform:rotateY(180deg)}
+.flash.flipF,.flash.flipB{position:relative;z-index:5}
+.flash.flipF .flash-inner{animation:flipF .64s cubic-bezier(.42,.04,.26,1) both}
+.flash.flipB .flash-inner{animation:flipB .64s cubic-bezier(.42,.04,.26,1) both}
+@keyframes flipF{
+  0%{transform:rotateY(0deg) translateZ(0) scale(1)}
+  50%{transform:rotateY(90deg) translateZ(56px) scale(1.045)}
+  100%{transform:rotateY(180deg) translateZ(0) scale(1)}
+}
+@keyframes flipB{
+  0%{transform:rotateY(180deg) translateZ(0) scale(1)}
+  50%{transform:rotateY(90deg) translateZ(56px) scale(1.045)}
+  100%{transform:rotateY(0deg) translateZ(0) scale(1)}
+}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid var(--line);border-radius:11px;padding:13px 15px;display:flex;flex-direction:column;gap:6px;overflow:hidden;background:var(--surface-2);box-shadow:0 1px 2px rgba(15,20,35,.06);transition:box-shadow .3s ease}
+.flash.flipF .face,.flash.flipB .face{box-shadow:0 20px 40px rgba(15,20,35,.26)}
+.face.front{background:linear-gradient(150deg,var(--surface) 0%,var(--accent-soft) 100%);border-color:var(--accent)}
+.face.back{transform:rotateY(180deg)}
+.face.back.ans{background:linear-gradient(150deg,var(--accent-soft) 0%,var(--surface) 100%);border-color:var(--accent);border-left:4px solid var(--accent)}
+.face.back.yes{background:linear-gradient(150deg,var(--good-soft) 0%,var(--surface) 100%);border-color:var(--good);border-left:4px solid var(--good)}
+.face.back.no{background:linear-gradient(150deg,var(--bad-soft) 0%,var(--surface) 100%);border-color:var(--bad);border-left:4px solid var(--bad)}
+.ftag{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.face.back.yes .ftag{color:var(--good)}
+.face.back.no .ftag{color:var(--bad)}
+.fx{font-family:var(--mono);font-size:1rem;font-variant-numeric:tabular-nums;overflow-x:auto;white-space:nowrap}
+.fq{font-size:.85rem;color:var(--muted)}
+.fw{font-size:.82rem;color:var(--muted);line-height:1.42}
+.fmark{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.fmark.ok{color:var(--good)}
+.fmark.no{color:var(--bad)}
+.fbtns{display:flex;gap:7px;margin-top:auto;flex-wrap:wrap}
+.fbtn{flex:1 1 auto;font-family:var(--body);font-size:.8rem;font-weight:500;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:7px;padding:6px 8px;cursor:pointer}
+.fbtn:hover{border-color:var(--accent)}
+.fbtn.small{flex:0 0 auto;font-size:.75rem;padding:5px 11px}
+.inner{color:var(--hot);font-weight:600}
+.outer{color:var(--accent);font-weight:600}
+@media (prefers-reduced-motion:reduce){
+  .flash-inner{transition:none}
+  .flash.flipF .flash-inner,.flash.flipB .flash-inner{animation:none}
+  .flash.flipF .face,.flash.flipB .face{box-shadow:0 1px 2px rgba(15,20,35,.06)}
+}
+
+.dim{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:center;font-family:var(--mono)}
+.dim input{width:52px;text-align:center;font-family:var(--mono);font-size:1rem;padding:5px;background:var(--surface-2);color:var(--fg);border:1px solid var(--line);border-radius:6px}
+.dim .x{color:var(--muted)}
+.verdict{margin-top:14px;padding:11px 14px;border-radius:8px;font-size:.92rem;text-align:center}
+.verdict.ok{background:var(--good-soft);color:var(--good);border:1px solid var(--good)}
+.verdict.no{background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad)}
+.inner-mark{color:var(--hot);font-weight:600}
+
+/* transforms */
+.tbox{width:100%;max-width:330px;margin-inline:auto;display:block;aspect-ratio:1;max-height:330px}
+.presets{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:7px;margin-bottom:14px}
+.stat{display:flex;justify-content:space-between;gap:10px;font-size:.86rem;padding:6px 0;border-bottom:1px dashed var(--line)}
+.stat:last-child{border-bottom:0}
+.stat .k{color:var(--muted)}
+.stat .v{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* quiz */
+.sgal{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(236px,1fr));margin-top:14px}
+.scard{border:1px solid var(--line);border-radius:11px;padding:14px 15px;background:var(--surface-2);display:flex;flex-direction:column;gap:7px}
+.scard h4{font-size:.95rem;font-weight:600;margin:0}
+.scard .sm{overflow-x:auto}
+.scard p{font-size:.86rem;color:var(--muted);line-height:1.45;margin:0}
+.weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.weeknav a{text-decoration:none;color:var(--muted);border:1px solid var(--line);border-radius:999px;
+  background:var(--surface);padding:6px 14px;display:flex;align-items:baseline;gap:8px}
+.weeknav a:hover{border-color:var(--accent);color:var(--fg)}
+.weeknav a.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.weeknav .wk{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.weeknav .wt{font-size:.84rem}
+.weeknav a.on .wt{color:#fff}
+.q{border:1px solid var(--line);border-radius:10px;padding:15px;background:var(--surface);margin-bottom:12px}
+.q .qt{font-weight:500;margin-bottom:11px}
+.q .qt .qn{font-family:var(--mono);color:var(--accent);margin-right:7px}
+.opts{display:grid;gap:7px}
+.opt{text-align:left;font-family:var(--body);font-size:.9rem;cursor:pointer;background:var(--surface-2);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
+.opt:hover:not(:disabled){border-color:var(--accent)}
+.opt.right{background:var(--good-soft);border-color:var(--good);color:var(--good);font-weight:600}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.opt:disabled{cursor:default}
+.why{margin-top:10px;font-size:.87rem;color:var(--muted);border-left:2px solid var(--line);padding-left:11px}
+.score{font-family:var(--mono);font-size:.95rem;text-align:center;padding:13px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2)}
+
+/* vector practice */
+.vq{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--surface-2);margin-bottom:10px}
+.vq .qt{font-weight:500;margin-bottom:11px}
+.vq .qt .qn{font-family:var(--mono);color:var(--accent);margin-right:7px}
+.vrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.vin{font-family:var(--mono);font-size:.95rem;width:86px;text-align:center;background:var(--surface);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:6px}
+.vin.ok{border-color:var(--good);background:var(--good-soft)}
+.vin.no{border-color:var(--bad);background:var(--bad-soft)}
+.vsep{font-family:var(--mono);color:var(--muted)}
+.vfb{font-size:.85rem;font-weight:500}
+.vfb.ok{color:var(--good)}
+.vfb.no{color:var(--bad)}
+.vtag{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--hot);margin-left:auto}
+.vgroup{border:1px solid var(--accent);border-radius:12px;padding:15px;margin-block:18px 4px;background:var(--surface)}
+.vghead{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.vghead .vtag{margin-left:0;color:var(--accent)}
+.vgroup .vq:last-of-type{margin-bottom:0}
+.vchip{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;font-weight:600;border-radius:4px;padding:1px 6px;margin-left:8px;white-space:nowrap}
+.vchip.core{color:var(--accent);border:1px solid var(--accent)}
+.vchip.ext{color:var(--muted);border:1px solid var(--line)}
+.clock a.opt{border-style:dashed}
+.clock a.opt .n{color:var(--muted)}
+
+ol.prep{margin:0;padding-left:22px;display:grid;gap:9px}
+ol.prep li{padding-left:4px}
+footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
+
+@media (prefers-reduced-motion:no-preference){
+  .pix div,.mx td{transition:background-color .18s ease,color .18s ease}
+}
+@media (max-width:430px){
+  .mx td{padding:4px 6px;min-width:30px;font-size:.85rem}
+  .mx input{width:38px}
+}
+</style>
+
+<div class="clock">
+  <div class="wrap clock-inner">
+    <div class="clock-title">Tutorial 02<span>Matrices</span></div>
+    <a href="#s1"><span class="t">0&ndash;5</span><span class="n">Vector recap</span></a>
+    <a href="#s1b"><span class="t">5&ndash;22</span><span class="n">Vector practice</span></a>
+    <a href="#s2"><span class="t">22&ndash;30</span><span class="n">What a matrix is</span></a>
+    <a href="#s2b"><span class="t">30&ndash;38</span><span class="n">Special matrices</span></a>
+    <a href="#s3"><span class="t">38&ndash;50</span><span class="n">Add &amp; scale</span></a>
+    <span class="brk"><span class="t">50&ndash;58</span><span class="n">Break</span></span>
+    <a href="#s4"><span class="t">58&ndash;80</span><span class="n">Multiplication</span></a>
+    <a href="#s4b"><span class="t">80&ndash;92</span><span class="n">Matrices in computer graphics</span></a>
+    <a href="#s5" class="opt"><span class="t">92&ndash;105</span><span class="n">Explore matrix applications</span></a>
+    <a href="#s6" class="opt"><span class="t">105&ndash;111</span><span class="n">Transpose &amp; inverse</span></a>
+    <a href="#s7"><span class="t">111&ndash;120</span><span class="n">Exit quiz</span></a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <nav class="weeknav" aria-label="Weeks">
+      <a href="https://shamim-akhtar.github.io/cmaths/week01/"><span class="wk">Week 1</span><span class="wt">Vectors</span></a>
+      <a class="on" aria-current="page" href="https://shamim-akhtar.github.io/cmaths/week02/"><span class="wk">Week 2</span><span class="wt">Matrices</span></a>
+      <a href="https://shamim-akhtar.github.io/cmaths/week03/"><span class="wk">Week 3</span><span class="wt">Determinants &amp; inverses</span></a>
+    </nav>
+    <div class="hero-top">
+      <span class="eyebrow">Computing Mathematics &middot; Tutorial 02 &middot; Two hours</span>
+      <span class="hero-btns">
+        <button class="theme-btn" id="oneBtn" type="button" aria-pressed="true"
+          title="Left and right arrow keys move between stations">Show all</button>
+        <button class="theme-btn" id="themeBtn" type="button">Theme</button>
+      </span>
+    </div>
+    <h1>Matrices and Matrix Operations</h1>
+    <p class="sub">Matrices are used in many areas of computing, including computer graphics, image processing and
+      game development. In this lesson, you will learn how to represent information using matrices and perform
+      basic matrix operations. You will also explore how matrices can be used to move, rotate and resize objects
+      on screen.</p>
+  </header>
+
+  <!-- ============ 1 ============ -->
+  <section class="station" id="s1">
+    <div class="station-head"><span class="num">01</span><h2>Vector recap</h2><span class="eyebrow">0&ndash;5 min</span></div>
+    <p class="lede">Let's review three questions from the previous lesson. Turn each card over when you have your
+      answer.</p>
+    <div class="panel">
+      <div class="gal1" id="recap"></div>
+      <div class="btnrow" style="justify-content:center;margin-top:14px">
+        <button class="btn" id="rAll" type="button">Turn them all over</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 1b ============ -->
+  <section class="station" id="s1b">
+    <div class="station-head"><span class="num">02</span><h2>Vector practice</h2><span class="eyebrow">5&ndash;22 min, or 8 on the core four</span></div>
+    <p class="lede">Practise what you learnt about vectors. Start with the four questions marked <b>core</b>: a
+      magnitude, a dot product, a perpendicular condition and a collinearity check. You can then try the extension
+      questions, or leave them for your own time. Type your answer and press <b>Check</b>. If you need help, press
+      <b>Working</b> to see the steps.</p>
+    <div class="panel">
+      <p style="font-size:.95rem;margin-bottom:16px">Throughout, \(\mathbf{a} = (2,\,5)\), \(\mathbf{b} = (-3,\,1)\)
+        and \(\mathbf{c} = (3,\,-4)\).</p>
+      <div class="btnrow" style="justify-content:center;margin-bottom:20px">
+        <button class="btn" id="vCore" type="button" aria-pressed="false">Core four only</button>
+        <button class="btn" id="vReveal" type="button">Show every working</button>
+        <button class="btn" id="vReset" type="button">Clear</button>
+      </div>
+
+      <div class="vq" data-core="1" data-ans="5" data-tol="0.01">
+        <div class="qt"><span class="qn">1.</span>Find the magnitude \(|\mathbf{c}|\).</div>
+        <div class="vrow">
+          <input type="number" step="any" class="vin" aria-label="Question 1 answer">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>\( |\mathbf{c}| = \sqrt{3^2 + (-4)^2} = \sqrt{9 + 16} = \sqrt{25} = 5 \)</div>
+      </div>
+
+      <div class="vq" data-ans="0.6,-0.8" data-tol="0.01">
+        <div class="qt"><span class="qn">2.</span>Find the unit vector \(\hat{\mathbf{c}}\) in the direction of \(\mathbf{c}\).</div>
+        <div class="vrow">
+          <span class="vsep">(</span>
+          <input type="number" step="any" class="vin" aria-label="Question 2 x component">
+          <span class="vsep">,</span>
+          <input type="number" step="any" class="vin" aria-label="Question 2 y component">
+          <span class="vsep">)</span>
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>\( \hat{\mathbf{c}} = \dfrac{\mathbf{c}}{|\mathbf{c}|} = \dfrac{1}{5}(3,\,-4) = (0.6,\,-0.8) \). Check: \(0.6^2 + 0.8^2 = 1\).</div>
+      </div>
+
+      <div class="vq" data-core="1" data-ans="-1" data-tol="0.01">
+        <div class="qt"><span class="qn">3.</span>Find the dot product \(\mathbf{a} \cdot \mathbf{b}\).</div>
+        <div class="vrow">
+          <input type="number" step="any" class="vin" aria-label="Question 3 answer">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+          <span class="vtag">Needed in station 06</span>
+        </div>
+        <div class="why vsol" hidden>\( \mathbf{a} \cdot \mathbf{b} = (2)(-3) + (5)(1) = -6 + 5 = -1 \). Multiply the matching components. Then add the results.</div>
+      </div>
+
+      <div class="vq" data-ans="7,9" data-tol="0.01">
+        <div class="qt"><span class="qn">4.</span>Find \(2\mathbf{a} - \mathbf{b}\).</div>
+        <div class="vrow">
+          <span class="vsep">(</span>
+          <input type="number" step="any" class="vin" aria-label="Question 4 x component">
+          <span class="vsep">,</span>
+          <input type="number" step="any" class="vin" aria-label="Question 4 y component">
+          <span class="vsep">)</span>
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>\( 2\mathbf{a} = (4,\,10) \), so \( 2\mathbf{a} - \mathbf{b} = (4 - (-3),\; 10 - 1) = (7,\,9) \). Multiply each component of \(\mathbf{a}\) by 2. Then subtract the matching components of \(\mathbf{b}\).</div>
+      </div>
+
+      <div class="vq" data-core="1" data-ans="12" data-tol="0.01">
+        <div class="qt"><span class="qn">5.</span>For what value of \(k\) is \((4,\,k)\) perpendicular to \(\mathbf{b}\)?</div>
+        <div class="vrow">
+          <span class="vsep">k =</span>
+          <input type="number" step="any" class="vin" aria-label="Question 5 answer">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>Perpendicular means the dot product is zero: \( (4)(-3) + (k)(1) = 0 \), so \( -12 + k = 0 \) and \( k = 12 \).</div>
+      </div>
+
+      <div class="vq" data-ans="93" data-tol="1">
+        <div class="qt"><span class="qn">6.</span>Find the angle between \(\mathbf{a}\) and \(\mathbf{b}\), to the nearest degree.</div>
+        <div class="vrow">
+          <input type="number" step="any" class="vin" aria-label="Question 6 answer in degrees">
+          <span class="vsep">&deg;</span>
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>\( \cos\theta = \dfrac{\mathbf{a} \cdot \mathbf{b}}{|\mathbf{a}|\,|\mathbf{b}|} = \dfrac{-1}{\sqrt{29}\,\sqrt{10}} \approx -0.0587 \), so \( \theta \approx 93^\circ \). The dot product is negative, so the angle is greater than 90&deg;.</div>
+      </div>
+
+      <div class="vq" data-core="1" data-ans="2.5" data-tol="0.01">
+        <div class="qt"><span class="qn">7.</span>The points \(P(1,\,2)\), \(Q(3,\,6)\) and \(R(6,\,12)\) are said to be collinear. Find the scalar \(k\) for which \(\overrightarrow{PR} = k\,\overrightarrow{PQ}\).</div>
+        <div class="vrow">
+          <span class="vsep">k =</span>
+          <input type="number" step="any" class="vin" aria-label="Question 7 answer">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>\( \overrightarrow{PQ} = (3-1,\,6-2) = (2,\,4) \) and \( \overrightarrow{PR} = (6-1,\,12-2) = (5,\,10) \). Since \( (5,\,10) = 2.5\,(2,\,4) \), the two vectors lie along the same line. They also both start at \(P\), so the three points lie on one straight line. Being parallel alone is not enough. The vectors must also start from the same point.</div>
+      </div>
+
+      <div class="vq" data-ans="9" data-tol="0.01">
+        <div class="qt"><span class="qn">8.</span>Find the value of \(t\) for which \(A(2,\,1)\), \(B(5,\,7)\) and \(C(t,\,15)\) are collinear.</div>
+        <div class="vrow">
+          <span class="vsep">t =</span>
+          <input type="number" step="any" class="vin" aria-label="Question 8 answer">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+          <span class="vtag">Needed in station 08</span>
+        </div>
+        <div class="why vsol" hidden>\( \overrightarrow{AB} = (3,\,6) \) and \( \overrightarrow{AC} = (t-2,\,14) \). Collinear means \( \overrightarrow{AC} = k\,\overrightarrow{AB} \). The second entries give \( 6k = 14 \), so \( k = \tfrac{7}{3} \), and then \( t - 2 = 3k = 7 \), giving \( t = 9 \). Find the vectors \( \overrightarrow{AB} \) and \( \overrightarrow{AC} \). Since the points lie on one straight line, one vector must be a multiple of the other.</div>
+      </div>
+
+      <div class="vgroup" id="vgroup3d">
+        <div class="vghead">
+          <h3>Question 9, in three dimensions</h3>
+          <span class="vtag">Extended 3D question</span>
+        </div>
+        <p style="font-size:.93rem;color:var(--muted);margin:8px 0 16px">Let \(\mathbf{u} = (2,\,-1,\,2)\) and
+          \(\mathbf{v} = (1,\,2,\,2)\). This question uses vectors with three components instead of two. The
+          calculation steps are the same. You just need to include the third component.</p>
+
+        <div class="vq" data-ans="3" data-tol="0.01">
+          <div class="qt"><span class="qn">(a)</span>Find \(|\mathbf{u}|\).</div>
+          <div class="vrow">
+            <input type="number" step="any" class="vin" aria-label="Question 9a answer">
+            <button class="btn vcheck" type="button">Check</button>
+            <button class="btn vwork" type="button">Working</button>
+            <span class="vfb"></span>
+          </div>
+          <div class="why vsol" hidden>\( |\mathbf{u}| = \sqrt{2^2 + (-1)^2 + 2^2} = \sqrt{4 + 1 + 4} = \sqrt{9} = 3 \). Square all three components and add them. Then find the square root.</div>
+        </div>
+
+        <div class="vq" data-ans="4" data-tol="0.01">
+          <div class="qt"><span class="qn">(b)</span>Find \(\mathbf{u} \cdot \mathbf{v}\).</div>
+          <div class="vrow">
+            <input type="number" step="any" class="vin" aria-label="Question 9b answer">
+            <button class="btn vcheck" type="button">Check</button>
+            <button class="btn vwork" type="button">Working</button>
+            <span class="vfb"></span>
+          </div>
+          <div class="why vsol" hidden>\( \mathbf{u} \cdot \mathbf{v} = (2)(1) + (-1)(2) + (2)(2) = 2 - 2 + 4 = 4 \). Multiply the three pairs of matching components. Then add the results.</div>
+        </div>
+
+        <div class="vq" data-ans="64" data-tol="1">
+          <div class="qt"><span class="qn">(c)</span>Find the angle between \(\mathbf{u}\) and \(\mathbf{v}\), to the nearest degree.</div>
+          <div class="vrow">
+            <input type="number" step="any" class="vin" aria-label="Question 9c answer in degrees">
+            <span class="vsep">&deg;</span>
+            <button class="btn vcheck" type="button">Check</button>
+            <button class="btn vwork" type="button">Working</button>
+            <span class="vfb"></span>
+          </div>
+          <div class="why vsol" hidden>\( |\mathbf{v}| = \sqrt{1 + 4 + 4} = 3 \), so \( \cos\theta = \dfrac{4}{3 \times 3} = \dfrac{4}{9} \approx 0.4444 \) and \( \theta \approx 63.6^\circ \), which is \(64^\circ\) to the nearest degree. Find the lengths of both vectors, then use the dot product formula to calculate the angle.</div>
+        </div>
+
+        <div class="vq" data-ans="6" data-tol="0.01">
+          <div class="qt"><span class="qn">(d)</span>The vector \(\mathbf{w} = (\lambda,\,4,\,-4)\) is perpendicular to \(\mathbf{u}\). Find \(\lambda\).</div>
+          <div class="vrow">
+            <span class="vsep">&lambda; =</span>
+            <input type="number" step="any" class="vin" aria-label="Question 9d answer">
+            <button class="btn vcheck" type="button">Check</button>
+            <button class="btn vwork" type="button">Working</button>
+            <span class="vfb"></span>
+          </div>
+          <div class="why vsol" hidden>The dot product is zero because the vectors are perpendicular: \( (2)(\lambda) + (-1)(4) + (2)(-4) = 0 \), so \( 2\lambda - 4 - 8 = 0 \) and \( \lambda = 6 \). Check it: \( (2)(6) - 4 - 8 = 0 \).</div>
+        </div>
+
+        <div class="vq" data-ans="3" data-tol="0.01">
+          <div class="qt"><span class="qn">(e)</span>Show that \(A(1,\,2,\,3)\), \(B(3,\,5,\,7)\) and \(C(7,\,11,\,15)\) are collinear by finding the \(k\) for which \(\overrightarrow{AC} = k\,\overrightarrow{AB}\).</div>
+          <div class="vrow">
+            <span class="vsep">k =</span>
+            <input type="number" step="any" class="vin" aria-label="Question 9e answer">
+            <button class="btn vcheck" type="button">Check</button>
+            <button class="btn vwork" type="button">Working</button>
+            <span class="vfb"></span>
+          </div>
+          <div class="why vsol" hidden>\( \overrightarrow{AB} = (2,\,3,\,4) \) and \( \overrightarrow{AC} = (6,\,9,\,12) \). Since \( (6,\,9,\,12) = 3\,(2,\,3,\,4) \), with the same \(k = 3\) in all three components, the vectors lie along the same line and both start at \(A\), so the three points are collinear. All three components must have the same multiplier. Two out of three matching is not enough.</div>
+        </div>
+      </div>
+
+      <div class="score" id="vscore">0 of 13 correct</div>
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section class="station" id="s2">
+    <div class="station-head"><span class="num">03</span><h2>A matrix is a grid of numbers</h2><span class="eyebrow">22&ndash;30 min</span></div>
+    <p class="lede">A matrix is a grid of numbers arranged in rows and columns. A greyscale image can be stored as
+      a matrix. Each number is the brightness of one pixel, where 0 means black and 255 means white. The same 8
+      &times; 8 image is used all the way through this lesson.</p>
+    <div class="panel">
+      <div class="cols">
+        <div>
+          <div class="pix" id="pixIntro"></div>
+          <div class="mathview" id="pixMath" hidden></div>
+          <div class="capt" id="pixIntroCap">8 &times; 8, values 0 to 255</div>
+          <div class="btnrow" style="justify-content:center;margin-top:12px">
+            <button class="btn" id="pixView" type="button" aria-pressed="false">Show as a matrix</button>
+          </div>
+        </div>
+        <div>
+          <h3>Try it yourself</h3>
+          <p style="color:var(--muted);font-size:.92rem;margin:8px 0 14px">Click a pixel to change its colour and
+            watch how its value changes. Its row and column light up so you can see where it sits. Press <b>Show
+            the numbers</b> to see the values on the pixels, or <b>Show as a matrix</b> to see the same 64 numbers
+            written in matrix form.</p>
+          <div class="btnrow">
+            <button class="btn" id="numsBtn" type="button" aria-pressed="false">Show the numbers</button>
+            <button class="btn" id="pixReset" type="button">Reset</button>
+          </div>
+          <div style="margin-top:18px">
+            <div class="stat"><span class="k">Size</span><span class="v">8 &times; 8</span></div>
+            <div class="stat"><span class="k">Entries</span><span class="v">64</span></div>
+            <div class="stat"><span class="k">Row \(i\), counted from the top</span><span class="v" id="pixRow">&mdash;</span></div>
+            <div class="stat"><span class="k">Column \(j\), counted from the left</span><span class="v" id="pixCol">&mdash;</span></div>
+            <div class="stat"><span class="k">Entry</span><span class="v" id="pixName">&mdash;</span></div>
+            <div class="stat"><span class="k">Value</span><span class="v" id="pixVal">&mdash;</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="math-tint">
+        <p style="font-size:.92rem;margin-bottom:6px">An entry is named by its row first, then its column:</p>
+        <div class="math">\[ A \;=\; \bigl[a_{ij}\bigr] \qquad\text{where } i \text{ is the row and } j \text{ the column.} \]</div>
+        <p style="font-size:.9rem;color:var(--muted);margin-top:4px">Rows are counted from the top. Columns are
+          counted from the left. So \(a_{1,1}\) is the entry in the top left corner, and \(a_{8,1}\) is the entry in
+          the bottom left corner.</p>
+        <p style="font-size:.9rem;color:var(--muted);margin-top:10px">Take care with \(i\). It is the row number,
+          not the \(x\) direction. Row numbers increase downwards. The \(y\) axis on a graph increases upwards, so
+          the two count in opposite directions.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2b ============ -->
+  <section class="station" id="s2b">
+    <div class="station-head"><span class="num">04</span><h2>Special matrices</h2><span class="eyebrow">30&ndash;38 min</span></div>
+    <p class="lede">Some matrices appear so often that they are given names. The name describes either the shape of
+      the matrix or the pattern of numbers inside it. You will meet all of these again later in the lesson.</p>
+
+    <div class="panel">
+      <h3>The ones with names</h3>
+      <div class="prose" style="margin-top:12px">
+        <p>Read each name, then look at what the numbers do.</p>
+      </div>
+      <div class="sgal" id="sgal"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Name the matrix</h3>
+      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 16px">Look at each matrix and choose its name.
+        Some matrices have more than one correct name, so read the explanation after you answer.</p>
+      <div id="smQuiz"></div>
+      <div class="score" id="smScore" style="margin-top:4px">0 of 5 answered</div>
+      <div class="btnrow" style="justify-content:center;margin-top:14px">
+        <button class="btn" id="smReset" type="button">Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section class="station" id="s3">
+    <div class="station-head"><span class="num">05</span><h2>Addition, subtraction and scalar multiplication</h2><span class="eyebrow">38&ndash;50 min</span></div>
+    <p class="lede">We can add and subtract two matrices of the same size by working with the numbers in matching
+      positions. We can also multiply a matrix by a single number, called a scalar, which multiplies every number in
+      the matrix. The panel below builds \(kA + B\), \(B - kA\) and \(kA\) from two 8 &times; 8 matrices. This is
+      question 1 of the tutorial paper.</p>
+    <div class="panel">
+      <div class="math-tint">
+        <div class="math">\[ \bigl[a_{ij}\bigr] + \bigl[b_{ij}\bigr] = \bigl[a_{ij} + b_{ij}\bigr] \qquad\qquad k\bigl[a_{ij}\bigr] = \bigl[k\,a_{ij}\bigr] \]</div>
+        <p style="font-size:.9rem;color:var(--muted)">Matrix addition and subtraction need two matrices of exactly
+          the same size. Scalar multiplication works on a matrix of any size: multiply every number in the matrix by
+          the scalar.</p>
+        <p style="font-size:.9rem;color:var(--muted);margin-top:10px">Note what is <i>not</i> allowed. You cannot
+          add a single number directly to a matrix. \(A + 5\) is not defined, because there is no entry of \(5\) to
+          pair each entry of \(A\) with. However, you can multiply every entry of \(A\) by 5.</p>
+      </div>
+      <div class="cols">
+        <div><div class="pix" id="pixA"></div><div class="capt">Matrix A</div></div>
+        <div><div class="pix" id="pixB"></div><div class="capt">Matrix B</div></div>
+        <div><div class="pix" id="pixOut"></div><div class="capt" id="outCap">A + B</div></div>
+      </div>
+      <div style="margin-top:22px;max-width:580px;margin-inline:auto">
+        <div class="btnrow" style="justify-content:center;margin-bottom:18px">
+          <button class="btn" id="opAdd" type="button" aria-pressed="true">Add: \(kA + B\)</button>
+          <button class="btn" id="opSub" type="button" aria-pressed="false">Subtract: \(B - kA\)</button>
+          <button class="btn" id="opNone" type="button" aria-pressed="false">Scalar only: \(kA\)</button>
+        </div>
+        <div class="ctl">
+          <label for="kMul"><span>Scalar \(k\), multiplying every entry of \(A\)</span><span class="v" id="kMulV">1</span></label>
+          <input type="range" id="kMul" min="0" max="3" value="1" step="0.5">
+        </div>
+        <div class="work" id="opExpr" style="margin-top:6px"></div>
+        <div class="btnrow" style="justify-content:center;margin-top:14px">
+          <button class="btn" id="opReset" type="button">Reset</button>
+        </div>
+        <p style="font-size:.85rem;color:var(--muted);margin-top:12px;text-align:center">Pixel values are limited to
+          0 to 255 in this example, because that is all an 8-bit pixel can show. Matrix calculations do not have
+          this limit.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>The same thing with numbers</h3>
+      <div class="prose" style="margin-top:12px">
+        <p>Both matrices have 2 rows and 3 columns, so every number in one has a partner in the same position in the
+          other. Press <b>Start</b> to calculate the answer one entry at a time. You can also change the numbers in
+          either matrix.</p>
+      </div>
+      <div class="btnrow" style="justify-content:center;margin:18px 0">
+        <button class="btn" id="addPlus" type="button" aria-pressed="true">\(A + B\)</button>
+        <button class="btn" id="addMinus" type="button" aria-pressed="false">\(A - B\)</button>
+      </div>
+      <div class="eq" id="addEq"></div>
+      <div class="work" id="addWork"></div>
+      <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:16px">
+        <button class="btn" id="addPrev" type="button" disabled>Back</button>
+        <span class="step" id="addStepLbl">Entry 0 of 6</span>
+        <button class="btn primary" id="addNext" type="button">Start</button>
+        <button class="btn" id="addReset" type="button">Reset</button>
+      </div>
+      <p style="font-size:.88rem;color:var(--muted);margin-top:16px;text-align:center">Both matrices are the same
+        size, which is the whole requirement. Make them different sizes and some entry would have no partner, so
+        the sum would simply not exist.</p>
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section class="station" id="s4">
+    <div class="station-head"><span class="num">06</span><h2>What matrix multiplication actually means</h2><span class="eyebrow">58&ndash;80 min</span></div>
+    <p class="lede">Matrix multiplication uses rows and columns to calculate each entry of a new matrix. We will
+      learn the steps, then see how this operation is used in computing.</p>
+
+    <div class="panel">
+      <h3>One entry at a time</h3>
+      <div class="prose" style="margin-top:12px">
+        <p>Choose a <b>row</b> from matrix \(A\) and a <b>column</b> from matrix \(B\). Multiply the matching
+          numbers. Add the results to get one number in the answer matrix. It sits in the row you took from \(A\)
+          and the column you took from \(B\). Repeat for the remaining rows and columns.</p>
+        <p>You already know this operation. It is the dot product from last week, done over and over.</p>
+      </div>
+      <div class="math-tint">
+        <div class="math">\[ (AB)_{ij} \;=\; \sum_{k=1}^{n} a_{ik}\,b_{kj} \;=\; a_{i1}b_{1j} + a_{i2}b_{2j} + \cdots + a_{in}b_{nj} \]</div>
+        <p style="font-size:.9rem;color:var(--muted)">To find the entry in row \(i\), column \(j\) of the answer,
+          multiply row \(i\) of \(A\) by column \(j\) of \(B\) and add the results.</p>
+      </div>
+      <p class="prose" style="color:var(--muted);font-size:.93rem">Written out in full for two 2 &times; 2 matrices,
+        with nothing hidden:</p>
+      <div class="math">\[ \begin{bmatrix} a_{11} & a_{12} \\ a_{21} & a_{22} \end{bmatrix} \begin{bmatrix} b_{11} & b_{12} \\ b_{21} & b_{22} \end{bmatrix} = \begin{bmatrix} a_{11}b_{11} + a_{12}b_{21} & a_{11}b_{12} + a_{12}b_{22} \\ a_{21}b_{11} + a_{22}b_{21} & a_{21}b_{12} + a_{22}b_{22} \end{bmatrix} \]</div>
+    </div>
+
+    <div class="panel">
+      <h3>Step through it</h3>
+      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 18px">Watch how each row is multiplied by a
+        column. You can also change the numbers to try another example.</p>
+      <div class="eq" id="mulEq"></div>
+      <div class="work" id="mulWork">Press <b style="font-family:var(--mono)">&nbsp;Start&nbsp;</b> to take the first entry.</div>
+      <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:16px">
+        <button class="btn" id="mPrev" type="button" disabled>Back</button>
+        <span class="step" id="mStep">Step 0 of 4</span>
+        <button class="btn primary" id="mNext" type="button">Start</button>
+        <button class="btn" id="mTry" type="button" aria-pressed="false">Try it yourself</button>
+        <button class="btn" id="mReset" type="button">Reset</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Which pairs can be multiplied at all?</h3>
+      <div class="math-tint">
+        <div class="math">\[ \underset{m\,\times\,n}{A} \;\; \underset{n\,\times\,p}{B} \;=\; \underset{m\,\times\,p}{C} \]</div>
+        <p style="font-size:.9rem;color:var(--muted)">To multiply two matrices, the number of columns in \(A\) must
+          equal the number of rows in \(B\). These are the two <span class="inner-mark">inner</span> numbers. The
+          answer has the same number of rows as \(A\) and the same number of columns as \(B\).</p>
+      </div>
+      <p style="font-size:.92rem;color:var(--muted);margin-bottom:14px">Look at the size of each matrix. Can they
+        be multiplied? Decide before revealing the answer.</p>
+      <div class="gal" id="gallery"></div>
+      <div class="btnrow" style="justify-content:center;margin-top:16px">
+        <button class="btn" id="fAll" type="button">Turn them all over</button>
+        <button class="btn" id="fShuffle" type="button">Shuffle</button>
+        <button class="btn" id="fReset" type="button">Reset</button>
+      </div>
+      <div class="score" id="fscore" style="margin-top:12px">0 of 8 called</div>
+      <p style="font-size:.88rem;color:var(--muted);margin-top:16px">Question 2 of the tutorial paper asks for
+        \(W \times Z\) and \(Z \times Y\). Check both sizes before you multiply anything, and work out what
+        \(Z \times W\) would be.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Your turn: change the sizes</h3>
+      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 16px">Type any four numbers and the page works out
+        whether the product exists.</p>
+      <div class="dim">
+        <span>A is</span>
+        <input type="number" id="ar" value="2" min="1" max="9" aria-label="rows of A">
+        <span class="x">&times;</span>
+        <input type="number" id="ac" value="3" min="1" max="9" aria-label="columns of A">
+        <span style="margin:0 6px">and B is</span>
+        <input type="number" id="br" value="3" min="1" max="9" aria-label="rows of B">
+        <span class="x">&times;</span>
+        <input type="number" id="bc" value="4" min="1" max="9" aria-label="columns of B">
+      </div>
+      <div class="verdict ok" id="dimOut"></div>
+    </div>
+  </section>
+
+  <!-- ============ 4b ============ -->
+  <section class="station" id="s4b">
+    <div class="station-head"><span class="num">07</span><h2>How matrices are used in computer graphics</h2><span class="eyebrow">80&ndash;92 min</span></div>
+    <p class="lede">Matrices can also change the position and shape of objects. We will see how a matrix can move
+      a point, change a shape, and combine two transformations into one.</p>
+
+    <div class="panel">
+      <h3>Step one: a point is a column of numbers</h3>
+      <div class="prose" style="margin-top:12px">
+        <p>A point has two coordinates, \(x\) and \(y\). We can write them as a column matrix. Multiplying that
+          column by a 2 &times; 2 matrix gives a new position for the point. Nothing new is needed, because the
+          size rule already says the product exists.</p>
+        <p>Press Play to see how the matrix changes the point's position. Watch how the grid changes as well. The
+          matrix moves the whole grid, and the point travels with it. That is why one matrix works for every point
+          at once.</p>
+        <p>The green arrow represents \((1,\,0)\). The blue arrow represents \((0,\,1)\). When we apply a matrix,
+          both arrows can change direction or length. Their new positions are the two columns of the matrix. After a
+          quarter turn the green arrow points straight up, which is why the first column of that matrix reads
+          \(0\) then \(1\).</p>
+      </div>
+      <div class="math-tint">
+        <div class="math">\[ \underset{2\,\times\,2}{M}\;\;\underset{2\,\times\,1}{\mathbf{p}} \;=\; \underset{2\,\times\,1}{\mathbf{p}'} \]</div>
+        <p style="font-size:.9rem;color:var(--muted)">The inner numbers both read 2, so the product exists, and the
+          outer numbers say the answer is another 2 &times; 1. A transformation changes where a point sits. A matrix
+          is one way of writing that change down.</p>
+      </div>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="bA" viewBox="0 0 330 330" role="img" aria-label="A point before and after being multiplied by a matrix"></svg>
+          <div class="capt" id="bACap">The grid at rest</div>
+        </div>
+        <div>
+          <div class="presets" id="bAPre"></div>
+          <div class="btnrow" style="margin-bottom:14px">
+            <button class="btn primary" id="bAPlay" type="button">Play the transformation</button>
+            <button class="btn" id="bABack" type="button">Back to the start</button>
+          </div>
+          <div class="eq" style="justify-content:flex-start" id="bAEq"></div>
+          <div class="vrow" style="margin-top:14px">
+            <span class="vsep">p = (</span>
+            <input type="number" step="any" class="vin" id="bAx" value="3" aria-label="x coordinate of the point">
+            <span class="vsep">,</span>
+            <input type="number" step="any" class="vin" id="bAy" value="1" aria-label="y coordinate of the point">
+            <span class="vsep">)</span>
+          </div>
+          <div class="work" id="bAWork" style="text-align:left;place-items:start;line-height:1.95"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Step two: a shape is a set of points</h3>
+      <div class="prose" style="margin-top:12px">
+        <p>A shape is made up of points. A square has four corners. We can write the coordinates of those corners
+          as the columns of one matrix. Multiplying that matrix by a transformation matrix changes all four corners
+          at once. The square below gives a 2 &times; 4 matrix \(P\), so \(MP\) is (2 &times; 2)(2 &times; 4), and
+          the size rule says the answer is 2 &times; 4: four new corners.</p>
+      </div>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="bB" viewBox="0 0 330 330" role="img" aria-label="A square whose corners move one at a time"></svg>
+          <div class="capt" id="bBCap">Dashed is the original square</div>
+        </div>
+        <div>
+          <div class="eq" style="justify-content:flex-start" id="bBEq"></div>
+          <div class="work" id="bBWork" style="text-align:left;place-items:start;line-height:1.95"></div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px">
+            <button class="btn" id="bBPrev" type="button" disabled>Back</button>
+            <span class="step" id="bBStep">Corner 0 of 4</span>
+            <button class="btn primary" id="bBNext" type="button">Start</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Step three: combining transformations</h3>
+      <div class="prose" style="margin-top:12px">
+        <p>Sometimes we want to apply more than one transformation. Here the point \(\mathbf{p} = (2,\,1)\) is
+          stretched along \(x\) by \(S\), then turned a quarter circle by \(R\). That is one matrix at a time.</p>
+        <p>We can also multiply \(R\) and \(S\) together first. That gives a single matrix which makes both
+          changes at once. Both methods give the same final position, and that is the reason matrix multiplication
+          is defined the way it is.</p>
+      </div>
+      <div class="math">\[ R\,(S\,\mathbf{p}) \;=\; (R\,S)\,\mathbf{p} \]</div>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="bC" viewBox="0 0 330 330" role="img" aria-label="A point stretched and then rotated"></svg>
+          <div class="capt" id="bCCap">The point at rest</div>
+        </div>
+        <div>
+          <div class="work" id="bCWork" style="text-align:left;place-items:start;line-height:1.95"></div>
+          <div class="btnrow" style="margin-top:14px">
+            <button class="btn primary" id="bCNext" type="button">Stretch it with S</button>
+            <button class="btn" id="bCReset" type="button">Start again</button>
+          </div>
+          <div id="bCCombine" hidden style="margin-top:20px">
+            <p style="font-size:.92rem;font-weight:500;margin-bottom:12px">Multiply the two matrices first:</p>
+            <div class="eq" style="justify-content:flex-start" id="bCEq"></div>
+            <p class="why" style="margin-top:14px">Apply that single matrix to (2, 1) and you get (&minus;1, 4) in
+              one go, the same point the two separate steps reached. Both methods give the same final position.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section class="station" id="s5">
+    <div class="station-head"><span class="num">08</span><h2>Using matrices to transform objects</h2><span class="eyebrow">92&ndash;105 min</span><span class="vchip ext">Optional application</span></div>
+    <p class="lede">Matrix operations are used in computer graphics to change objects on screen. For example, we
+      can use matrices to resize, rotate and move objects. Try the interactive examples to see how the calculations
+      work. Nothing here is examined in Tutorial 02.</p>
+
+    <div class="panel">
+      <h3>A matrix moves a point</h3>
+      <div class="math">\[ \begin{bmatrix} x' \\ y' \end{bmatrix} = \begin{bmatrix} a & b \\ c & d \end{bmatrix} \begin{bmatrix} x \\ y \end{bmatrix} = \begin{bmatrix} ax + by \\ cx + dy \end{bmatrix} \]</div>
+      <div class="cols" style="margin-top:6px">
+        <div class="math-tint" style="margin:0">
+          <p style="font-size:.9rem;font-weight:500;margin-bottom:4px">Scale</p>
+          <div class="math">\[ S = \begin{bmatrix} s_x & 0 \\ 0 & s_y \end{bmatrix} \]</div>
+          <p style="font-size:.86rem;color:var(--muted)">Stretches \(x\) by \(s_x\) and \(y\) by \(s_y\).</p>
+        </div>
+        <div class="math-tint" style="margin:0">
+          <p style="font-size:.9rem;font-weight:500;margin-bottom:4px">Rotate by \(\theta\)</p>
+          <div class="math">\[ R(\theta) = \begin{bmatrix} \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix} \]</div>
+          <p style="font-size:.86rem;color:var(--muted)">Turns everything anticlockwise about the origin.</p>
+        </div>
+      </div>
+      <div class="prose" style="margin-top:20px">
+        <h3>Why translation needs a bigger matrix</h3>
+        <p style="margin-top:10px">A 2 &times; 2 matrix can rotate or resize an object, but it cannot move the
+          origin. Put \(x = 0\) and \(y = 0\) into the equation above. Whatever \(a, b, c, d\) are, the answer is
+          the origin again.</p>
+        <p>To move an object without changing its shape, we use a 3 &times; 3 matrix. Write each point with an extra
+          1 on the end, and the translation goes into the third column:</p>
+      </div>
+      <div class="math">\[ \begin{bmatrix} x' \\ y' \\ 1 \end{bmatrix} = \underbrace{\begin{bmatrix} 1 & 0 & t_x \\ 0 & 1 & t_y \\ 0 & 0 & 1 \end{bmatrix}}_{T} \begin{bmatrix} x \\ y \\ 1 \end{bmatrix} = \begin{bmatrix} x + t_x \\ y + t_y \\ 1 \end{bmatrix} \]</div>
+      <p class="prose" style="color:var(--muted);font-size:.93rem">This is why a 2D engine stores 3 &times; 3
+        matrices and a 3D engine stores 4 &times; 4 ones, when the shapes themselves only need 2 and 3 numbers per
+        point.</p>
+    </div>
+
+    <div class="panel">
+      <h3>The determinant of a 2 &times; 2 matrix</h3>
+      <div class="prose" style="margin-top:12px">
+        <p>The determinant is a number calculated from a square matrix. For a 2 &times; 2 matrix, multiply the two
+          numbers on each diagonal, then subtract the second result from the first.</p>
+      </div>
+      <div class="math">\[ \det\begin{bmatrix} a & b \\ c & d \end{bmatrix} = ad - bc \qquad\qquad \det\begin{bmatrix} 3 & 1 \\ 2 & 4 \end{bmatrix} = (3)(4) - (1)(2) = 10 \]</div>
+      <p class="prose" style="color:var(--muted);font-size:.93rem">The determinant tells us how a transformation
+        changes the area of a shape. To be exact, the area scale factor is the determinant without its sign. A
+        determinant of 1 keeps the area the same. A determinant of 2 doubles it. A determinant of 0 reduces the
+        area to zero, and that is the case that cannot be undone. A negative determinant also means the shape has
+        been turned over. Watch the figure change as you move the sliders below.</p>
+    </div>
+
+    <div class="panel">
+      <h3>Build the transformation</h3>
+      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 16px">The page builds \(M = T\,R\,S\), so the shape
+        is scaled first, then rotated, then translated. Dashed is where it started.</p>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="tbox" viewBox="0 0 330 330" role="img" aria-label="A shape before and after the transformation"></svg>
+          <div class="capt">Dashed original, solid result</div>
+        </div>
+        <div>
+          <div class="presets" id="presets"></div>
+          <div class="sgroup">
+            <h4>Rotation</h4>
+            <div class="ctl"><label for="pAng"><span>Angle \(\theta\)</span><span class="v" id="pAngV">0&deg;</span></label>
+              <input type="range" id="pAng" min="-180" max="180" value="0" step="5"></div>
+          </div>
+          <div class="sgroup">
+            <h4>Scaling</h4>
+            <div class="ctl"><label for="pSx"><span>Horizontal scale \(s_x\)</span><span class="v" id="pSxV">1.0</span></label>
+              <input type="range" id="pSx" min="-2" max="2.5" value="1" step="0.1"></div>
+            <div class="ctl"><label for="pSy"><span>Vertical scale \(s_y\)</span><span class="v" id="pSyV">1.0</span></label>
+              <input type="range" id="pSy" min="-2" max="2.5" value="1" step="0.1"></div>
+          </div>
+          <div class="sgroup">
+            <h4>Translation</h4>
+            <div class="ctl"><label for="pTx"><span>Horizontal movement \(t_x\)</span><span class="v" id="pTxV">0.0</span></label>
+              <input type="range" id="pTx" min="-3" max="3" value="0" step="0.25"></div>
+            <div class="ctl"><label for="pTy"><span>Vertical movement \(t_y\)</span><span class="v" id="pTyV">0.0</span></label>
+              <input type="range" id="pTy" min="-3" max="3" value="0" step="0.25"></div>
+          </div>
+          <div class="eq" style="justify-content:flex-start;margin:14px 0" id="tMatrix"></div>
+          <div class="stat"><span class="k">Determinant of the 2 &times; 2 part</span><span class="v" id="tDet">1</span></div>
+          <div class="stat"><span class="k">Area of the shape</span><span class="v" id="tArea">unchanged</span></div>
+          <div class="stat"><span class="k">Reversible</span><span class="v" id="tInv">yes</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Does the order of transformations matter?</h3>
+      <p style="color:var(--muted);font-size:.92rem;margin:8px 0 16px">The first diagram rotates the shape before
+        moving it. The second moves the shape before rotating it. Compare the two results. Decide what you expect
+        before you look.</p>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="oboxA" viewBox="0 0 330 330" role="img" aria-label="Rotate first, then translate"></svg>
+          <div class="capt">Rotate, then translate &nbsp;&mdash;&nbsp; \(T R\)</div>
+        </div>
+        <div>
+          <svg class="tbox" id="oboxB" viewBox="0 0 330 330" role="img" aria-label="Translate first, then rotate"></svg>
+          <div class="capt">Translate, then rotate &nbsp;&mdash;&nbsp; \(R T\)</div>
+        </div>
+      </div>
+      <div class="math">\[ TR = \begin{bmatrix} 0 & -1 & 3 \\ 1 & 0 & 0 \\ 0 & 0 & 1 \end{bmatrix} \qquad\qquad RT = \begin{bmatrix} 0 & -1 & 0 \\ 1 & 0 & 3 \\ 0 & 0 & 1 \end{bmatrix} \]</div>
+      <p class="prose" style="color:var(--muted);font-size:.93rem">Rotating first turns the shape and then slides it
+        along the \(x\) axis. Translating first carries the shape out to the right, and the rotation then swings
+        that whole displacement round onto the \(y\) axis. In general \(AB \neq BA\), and this is why a sprite
+        drawn in the wrong order ends up in the wrong place.</p>
+    </div>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section class="station" id="s6">
+    <div class="station-head"><span class="num">09</span><h2>Transpose, and a first look at the inverse</h2><span class="eyebrow">105&ndash;111 min</span><span class="vchip ext">Optional application</span></div>
+    <p class="lede">The transpose swaps the rows and columns of a matrix. The inverse is a matrix that reverses
+      the effect of another matrix. We will look at both using simple examples.</p>
+    <div class="panel">
+      <div class="math-tint">
+        <div class="math">\[ \bigl(A^{\mathsf{T}}\bigr)_{ij} = a_{ji} \qquad\qquad A\,A^{-1} = A^{-1}A = I \]</div>
+      </div>
+      <div class="cols">
+        <div>
+          <h3>Transpose</h3>
+          <p style="color:var(--muted);font-size:.92rem;margin:8px 0 14px">Press Transpose it to see how the rows
+            become columns. Watch where the highlighted entry lands.</p>
+          <div class="eq" id="tpEq"></div>
+          <div class="btnrow" style="justify-content:center;margin-top:16px">
+            <button class="btn primary" id="tpBtn" type="button">Transpose it</button>
+          </div>
+        </div>
+        <div>
+          <h3>Inverse as undo</h3>
+          <p style="color:var(--muted);font-size:.92rem;margin:8px 0 14px">Press Rotate to turn the shape. Then
+            apply the inverse to return it to its starting position.</p>
+          <svg class="tbox" id="ibox" viewBox="0 0 330 330" style="max-width:250px" role="img" aria-label="A shape rotated and then returned by the inverse"></svg>
+          <div class="btnrow" style="justify-content:center;margin-top:10px">
+            <button class="btn primary" id="invBtn" type="button">Rotate</button>
+          </div>
+          <div class="capt" id="iCap">At rest</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section class="station" id="s7">
+    <div class="station-head"><span class="num">10</span><h2>Exit quiz</h2><span class="eyebrow">111&ndash;120 min</span></div>
+    <p class="lede">Six questions to check your understanding of the lesson. None are taken from the tutorial
+      paper, and every answer carries its reason. Matrices are written here with a semicolon between the rows, so
+      [1 2; 3 4] has 1 and 2 on the top row and 3 and 4 on the bottom.</p>
+    <div id="quiz"></div>
+    <div class="score" id="score">0 of 6 answered</div>
+    <div class="btnrow" style="justify-content:center;margin-top:14px">
+      <button class="btn" id="quizReset" type="button">Clear answers</button>
+    </div>
+  </section>
+
+
+  <footer>
+    Computing Mathematics, Tutorial 02. Everything runs in your browser, so the page works the same on every
+    machine and keeps working with no internet connection.
+  </footer>
+</div>
+
+<script>
+window.MathJax={
+  tex:{inlineMath:[["\\(","\\)"]],displayMath:[["\\[","\\]"]],processEscapes:true},
+  svg:{fontCache:"global",scale:1.02},
+  options:{skipHtmlTags:["script","noscript","style","textarea","pre","code"]},
+  startup:{typeset:true}
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- theme ---------------- */
+  var root=document.documentElement;
+  document.getElementById("themeBtn").addEventListener("click",function(){
+    var cur=root.getAttribute("data-theme");
+    var dark=cur?cur==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;
+    root.setAttribute("data-theme",dark?"light":"dark");
+  });
+
+
+  /* ---------------- moving between stations ---------------- */
+  var NAV=[];
+  document.querySelectorAll(".clock a[href^='#s']").forEach(function(a){
+    NAV.push({id:a.getAttribute("href").slice(1),name:a.querySelector(".n").textContent,el:a});
+  });
+  function navGo(id){
+    var s=document.getElementById(id);
+    if(s)s.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+  function navTop(){window.scrollTo({top:0,behavior:"smooth"});}
+
+  /* one station at a time: everything stays on the page, only one is shown */
+  var single=true,curIdx=0,lastSeen=0;
+  function showOnly(i){
+    curIdx=Math.max(0,Math.min(NAV.length-1,i));
+    NAV.forEach(function(n,k){
+      var s=document.getElementById(n.id);
+      if(s)s.hidden=(k!==curIdx);
+    });
+    navActive(NAV[curIdx].id);
+    window.scrollTo({top:0,behavior:"smooth"});
+  }
+  function showEverything(){
+    NAV.forEach(function(n){
+      var s=document.getElementById(n.id);
+      if(s)s.hidden=false;
+    });
+  }
+  function goTo(i){
+    if(i<0||i>=NAV.length)return;
+    if(single)showOnly(i);else navGo(NAV[i].id);
+  }
+  document.getElementById("oneBtn").addEventListener("click",function(){
+    single=!single;
+    this.setAttribute("aria-pressed",String(single));
+    this.textContent=single?"Show all":"One at a time";
+    if(single){showOnly(lastSeen);}
+    else{showEverything();navGo(NAV[curIdx].id);}
+  });
+  NAV.forEach(function(n,i){
+    var sec=document.getElementById(n.id);
+    if(!sec)return;
+    var bar=document.createElement("div");bar.className="statnav";
+    var prev=document.createElement("button");
+    prev.className="btn";prev.type="button";
+    prev.textContent=i>0?"← "+NAV[i-1].name:"← Back to the top";
+    prev.addEventListener("click",function(){
+      if(i>0)goTo(i-1);else navTop();
+    });
+    var pos=document.createElement("span");pos.className="statpos";
+    pos.textContent="Station "+(i+1)+" of "+NAV.length;
+    var next=document.createElement("button");
+    next.className="btn";next.type="button";
+    if(i<NAV.length-1){
+      next.textContent=NAV[i+1].name+" →";
+      next.addEventListener("click",function(){goTo(i+1);});
+    }else{
+      next.textContent="End of the lesson";next.disabled=true;
+    }
+    bar.appendChild(prev);bar.appendChild(pos);bar.appendChild(next);
+    sec.appendChild(bar);
+  });
+  function navActive(id){
+    NAV.forEach(function(n){
+      var on=(n.id===id);
+      n.el.classList.toggle("on",on);
+      if(!on||!n.el.parentNode.scrollTo)return;
+      var box=n.el.parentNode;
+      if(box.scrollWidth>box.clientWidth+4){
+        box.scrollTo({left:Math.max(0,n.el.offsetLeft-box.clientWidth/2+n.el.clientWidth/2),behavior:"smooth"});
+      }else if(box.scrollHeight>box.clientHeight+4){
+        box.scrollTo({top:Math.max(0,n.el.offsetTop-box.clientHeight/2+n.el.clientHeight/2),behavior:"smooth"});
+      }
+    });
+  }
+  NAV.forEach(function(n,i){
+    n.el.addEventListener("click",function(ev){
+      ev.preventDefault();
+      if(single)showOnly(i);else navGo(n.id);
+    });
+  });
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){
+      if(single)return;
+      es.forEach(function(e){
+        if(!e.isIntersecting)return;
+        navActive(e.target.id);
+        NAV.forEach(function(n,i){if(n.id===e.target.id){lastSeen=i;curIdx=i;}});
+      });
+    },{rootMargin:"-96px 0px -72% 0px",threshold:0});
+    NAV.forEach(function(n){var s=document.getElementById(n.id);if(s)io.observe(s);});
+  }
+  var backTop=document.createElement("button");
+  backTop.className="backtop";backTop.type="button";
+  backTop.textContent="↑ Top";
+  backTop.setAttribute("aria-label","Back to the top of the lesson");
+  backTop.hidden=true;
+  backTop.addEventListener("click",navTop);
+  document.body.appendChild(backTop);
+  window.addEventListener("scroll",function(){
+    backTop.hidden=window.scrollY<600;
+  },{passive:true});
+
+  /* arrow keys move between stations, but never while typing or dragging a slider */
+  document.addEventListener("keydown",function(e){
+    if(!single)return;
+    var t=e.target,tag=t&&t.tagName;
+    if(tag==="INPUT"||tag==="TEXTAREA"||tag==="SELECT"||(t&&t.isContentEditable))return;
+    if(e.key==="ArrowRight"){e.preventDefault();goTo(curIdx+1);}
+    else if(e.key==="ArrowLeft"){e.preventDefault();goTo(curIdx-1);}
+    else if(e.key==="Escape"){
+      e.preventDefault();
+      single=false;
+      var btn=document.getElementById("oneBtn");
+      btn.setAttribute("aria-pressed","false");
+      btn.textContent="One at a time";
+      showEverything();navGo(NAV[curIdx].id);
+    }
+  });
+
+  /* fade the ends of the station bar only while there is something past them */
+  var clockBar=document.querySelector(".clock"),clockBox=document.querySelector(".clock-inner");
+  function clockShade(){
+    if(!clockBar||!clockBox)return;
+    var x=clockBox.scrollLeft,w=clockBox.clientWidth,all=clockBox.scrollWidth;
+    clockBar.classList.toggle("more-l",x>4);
+    clockBar.classList.toggle("more-r",x+w<all-4);
+  }
+  if(clockBox)clockBox.addEventListener("scroll",clockShade,{passive:true});
+  window.addEventListener("resize",clockShade,{passive:true});
+  clockShade();
+
+  /* the lesson always opens on station 01, whatever was left in the address bar last time */
+  (function openFirst(){
+    if(location.hash&&history.replaceState){
+      history.replaceState(null,"",location.pathname+location.search);
+    }
+    showOnly(0);
+    window.scrollTo(0,0);
+  })();
+
+  /* turn a card, with the lift and the direction the animation needs */
+  function setTurned(card,on){
+    if(card.classList.contains("turned")===on)return;
+    card.classList.remove("flipF","flipB");
+    void card.offsetWidth;
+    card.classList.add(on?"flipF":"flipB");
+    card.classList.toggle("turned",on);
+    setTimeout(function(){card.classList.remove("flipF","flipB");},660);
+  }
+
+  /* ---------------- 1. recap ---------------- */
+  var recap=[
+    {q:"Two vectors are parallel. What does that make their dot product?",
+     a:"When two vectors point in the same direction, their dot product is the product of their lengths, which is positive. When they point in opposite directions, the dot product is negative."+
+       "<span class='fcase'>Same direction: \\( \\mathbf{a} \\cdot \\mathbf{b} = |\\mathbf{a}|\\,|\\mathbf{b}| \\)</span>"+
+       "<span class='fcase'>Opposite directions: \\( \\mathbf{a} \\cdot \\mathbf{b} = -|\\mathbf{a}|\\,|\\mathbf{b}| \\)</span>"},
+    {q:"When is the dot product of two vectors zero?",
+     a:"When the two non-zero vectors are perpendicular, that is at 90° to each other, their dot product is zero."},
+    {q:"What is the length of the vector (3, 4)?",
+     a:"<div class='fsplit'><div>The length is 5. Use Pythagoras' theorem, \\( a^2 + b^2 = c^2 \\):"+
+       "\\[ \\sqrt{3^2 + 4^2} = \\sqrt{9 + 16} = \\sqrt{25} = 5 \\]</div>"+
+       "<svg class='pythag' viewBox='0 0 190 172' role='img' aria-label='A right-angled triangle with sides of 3 and 4 and a hypotenuse of 5'>"+
+       "<line x1='30' y1='142' x2='120' y2='142' stroke='var(--muted)' stroke-width='2'/>"+
+       "<line x1='120' y1='142' x2='120' y2='22' stroke='var(--muted)' stroke-width='2'/>"+
+       "<line x1='30' y1='142' x2='120' y2='22' stroke='var(--accent)' stroke-width='2.8'/>"+
+       "<path d='M106 142 L106 128 L120 128' fill='none' stroke='var(--muted)' stroke-width='1.6'/>"+
+       "<circle cx='30' cy='142' r='3.5' fill='var(--muted)'/>"+
+       "<circle cx='120' cy='22' r='4.5' fill='var(--accent)'/>"+
+       "<text x='75' y='160' text-anchor='middle' fill='var(--muted)' font-size='14'>3</text>"+
+       "<text x='130' y='87' fill='var(--muted)' font-size='14'>4</text>"+
+       "<text x='64' y='76' text-anchor='end' fill='var(--accent)' font-size='14' font-weight='600'>5</text>"+
+       "<text x='128' y='18' fill='var(--accent)' font-size='12'>(3, 4)</text>"+
+       "</svg></div>"}
+  ];
+  var rc=document.getElementById("recap");
+  recap.forEach(function(item,i){
+    var card=document.createElement("div");card.className="flash";
+    var inner=document.createElement("div");inner.className="flash-inner";
+
+    var front=document.createElement("div");front.className="face front";
+    var ft=document.createElement("span");ft.className="ftag";ft.textContent="Question "+(i+1);
+    var fq=document.createElement("p");fq.className="fqmain";fq.textContent=item.q;
+    front.appendChild(ft);front.appendChild(fq);
+    var fb=document.createElement("div");fb.className="fbtns";
+    var turn=document.createElement("button");
+    turn.className="fbtn";turn.type="button";turn.textContent="Turn over";
+    fb.appendChild(turn);front.appendChild(fb);
+
+    var back=document.createElement("div");back.className="face back ans";
+    var bt=document.createElement("span");bt.className="ftag";bt.textContent="Answer";
+    var ba=document.createElement("p");ba.className="fans";ba.innerHTML=item.a;
+    back.appendChild(bt);back.appendChild(ba);
+    var bb=document.createElement("div");bb.className="fbtns";
+    var backBtn=document.createElement("button");
+    backBtn.className="fbtn small";backBtn.type="button";backBtn.textContent="Turn back";
+    bb.appendChild(backBtn);back.appendChild(bb);
+
+    turn.addEventListener("click",function(){setTurned(card,true);});
+    backBtn.addEventListener("click",function(){setTurned(card,false);});
+
+    inner.appendChild(front);inner.appendChild(back);card.appendChild(inner);
+    rc.appendChild(card);
+  });
+  /* each recap card grows to fit its own longer face: the two faces share one grid cell,
+     so the card re-measures itself whenever the maths or the fonts finish loading */
+
+  document.getElementById("rAll").addEventListener("click",function(){
+    var on=this.dataset.on!=="1";
+    this.dataset.on=on?"1":"0";
+    this.textContent=on?"Turn them all back":"Turn them all over";
+    rc.querySelectorAll(".flash").forEach(function(c,i){
+      setTimeout(function(){setTurned(c,on);},i*110);
+    });
+  });
+
+  /* ---------------- 1b. vector practice ---------------- */
+  var vqs=document.querySelectorAll(".vq"),coreOnly=false;
+  /* a nudge on the first wrong attempt, before the full working is offered */
+  var VHINTS=[
+    "Square each component, add them, then take the square root.",
+    "Divide each component of c by the magnitude you found in question 1.",
+    "Multiply the matching components, then add the two results.",
+    "Double every component of a first, then subtract b component by component.",
+    "Perpendicular means the dot product is zero. Write it out and solve for k.",
+    "Use cos of the angle = the dot product divided by the two magnitudes multiplied together.",
+    "Work out PQ and PR first, then ask what you multiply one by to get the other.",
+    "Write AC in terms of t, then make both components give the same multiplier.",
+    "Three squares added this time, then the square root.",
+    "Three products added, not two.",
+    "Both magnitudes come out whole. Find them first, then divide.",
+    "Set the dot product to zero and solve the equation for lambda.",
+    "All three components must give the same k, not just two of them."
+  ];
+  function inScope(q){return !coreOnly||q.dataset.core==="1";}
+  function vupdate(){
+    var tot=0,ok=0;
+    vqs.forEach(function(q){if(inScope(q)){tot++;if(q.dataset.ok==="1")ok++;}});
+    var what=coreOnly?" core questions correct":" correct";
+    document.getElementById("vscore").textContent=
+      (tot&&ok===tot)?"All "+tot+what:ok+" of "+tot+what;
+  }
+  function buildChips(){
+    vqs.forEach(function(q){
+      var core=q.dataset.core==="1";
+      var chip=document.createElement("span");
+      chip.className="vchip "+(core?"core":"ext");
+      chip.textContent=core?"Core":"Extension";
+      q.querySelector(".qt").appendChild(chip);
+    });
+  }
+  document.getElementById("vCore").addEventListener("click",function(){
+    coreOnly=!coreOnly;
+    this.setAttribute("aria-pressed",String(coreOnly));
+    this.textContent=coreOnly?"Show all nine":"Core four only";
+    vqs.forEach(function(q){q.hidden=coreOnly&&q.dataset.core!=="1";});
+    document.getElementById("vgroup3d").hidden=coreOnly;
+    vupdate();
+  });
+  vqs.forEach(function(q,vIndex){
+    var ans=q.dataset.ans.split(",").map(Number);
+    var tol=parseFloat(q.dataset.tol||"0.01");
+    var ins=q.querySelectorAll(".vin");
+    var fb=q.querySelector(".vfb");
+    var sol=q.querySelector(".vsol");
+    var work=q.querySelector(".vwork");
+    q.querySelector(".vcheck").addEventListener("click",function(){
+      var all=true,any=false;
+      ins.forEach(function(inp,i){
+        inp.classList.remove("ok","no");
+        var v=parseFloat(inp.value);
+        if(isNaN(v)){all=false;return;}
+        any=true;
+        if(Math.abs(v-ans[i])<=tol)inp.classList.add("ok");
+        else{inp.classList.add("no");all=false;}
+      });
+      fb.classList.remove("ok","no");
+      if(!any){fb.textContent="Type an answer first.";return;}
+      if(all){
+        fb.textContent="Correct.";fb.classList.add("ok");
+        q.dataset.ok="1";delete q.dataset.tries;vupdate();
+      }else{
+        var tries=(+q.dataset.tries||0)+1;
+        q.dataset.tries=tries;
+        var hint=VHINTS[vIndex];
+        fb.textContent=(tries===1&&hint)?"Not yet. "+hint
+                                        :"Still not right. Open the working for the full steps.";
+        fb.classList.add("no");
+      }
+    });
+    work.addEventListener("click",function(){
+      sol.hidden=!sol.hidden;work.textContent=sol.hidden?"Working":"Hide working";
+    });
+  });
+  document.getElementById("vReveal").addEventListener("click",function(){
+    var show=this.dataset.on!=="1";
+    this.dataset.on=show?"1":"0";
+    this.textContent=show?"Hide every working":"Show every working";
+    vqs.forEach(function(q){
+      q.querySelector(".vsol").hidden=!show;
+      q.querySelector(".vwork").textContent=show?"Hide working":"Working";
+    });
+  });
+  document.getElementById("vReset").addEventListener("click",function(){
+    vqs.forEach(function(q){
+      delete q.dataset.ok;
+      q.querySelectorAll(".vin").forEach(function(i){i.value="";i.classList.remove("ok","no");});
+      var f=q.querySelector(".vfb");f.textContent="";f.classList.remove("ok","no");
+      q.querySelector(".vsol").hidden=true;
+      q.querySelector(".vwork").textContent="Working";
+    });
+    var rb=document.getElementById("vReveal");rb.dataset.on="0";rb.textContent="Show every working";
+    vupdate();
+  });
+  buildChips();vupdate();
+
+  /* ---------------- pixels ---------------- */
+  var INVADER=[
+    [0,0,1,0,0,1,0,0],[0,0,0,1,1,0,0,0],[0,1,1,1,1,1,1,0],[1,1,0,1,1,0,1,1],
+    [1,1,1,1,1,1,1,1],[0,0,1,0,0,1,0,0],[0,1,0,1,1,0,1,0],[1,0,1,0,0,1,0,1]
+  ];
+  function baseMatrix(){return INVADER.map(function(r){return r.map(function(v){return v?212:28;});});}
+  function clamp(v){return v<0?0:v>255?255:Math.round(v);}
+  function paint(host,M,nums){
+    host.textContent="";
+    for(var r=0;r<8;r++)for(var c=0;c<8;c++){
+      var v=M[r][c],d=document.createElement("div");
+      d.style.background="rgb("+v+","+v+","+v+")";
+      d.style.color=v>128?"#111":"#ddd";
+      d.textContent=nums?v:"";
+      d.dataset.r=r;d.dataset.c=c;host.appendChild(d);
+    }
+  }
+  var introM=baseMatrix(),showNums=false,selR=-1,selC=-1;
+  var pixIntro=document.getElementById("pixIntro");
+  var pixMath=document.getElementById("pixMath"),mathView=false;
+  function drawIntro(){
+    paint(pixIntro,introM,showNums);
+    pixMath.textContent="";
+    if(mathView)pixMath.appendChild(matrixNode(introM,{}));
+    pixIntro.hidden=mathView;
+    pixMath.hidden=!mathView;
+    var rowEl=document.getElementById("pixRow"),colEl=document.getElementById("pixCol");
+    var val=document.getElementById("pixVal"),nameEl=document.getElementById("pixName");
+    if(selR<0){
+      rowEl.innerHTML="&mdash;";colEl.innerHTML="&mdash;";
+      nameEl.innerHTML="&mdash;";val.textContent="—";return;
+    }
+    pixIntro.querySelectorAll("div").forEach(function(d){
+      var r=+d.dataset.r,c=+d.dataset.c;
+      if(r===selR||c===selC)d.classList.add("lit");
+      if(r===selR&&c===selC)d.classList.add("sel");
+    });
+    pixMath.querySelectorAll("td").forEach(function(d){
+      var r=+d.dataset.r,c=+d.dataset.c;
+      if(r===selR&&c===selC)d.classList.add("cellHit");
+      else if(r===selR||c===selC)d.classList.add("rowHit");
+    });
+    rowEl.textContent=selR+1;
+    colEl.textContent=selC+1;
+    nameEl.innerHTML="a<sub>"+(selR+1)+","+(selC+1)+"</sub>";
+    val.textContent=introM[selR][selC];
+  }
+  function introCap(){
+    document.getElementById("pixIntroCap").textContent=
+      mathView?"The same 64 numbers, written as a matrix":
+      showNums?"Each square is one entry of the matrix":"8 × 8, values 0 to 255";
+  }
+  pixIntro.addEventListener("click",function(e){
+    var t=e.target;if(!t.dataset||t.dataset.r===undefined)return;
+    selR=+t.dataset.r;selC=+t.dataset.c;
+    introM[selR][selC]=introM[selR][selC]>128?28:212;
+    drawIntro();
+  });
+  document.getElementById("numsBtn").addEventListener("click",function(){
+    showNums=!showNums;this.setAttribute("aria-pressed",String(showNums));
+    this.textContent=showNums?"Hide the numbers":"Show the numbers";
+    introCap();
+    drawIntro();runOps();
+  });
+  pixMath.addEventListener("click",function(e){
+    var t=e.target.closest?e.target.closest("td"):null;
+    if(!t||t.dataset.r===undefined)return;
+    selR=+t.dataset.r;selC=+t.dataset.c;
+    introM[selR][selC]=introM[selR][selC]>128?28:212;
+    drawIntro();
+  });
+  document.getElementById("pixView").addEventListener("click",function(){
+    mathView=!mathView;this.setAttribute("aria-pressed",String(mathView));
+    this.textContent=mathView?"Show as pixels":"Show as a matrix";
+    document.getElementById("numsBtn").disabled=mathView;
+    introCap();drawIntro();
+  });
+  document.getElementById("pixReset").addEventListener("click",function(){
+    introM=baseMatrix();selR=-1;selC=-1;drawIntro();
+  });
+  introCap();drawIntro();
+
+  /* ---------------- 3. operations ---------------- */
+  var opA=baseMatrix(),opMode="add";
+  var opB=(function(){
+    var M=[];
+    for(var r=0;r<8;r++){M[r]=[];for(var c=0;c<8;c++)M[r][c]=clamp(16+c*21);}
+    return M;
+  })();
+  var pixAEl=document.getElementById("pixA"),pixBEl=document.getElementById("pixB"),
+      pixOut=document.getElementById("pixOut"),kMul=document.getElementById("kMul");
+  function kTerm(k){
+    if(k===1)return "A";
+    if(k===0)return "0";
+    return (Math.round(k*10)/10)+"A";
+  }
+  function runOps(){
+    var k=+kMul.value,ks=(Math.round(k*10)/10).toString();
+    var kc=(k===1?"":ks);
+    document.getElementById("kMulV").textContent=ks;
+    var out=[];
+    for(var r=0;r<8;r++){out[r]=[];for(var c=0;c<8;c++){
+      var a=opA[r][c]*k,b=opB[r][c];
+      out[r][c]=clamp(opMode==="add"?a+b:opMode==="sub"?b-a:a);
+    }}
+    document.getElementById("outCap").textContent=
+      opMode==="add"?kTerm(k)+" + B":opMode==="sub"?"B − "+kTerm(k):kTerm(k);
+    document.getElementById("opExpr").innerHTML=
+      opMode==="add"?"each entry of the answer &nbsp;=&nbsp; <span class='hl'>"+kc+"a<sub>ij</sub> + b<sub>ij</sub></span>":
+      opMode==="sub"?"each entry of the answer &nbsp;=&nbsp; <span class='hl'>b<sub>ij</sub> − "+kc+"a<sub>ij</sub></span>":
+      "each entry of the answer &nbsp;=&nbsp; <span class='hl'>"+kc+"a<sub>ij</sub></span>";
+    paint(pixAEl,opA,showNums);
+    paint(pixBEl,opB,showNums);
+    paint(pixOut,out,showNums);
+  }
+  function setMode(m){
+    opMode=m;
+    [["opAdd","add"],["opSub","sub"],["opNone","scalar"]].forEach(function(p){
+      document.getElementById(p[0]).setAttribute("aria-pressed",String(p[1]===m));
+    });
+    runOps();
+  }
+  kMul.addEventListener("input",runOps);
+  document.getElementById("opAdd").addEventListener("click",function(){setMode("add");});
+  document.getElementById("opSub").addEventListener("click",function(){setMode("sub");});
+  document.getElementById("opNone").addEventListener("click",function(){setMode("scalar");});
+  document.getElementById("opReset").addEventListener("click",function(){
+    kMul.value=1;setMode("add");
+  });
+  setMode("add");
+
+  /* ---------------- 3b. addition with numbers ---------------- */
+  var addA=[[1,2,3],[4,5,6]],addB=[[5,0,2],[1,3,1]],addStep=0,addMode="+";
+  var ADDORDER=[[0,0],[0,1],[0,2],[1,0],[1,1],[1,2]];
+  function renderAdd(){
+    var eq=document.getElementById("addEq");eq.textContent="";
+    var shown=[["","",""],["","",""]];
+    for(var k=0;k<addStep;k++){
+      var q=ADDORDER[k];
+      shown[q[0]][q[1]]=addMode==="+"?addA[q[0]][q[1]]+addB[q[0]][q[1]]
+                                     :addA[q[0]][q[1]]-addB[q[0]][q[1]];
+    }
+    var reset=function(){addStep=0;renderAdd();};
+    var nA=matrixNode(addA,{editable:true,target:addA,name:"Matrix A",onedit:reset});
+    var nB=matrixNode(addB,{editable:true,target:addB,name:"Matrix B",onedit:reset});
+    var nC=matrixNode(shown,{});
+    if(addStep>=1&&addStep<=6){
+      var p=ADDORDER[addStep-1],i=p[0],j=p[1];
+      [nA,nB,nC].forEach(function(n){
+        n.querySelectorAll("td").forEach(function(td){
+          if(+td.dataset.r===i&&+td.dataset.c===j)td.classList.add("cellHit");
+        });
+      });
+      nC.querySelectorAll("td").forEach(function(td){
+        if(!td.classList.contains("cellHit")&&td.textContent!=="")td.classList.add("done");
+      });
+    }
+    var o1=document.createElement("span");o1.className="op";
+    o1.textContent=addMode==="+"?"+":"−";
+    var o2=document.createElement("span");o2.className="op";o2.textContent="=";
+    eq.appendChild(nA);eq.appendChild(o1);eq.appendChild(nB);eq.appendChild(o2);eq.appendChild(nC);
+
+    var w=document.getElementById("addWork");
+    if(addStep===0){
+      w.innerHTML='Press <b style="font-family:var(--mono)">&nbsp;Start&nbsp;</b> to take the first entry.';
+    }else{
+      var s=ADDORDER[addStep-1],ii=s[0],jj=s[1],sub=(ii+1)+""+(jj+1);
+      var av=addA[ii][jj],bv=addB[ii][jj];
+      var res=addMode==="+"?av+bv:av-bv;
+      var bs=(bv<0?"("+bv+")":bv);
+      w.innerHTML="c<sub>"+sub+"</sub> = a<sub>"+sub+"</sub> "+(addMode==="+"?"+":"−")+
+        " b<sub>"+sub+"</sub> = "+av+" "+(addMode==="+"?"+":"−")+" "+bs+
+        " = <span class='hl'>"+res+"</span>";
+    }
+    document.getElementById("addStepLbl").textContent="Entry "+addStep+" of 6";
+    var nx=document.getElementById("addNext");
+    document.getElementById("addPrev").disabled=addStep===0;
+    nx.disabled=addStep===6;
+    nx.textContent=addStep===0?"Start":addStep===6?"Done":"Next entry";
+  }
+  function setAddMode(m){
+    addMode=m;addStep=0;
+    document.getElementById("addPlus").setAttribute("aria-pressed",String(m==="+"));
+    document.getElementById("addMinus").setAttribute("aria-pressed",String(m==="-"));
+    renderAdd();
+  }
+  document.getElementById("addNext").addEventListener("click",function(){if(addStep<6){addStep++;renderAdd();}});
+  document.getElementById("addPrev").addEventListener("click",function(){if(addStep>0){addStep--;renderAdd();}});
+  document.getElementById("addPlus").addEventListener("click",function(){setAddMode("+");});
+  document.getElementById("addMinus").addEventListener("click",function(){setAddMode("-");});
+  document.getElementById("addReset").addEventListener("click",function(){
+    addA=[[1,2,3],[4,5,6]];addB=[[5,0,2],[1,3,1]];setAddMode("+");
+  });
+  renderAdd();
+
+  /* ---------------- matrix DOM helper ---------------- */
+  function bracket(s){var d=document.createElement("div");d.className="br "+s;return d;}
+  function matrixNode(vals,opts){
+    opts=opts||{};
+    var wrap=document.createElement("div");wrap.className="mx";
+    wrap.appendChild(bracket("l"));
+    var tb=document.createElement("table");
+    for(var r=0;r<vals.length;r++){
+      var tr=document.createElement("tr");
+      for(var c=0;c<vals[r].length;c++){
+        var td=document.createElement("td");
+        if(opts.editable){
+          var inp=document.createElement("input");
+          inp.type="number";inp.value=vals[r][c];
+          inp.setAttribute("aria-label",opts.name+" row "+(r+1)+" column "+(c+1));
+          (function(rr,cc){inp.addEventListener("input",function(){
+            var n=parseFloat(this.value);
+            if(isNaN(n))return;
+            opts.target[rr][cc]=n;
+            if(opts.onedit)opts.onedit();else{step=0;mulDone={};renderMul();}
+          });})(r,c);
+          td.appendChild(inp);
+        }else td.textContent=vals[r][c];
+        td.dataset.r=r;td.dataset.c=c;tr.appendChild(td);
+      }
+      tb.appendChild(tr);
+    }
+    wrap.appendChild(tb);wrap.appendChild(bracket("r"));
+    return wrap;
+  }
+
+  /* ---------------- 3c. special matrices ---------------- */
+  var SPECIAL=[
+    {n:"Square matrix",m:[[2,7],[1,4]],
+     d:"The same number of rows as columns. This one is 2 × 2. Only square matrices have a determinant or an inverse."},
+    {n:"Row matrix",m:[[3,5,1]],
+     d:"Only one row. It is sometimes called a row vector."},
+    {n:"Column matrix",m:[[3],[5],[1]],
+     d:"Only one column. Station 07 writes every point on screen as a column matrix."},
+    {n:"Zero matrix",m:[[0,0],[0,0]],
+     d:"Every entry is 0. Adding it to a matrix of the same size leaves that matrix unchanged."},
+    {n:"Diagonal matrix",m:[[4,0,0],[0,7,0],[0,0,2]],
+     d:"Every entry away from the leading diagonal is 0. The leading diagonal runs from the top left to the bottom right."},
+    {n:"Identity matrix",m:[[1,0,0],[0,1,0],[0,0,1]],
+     d:"A diagonal matrix with 1 in every diagonal position, written I. Multiplying by I leaves a matrix unchanged, just as multiplying a number by 1 does."},
+    {n:"Symmetric matrix",m:[[1,5,2],[5,3,0],[2,0,4]],
+     d:"A mirror image of itself across the leading diagonal, so the entry in row 2, column 3 matches the entry in row 3, column 2."}
+  ];
+  var sgal=document.getElementById("sgal");
+  if(sgal){
+    SPECIAL.forEach(function(s){
+      var card=document.createElement("div");card.className="scard";
+      var h=document.createElement("h4");h.textContent=s.n;
+      var box=document.createElement("div");box.className="sm";
+      box.appendChild(matrixNode(s.m,{}));
+      var p=document.createElement("p");p.textContent=s.d;
+      card.appendChild(h);card.appendChild(box);card.appendChild(p);
+      sgal.appendChild(card);
+    });
+  }
+
+  var SMQ=[
+    {m:[[1,0],[0,1]],o:["Zero matrix","Identity matrix","Row matrix","Symmetric matrix"],a:1,
+     w:"Every entry on the leading diagonal is 1 and every other entry is 0, so this is the identity matrix. It is square, diagonal and symmetric as well, but identity is the name that describes it most closely."},
+    {m:[[0,0,0],[0,0,0]],o:["Diagonal matrix","Square matrix","Zero matrix","Identity matrix"],a:2,
+     w:"Every entry is 0, so this is the zero matrix. It is 2 × 3, so it is not square."},
+    {m:[[4,0,0],[0,7,0],[0,0,2]],o:["Identity matrix","Symmetric matrix","Row matrix","Diagonal matrix"],a:3,
+     w:"The only non-zero entries sit on the leading diagonal, so this is a diagonal matrix. It is not the identity matrix, because the diagonal entries are not all 1."},
+    {m:[[3,5,1]],o:["Row matrix","Column matrix","Square matrix","Zero matrix"],a:0,
+     w:"It has one row and three columns, so it is a row matrix. Written the other way up, as three rows and one column, it would be a column matrix."},
+    {m:[[6,2],[2,9]],o:["Zero matrix","Symmetric matrix","Identity matrix","Column matrix"],a:1,
+     w:"The entry in row 1, column 2 is 2 and so is the entry in row 2, column 1, so the matrix is a mirror image of itself across the leading diagonal. It is square too, but symmetric says more about it."}
+  ];
+  var smHost=document.getElementById("smQuiz"),smScore=document.getElementById("smScore");
+  var smAns=0,smRight=0;
+  function smUpdate(){
+    if(!smScore)return;
+    smScore.textContent=smAns===0?"0 of "+SMQ.length+" answered":
+      smAns<SMQ.length?smAns+" of "+SMQ.length+" answered":
+      "All answered — "+smRight+" of "+SMQ.length+" correct";
+  }
+  function buildSM(){
+    if(!smHost)return;
+    smHost.textContent="";smAns=0;smRight=0;smUpdate();
+    SMQ.forEach(function(item,i){
+      var card=document.createElement("div");card.className="q";
+      var t=document.createElement("div");t.className="qt";
+      var qn=document.createElement("span");qn.className="qn";qn.textContent=(i+1)+".";
+      t.appendChild(qn);t.appendChild(document.createTextNode("What is this matrix called?"));
+      card.appendChild(t);
+      var box=document.createElement("div");
+      box.style.cssText="display:flex;justify-content:center;margin:4px 0 14px;overflow-x:auto";
+      box.appendChild(matrixNode(item.m,{}));
+      card.appendChild(box);
+      var opts=document.createElement("div");opts.className="opts";
+      var why=document.createElement("p");why.className="why";why.hidden=true;why.textContent=item.w;
+      item.o.forEach(function(text,k){
+        var b=document.createElement("button");
+        b.className="opt";b.type="button";b.textContent=text;
+        b.addEventListener("click",function(){
+          if(card.dataset.done)return;
+          card.dataset.done="1";smAns++;
+          opts.querySelectorAll("button").forEach(function(x,xi){
+            x.disabled=true;if(xi===item.a)x.classList.add("right");
+          });
+          if(k!==item.a)b.classList.add("wrong");else smRight++;
+          why.hidden=false;smUpdate();
+        });
+        opts.appendChild(b);
+      });
+      card.appendChild(opts);card.appendChild(why);smHost.appendChild(card);
+    });
+  }
+  if(document.getElementById("smReset"))
+    document.getElementById("smReset").addEventListener("click",buildSM);
+  buildSM();
+
+  /* ---------------- 4. step-through ---------------- */
+  var A=[[1,2],[3,4]],B=[[2,0],[1,3]],step=0,mulTry=false,mulDone={};
+  var ORDER=[[0,0],[0,1],[1,0],[1,1]];
+  var mulEq=document.getElementById("mulEq"),mulWork=document.getElementById("mulWork");
+  function product(){
+    var C=[[0,0],[0,0]];
+    for(var i=0;i<2;i++)for(var j=0;j<2;j++)C[i][j]=A[i][0]*B[0][j]+A[i][1]*B[1][j];
+    return C;
+  }
+  function renderMul(){
+    mulEq.textContent="";
+    var C=product(),shown=[["",""],["",""]];
+    for(var k=0;k<step;k++){
+      var p=ORDER[k];
+      shown[p[0]][p[1]]=(!mulTry||mulDone[k])?C[p[0]][p[1]]:"?";
+    }
+    var nA=matrixNode(A,{editable:true,target:A,name:"Matrix A"});
+    var nB=matrixNode(B,{editable:true,target:B,name:"Matrix B"});
+    var nC=matrixNode(shown,{});
+    var o1=document.createElement("span");o1.className="op";o1.textContent="×";
+    var o2=document.createElement("span");o2.className="op";o2.textContent="=";
+    mulEq.appendChild(nA);mulEq.appendChild(o1);mulEq.appendChild(nB);
+    mulEq.appendChild(o2);mulEq.appendChild(nC);
+    if(step>=1&&step<=4){
+      var q=ORDER[step-1],i=q[0],j=q[1];
+      nA.querySelectorAll("td").forEach(function(td){if(+td.dataset.r===i)td.classList.add("rowHit");});
+      nB.querySelectorAll("td").forEach(function(td){if(+td.dataset.c===j)td.classList.add("colHit");});
+      nC.querySelectorAll("td").forEach(function(td){
+        if(+td.dataset.r===i&&+td.dataset.c===j)td.classList.add("cellHit");
+        else if(td.textContent!=="")td.classList.add("done");
+      });
+    }
+    var next=document.getElementById("mNext"),prev=document.getElementById("mPrev");
+    document.getElementById("mStep").textContent="Step "+step+" of 4";
+    prev.disabled=step===0;next.disabled=step===4;
+    next.textContent=step===0?"Start":step===4?"Done":"Next entry";
+    if(step===0){
+      mulWork.innerHTML='Press <b style="font-family:var(--mono)">&nbsp;Start&nbsp;</b> to take the first entry.';
+      return;
+    }
+    var p2=ORDER[step-1],ii=p2[0],jj=p2[1],sub=(ii+1)+""+(jj+1);
+    var val=A[ii][0]*B[0][jj]+A[ii][1]*B[1][jj];
+    var full="(AB)<sub>"+sub+"</sub> &nbsp;=&nbsp; "+
+      A[ii][0]+"("+B[0][jj]+")"+" + "+A[ii][1]+"("+B[1][jj]+")"+
+      " = <span class='hl'>"+val+"</span>";
+    if(!mulTry||mulDone[step-1]){mulWork.innerHTML=full;return;}
+
+    /* try it yourself: work the entry out before the page shows it */
+    mulWork.textContent="";
+    var row=document.createElement("div");row.className="tryrow";
+    var lbl=document.createElement("span");
+    lbl.innerHTML="(AB)<sub>"+sub+"</sub> =";
+    var inp=document.createElement("input");
+    inp.type="number";inp.className="vin";
+    inp.setAttribute("aria-label","Your answer for entry "+sub);
+    var chk=document.createElement("button");
+    chk.className="btn";chk.type="button";chk.textContent="Check";
+    var sw=document.createElement("button");
+    sw.className="btn";sw.type="button";sw.textContent="Show working";
+    var fb=document.createElement("span");fb.className="vfb";
+    chk.addEventListener("click",function(){
+      var v=parseFloat(inp.value);
+      inp.classList.remove("ok","no");fb.classList.remove("ok","no");
+      if(isNaN(v)){fb.textContent="Type a number first.";return;}
+      if(v===val){mulDone[step-1]=true;renderMul();}
+      else{
+        inp.classList.add("no");fb.classList.add("no");
+        fb.textContent="Not quite. Pair row "+(ii+1)+" of A with column "+(jj+1)+" of B.";
+      }
+    });
+    sw.addEventListener("click",function(){mulDone[step-1]=true;renderMul();});
+    inp.addEventListener("keydown",function(ev){if(ev.key==="Enter"){ev.preventDefault();chk.click();}});
+    row.appendChild(lbl);row.appendChild(inp);row.appendChild(chk);row.appendChild(sw);row.appendChild(fb);
+    mulWork.appendChild(row);
+    inp.focus();
+  }
+  document.getElementById("mNext").addEventListener("click",function(){if(step<4){step++;renderMul();}});
+  document.getElementById("mPrev").addEventListener("click",function(){if(step>0){step--;renderMul();}});
+  document.getElementById("mTry").addEventListener("click",function(){
+    mulTry=!mulTry;mulDone={};
+    this.setAttribute("aria-pressed",String(mulTry));
+    this.textContent=mulTry?"Just show me":"Try it yourself";
+    renderMul();
+  });
+  document.getElementById("mReset").addEventListener("click",function(){
+    A=[[1,2],[3,4]];B=[[2,0],[1,3]];step=0;mulDone={};renderMul();
+  });
+  renderMul();
+
+  /* ---------------- 4b. dimension gallery ---------------- */
+  var CASES=[
+    {a:[2,3],b:[3,4],w:"Yes. A has 3 columns and B has 3 rows. The answer is 2 × 4."},
+    {a:[3,4],b:[2,3],w:"No. A has 4 columns but B has only 2 rows. The numbers do not match."},
+    {a:[2,2],b:[2,2],w:"Yes. Both matrices are 2 × 2. The answer is also 2 × 2."},
+    {a:[1,3],b:[3,1],w:"Yes. The inner numbers match. The answer is 1 × 1, which contains one number. This is the dot product."},
+    {a:[3,1],b:[1,3],w:"Yes. The inner numbers match. The answer is 3 × 3."},
+    {a:[2,3],b:[2,3],w:"No. Both matrices are 2 × 3, but the inner numbers do not match."},
+    {a:[4,1],b:[1,1],w:"Yes. A has 1 column and B has 1 row. The answer is 4 × 1."},
+    {a:[3,2],b:[2,5],w:"Yes. A has 2 columns and B has 2 rows. The answer is 3 × 5."}
+  ];
+  var gal=document.getElementById("gallery"),fscoreEl=document.getElementById("fscore");
+  var order=CASES.slice(),fCalled=0,fRight=0;
+  function fscore(){
+    fscoreEl.textContent=fCalled===0?"0 of "+order.length+" called":
+      fCalled<order.length?fCalled+" of "+order.length+" called, "+fRight+" right":
+      "All "+order.length+" called — "+fRight+" right";
+  }
+  function makeCard(cs,i){
+    var ok=cs.a[1]===cs.b[0];
+    var card=document.createElement("div");card.className="flash";
+    var inner=document.createElement("div");inner.className="flash-inner";
+
+    var front=document.createElement("div");front.className="face front";
+    front.innerHTML='<span class="ftag">Card '+(i+1)+'</span>'+
+      '<div class="fx">('+cs.a[0]+' × <span class="inner">'+cs.a[1]+'</span>)'+
+      '(<span class="inner">'+cs.b[0]+'</span> × '+cs.b[1]+')</div>'+
+      '<p class="fq">Can these two be multiplied?</p>';
+    var fb=document.createElement("div");fb.className="fbtns";
+    var yes=document.createElement("button");yes.className="fbtn";yes.type="button";yes.textContent="Defined";
+    var no=document.createElement("button");no.className="fbtn";no.type="button";no.textContent="Not defined";
+    fb.appendChild(yes);fb.appendChild(no);front.appendChild(fb);
+
+    var back=document.createElement("div");back.className="face back "+(ok?"yes":"no");
+    back.innerHTML='<span class="ftag">'+(ok?"Defined":"Not defined")+'</span>'+
+      '<div class="fx">'+(ok?'= <span class="outer">'+cs.a[0]+' × '+cs.b[1]+'</span>':'no product exists')+'</div>';
+    var mark=document.createElement("p");mark.className="fmark";back.appendChild(mark);
+    var w=document.createElement("p");w.className="fw";w.textContent=cs.w;back.appendChild(w);
+    var bb=document.createElement("div");bb.className="fbtns";
+    var backBtn=document.createElement("button");
+    backBtn.className="fbtn small";backBtn.type="button";backBtn.textContent="Turn back";
+    bb.appendChild(backBtn);back.appendChild(bb);
+
+    function guess(said){
+      if(!card.dataset.called){
+        card.dataset.called="1";fCalled++;
+        if(said===ok){fRight++;mark.textContent="Called right";mark.className="fmark ok";}
+        else{mark.textContent="Called wrong";mark.className="fmark no";}
+        fscore();
+      }
+      setTurned(card,true);
+    }
+    yes.addEventListener("click",function(){guess(true);});
+    no.addEventListener("click",function(){guess(false);});
+    backBtn.addEventListener("click",function(){setTurned(card,false);});
+
+    inner.appendChild(front);inner.appendChild(back);card.appendChild(inner);
+    return card;
+  }
+  function buildCards(){
+    gal.textContent="";
+    order.forEach(function(cs,i){gal.appendChild(makeCard(cs,i));});
+  }
+  function resetAllBtn(){
+    var a=document.getElementById("fAll");a.dataset.on="0";a.textContent="Turn them all over";
+  }
+  document.getElementById("fAll").addEventListener("click",function(){
+    var on=this.dataset.on!=="1";
+    this.dataset.on=on?"1":"0";
+    this.textContent=on?"Turn them all back":"Turn them all over";
+    gal.querySelectorAll(".flash").forEach(function(c,i){
+      setTimeout(function(){setTurned(c,on);},i*70);
+    });
+  });
+  document.getElementById("fShuffle").addEventListener("click",function(){
+    for(var i=order.length-1;i>0;i--){
+      var j=Math.floor(Math.random()*(i+1)),t=order[i];order[i]=order[j];order[j]=t;
+    }
+    fCalled=0;fRight=0;buildCards();fscore();resetAllBtn();
+  });
+  document.getElementById("fReset").addEventListener("click",function(){
+    fCalled=0;fRight=0;buildCards();fscore();resetAllBtn();
+  });
+  buildCards();fscore();
+
+  /* ---------------- 4c. checker ---------------- */
+  ["ar","ac","br","bc"].forEach(function(id){
+    document.getElementById(id).addEventListener("input",checkDim);
+  });
+  function checkDim(){
+    var ar=+document.getElementById("ar").value,ac=+document.getElementById("ac").value;
+    var br=+document.getElementById("br").value,bc=+document.getElementById("bc").value;
+    var out=document.getElementById("dimOut");
+    if(ac===br){
+      out.className="verdict ok";
+      out.innerHTML="Yes. The inner numbers both read <span class='inner-mark'>"+ac+
+        "</span>. The answer is a "+ar+" × "+bc+" matrix.";
+    }else{
+      out.className="verdict no";
+      out.innerHTML="No. A has <span class='inner-mark'>"+ac+"</span> column"+(ac===1?"":"s")+
+        " but B has <span class='inner-mark'>"+br+"</span> row"+(br===1?"":"s")+
+        ", so the number of columns in A does not match the number of rows in B.";
+    }
+  }
+  checkDim();
+
+  /* ---------------- 5. transformations ---------------- */
+  var SHAPE=[[-0.7,-1],[-0.7,1],[0.7,1],[0.7,0.6],[-0.2,0.6],[-0.2,0.2],[0.5,0.2],[0.5,-0.2],[-0.2,-0.2],[-0.2,-1]];
+  var VB=330,MID=165,UNIT=34,NS="http://www.w3.org/2000/svg";
+  function el(n,at){var e=document.createElementNS(NS,n);for(var k in at)e.setAttribute(k,at[k]);return e;}
+  function apply3(M,p){
+    return [M[0][0]*p[0]+M[0][1]*p[1]+M[0][2], M[1][0]*p[0]+M[1][1]*p[1]+M[1][2]];
+  }
+  function pathOf(M){
+    return SHAPE.map(function(p,i){
+      var q=M?apply3(M,p):p;
+      return (i?"L":"M")+(MID+q[0]*UNIT).toFixed(1)+" "+(MID-q[1]*UNIT).toFixed(1);
+    }).join(" ")+" Z";
+  }
+  function drawCanvas(svg,M){
+    svg.textContent="";
+    for(var g=-4;g<=4;g++){
+      svg.appendChild(el("line",{x1:MID+g*UNIT,y1:0,x2:MID+g*UNIT,y2:VB,stroke:"var(--line)","stroke-width":1}));
+      svg.appendChild(el("line",{x1:0,y1:MID+g*UNIT,x2:VB,y2:MID+g*UNIT,stroke:"var(--line)","stroke-width":1}));
+    }
+    svg.appendChild(el("line",{x1:0,y1:MID,x2:VB,y2:MID,stroke:"var(--muted)","stroke-width":1.5}));
+    svg.appendChild(el("line",{x1:MID,y1:0,x2:MID,y2:VB,stroke:"var(--muted)","stroke-width":1.5}));
+    svg.appendChild(el("circle",{cx:MID,cy:MID,r:3,fill:"var(--muted)"}));
+    svg.appendChild(el("path",{d:pathOf(null),fill:"none",stroke:"var(--muted)","stroke-width":1.6,"stroke-dasharray":"5 4"}));
+    if(M)svg.appendChild(el("path",{d:pathOf(M),fill:"var(--accent-fill)",stroke:"var(--accent)","stroke-width":2.4}));
+  }
+  function mul3(X,Y){
+    var R=[[0,0,0],[0,0,0],[0,0,0]];
+    for(var i=0;i<3;i++)for(var j=0;j<3;j++){
+      var s=0;for(var k=0;k<3;k++)s+=X[i][k]*Y[k][j];
+      R[i][j]=s;
+    }
+    return R;
+  }
+  function Tm(tx,ty){return [[1,0,tx],[0,1,ty],[0,0,1]];}
+  function Rm(deg){var t=deg*Math.PI/180,c=Math.cos(t),s=Math.sin(t);
+    return [[c,-s,0],[s,c,0],[0,0,1]];}
+  function Sm(sx,sy){return [[sx,0,0],[0,sy,0],[0,0,1]];}
+  function fmt(n){var v=Math.round(n*100)/100;return (Object.is(v,-0)?0:v).toString();}
+
+  var ang=document.getElementById("pAng"),sx=document.getElementById("pSx"),sy=document.getElementById("pSy"),
+      tx=document.getElementById("pTx"),ty=document.getElementById("pTy");
+  function refreshT(){
+    var a=+ang.value,X=+sx.value,Y=+sy.value,U=+tx.value,V=+ty.value;
+    document.getElementById("pAngV").textContent=a+"°";
+    document.getElementById("pSxV").textContent=X.toFixed(1);
+    document.getElementById("pSyV").textContent=Y.toFixed(1);
+    document.getElementById("pTxV").textContent=U.toFixed(1);
+    document.getElementById("pTyV").textContent=V.toFixed(1);
+    var M=mul3(Tm(U,V),mul3(Rm(a),Sm(X,Y)));
+    drawCanvas(document.getElementById("tbox"),M);
+    var box=document.getElementById("tMatrix");box.textContent="";
+    box.appendChild(matrixNode(M.map(function(r){return r.map(fmt);}),{}));
+    var det=M[0][0]*M[1][1]-M[0][1]*M[1][0];
+    document.getElementById("tDet").textContent=fmt(det);
+    var area=Math.abs(det);
+    document.getElementById("tArea").textContent=
+      area<0.005?"flattened onto a line":Math.abs(area-1)<0.005?"unchanged":fmt(area)+" times the original";
+    document.getElementById("tInv").textContent=area<0.005?"no, it has no inverse":"yes";
+  }
+  [ang,sx,sy,tx,ty].forEach(function(s){s.addEventListener("input",refreshT);});
+
+  var PRESETS=[
+    {n:"Reset",v:[0,1,1,0,0]},
+    {n:"Rotate 45°",v:[45,1,1,0,0]},
+    {n:"Rotate 90°",v:[90,1,1,0,0]},
+    {n:"Scale × 1.5",v:[0,1.5,1.5,0,0]},
+    {n:"Stretch x",v:[0,2,1,0,0]},
+    {n:"Translate",v:[0,1,1,2,1]},
+    {n:"Flip in y",v:[0,-1,1,0,0]},
+    {n:"Flatten",v:[0,1,0,0,0]}
+  ];
+  var ph=document.getElementById("presets");
+  PRESETS.forEach(function(p){
+    var b=document.createElement("button");
+    b.className="btn";b.type="button";b.textContent=p.n;
+    b.addEventListener("click",function(){
+      ang.value=p.v[0];sx.value=p.v[1];sy.value=p.v[2];tx.value=p.v[3];ty.value=p.v[4];
+      refreshT();
+    });
+    ph.appendChild(b);
+  });
+  refreshT();
+
+  /* order matters: T R versus R T */
+  var R90=Rm(90),T3=Tm(3,0);
+  drawCanvas(document.getElementById("oboxA"),mul3(T3,R90));
+  drawCanvas(document.getElementById("oboxB"),mul3(R90,T3));
+
+  /* ---------------- 4b. from numbers to movement ---------------- */
+  function PX(p){return [MID+p[0]*UNIT,MID-p[1]*UNIT];}
+  function gridBase(svg){
+    svg.textContent="";
+    for(var g=-4;g<=4;g++){
+      svg.appendChild(el("line",{x1:MID+g*UNIT,y1:0,x2:MID+g*UNIT,y2:VB,stroke:"var(--line)","stroke-width":1}));
+      svg.appendChild(el("line",{x1:0,y1:MID+g*UNIT,x2:VB,y2:MID+g*UNIT,stroke:"var(--line)","stroke-width":1}));
+    }
+    svg.appendChild(el("line",{x1:0,y1:MID,x2:VB,y2:MID,stroke:"var(--muted)","stroke-width":1.5}));
+    svg.appendChild(el("line",{x1:MID,y1:0,x2:MID,y2:VB,stroke:"var(--muted)","stroke-width":1.5}));
+    svg.appendChild(el("circle",{cx:MID,cy:MID,r:3,fill:"var(--muted)"}));
+  }
+  function polyD(pts){
+    return pts.map(function(p,i){var q=PX(p);return (i?"L":"M")+q[0].toFixed(1)+" "+q[1].toFixed(1);}).join(" ")+" Z";
+  }
+  function addDot(svg,p,fill){var q=PX(p);svg.appendChild(el("circle",{cx:q[0],cy:q[1],r:5.5,fill:fill}));}
+  function addRing(svg,p,stroke){
+    var q=PX(p);
+    svg.appendChild(el("circle",{cx:q[0],cy:q[1],r:5,fill:"none",stroke:stroke,"stroke-width":2,"stroke-dasharray":"3 2"}));
+  }
+  function lineBetween(svg,p,q,stroke,w,dash){
+    var a=PX(p),b=PX(q);
+    svg.appendChild(el("line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:stroke,
+      "stroke-width":w,"stroke-dasharray":dash||"0"}));
+  }
+  function addSeg(svg,p,q,stroke,dash){
+    var a=PX(p),b=PX(q);
+    svg.appendChild(el("line",{x1:a[0],y1:a[1],x2:b[0],y2:b[1],stroke:stroke,"stroke-width":2,"stroke-dasharray":dash||"4 3"}));
+  }
+  function addLabel(svg,p,text,fill,dx,dy){
+    var q=PX(p);
+    var t=el("text",{x:q[0]+(dx===undefined?10:dx),y:q[1]+(dy===undefined?-10:dy),fill:fill,
+      "font-size":"13","font-weight":"500","font-family":"IBM Plex Mono, ui-monospace, monospace"});
+    t.textContent=text;svg.appendChild(t);
+  }
+  function ap2(M,p){return [M[0][0]*p[0]+M[0][1]*p[1],M[1][0]*p[0]+M[1][1]*p[1]];}
+  function term(a,b){var s=fmt(a);if(a<0)s="("+s+")";return s+"("+fmt(b)+")";}
+
+  /* panel A */
+  var bAM=[[0,-1],[1,0]];
+  /* a path is the honest route from doing nothing to doing M. A rotation must travel
+     round the circle, not straight across, or the grid shrinks on the way. */
+  var bAPresets=[
+    {n:"Rotate 90°",M:[[0,-1],[1,0]],path:function(t){
+      var a=t*Math.PI/2,c=Math.cos(a),s=Math.sin(a);return [[c,-s],[s,c]];
+    }},
+    {n:"Stretch x",M:[[2,0],[0,1]]},
+    {n:"Shear",M:[[1,1],[0,1]]},
+    {n:"Flip in y",M:[[-1,0],[0,1]]}
+  ];
+  var bAPath=bAPresets[0].path;
+  function bAPoint(){
+    var px=parseFloat(document.getElementById("bAx").value);
+    var py=parseFloat(document.getElementById("bAy").value);
+    return [isNaN(px)?0:px,isNaN(py)?0:py];
+  }
+  /* the matrix part way between doing nothing and doing M */
+  function bALerp(t){
+    if(bAPath)return bAPath(t);
+    return [[1+(bAM[0][0]-1)*t, bAM[0][1]*t],
+            [bAM[1][0]*t, 1+(bAM[1][1]-1)*t]];
+  }
+  /* draw the whole grid carried by the matrix, so the point is seen to be taken along */
+  function bADraw(t){
+    var p=bAPoint(),Mt=bALerp(t),q=ap2(Mt,p),svg=document.getElementById("bA"),R=11;
+    svg.textContent="";
+    for(var g=-R;g<=R;g++){
+      var on=(g===0);
+      lineBetween(svg,ap2(Mt,[g,-R]),ap2(Mt,[g,R]),on?"var(--muted)":"var(--line)",on?1.6:1);
+      lineBetween(svg,ap2(Mt,[-R,g]),ap2(Mt,[R,g]),on?"var(--muted)":"var(--line)",on?1.6:1);
+    }
+    /* the two columns of the matrix: where (1,0) and (0,1) have been taken */
+    var iv=ap2(Mt,[1,0]),jv=ap2(Mt,[0,1]);
+    lineBetween(svg,[0,0],iv,"var(--good)",3.4);
+    lineBetween(svg,[0,0],jv,"var(--accent)",3.4);
+    addDot(svg,iv,"var(--good)");
+    addDot(svg,jv,"var(--accent)");
+    addLabel(svg,iv,"i","var(--good)",9,18);
+    addLabel(svg,jv,"j","var(--accent)",11,-8);
+    svg.appendChild(el("circle",{cx:MID,cy:MID,r:3,fill:"var(--muted)"}));
+    addSeg(svg,[0,0],p,"var(--muted)","4 3");
+    addRing(svg,p,"var(--muted)");
+    addLabel(svg,p,"p","var(--muted)");
+    if(t>0.02){
+      addSeg(svg,[0,0],q,"var(--hot)","0");
+      addDot(svg,q,"var(--hot)");
+      addLabel(svg,q,"Mp","var(--hot)");
+    }
+    document.getElementById("bACap").textContent=
+      t<0.01?"At rest. i and j are where they started":
+      t>0.99?"p has been carried to Mp":
+      "on the way: ("+fmt(Math.round(q[0]*10)/10)+", "+fmt(Math.round(q[1]*10)/10)+")";
+  }
+  function bAEquation(){
+    var p=bAPoint(),q=ap2(bAM,p);
+    var eq=document.getElementById("bAEq");eq.textContent="";
+    eq.appendChild(matrixNode(bAM.map(function(r){return r.map(fmt);}),{}));
+    var o=document.createElement("span");o.className="op";o.textContent="×";eq.appendChild(o);
+    eq.appendChild(matrixNode([[fmt(p[0])],[fmt(p[1])]],{}));
+    var e2=document.createElement("span");e2.className="op";e2.textContent="=";eq.appendChild(e2);
+    eq.appendChild(matrixNode([[fmt(q[0])],[fmt(q[1])]],{}));
+    document.getElementById("bAWork").innerHTML=
+      "x&prime; = "+term(bAM[0][0],p[0])+" + "+term(bAM[0][1],p[1])+" = <span class='hl'>"+fmt(q[0])+"</span><br>"+
+      "y&prime; = "+term(bAM[1][0],p[0])+" + "+term(bAM[1][1],p[1])+" = <span class='hl'>"+fmt(q[1])+"</span>";
+  }
+  var bAt=0,bARaf=null,bAStill=window.matchMedia("(prefers-reduced-motion: reduce)");
+  function bARefresh(){bAEquation();bADraw(bAt);}
+  function bAPlayLabel(){
+    document.getElementById("bAPlay").textContent=bAt?"Play it again":"Play the transformation";
+  }
+  function bAPlay(){
+    bAEquation();
+    if(bARaf)cancelAnimationFrame(bARaf);
+    bAt=1;bAPlayLabel();
+    if(bAStill.matches){bADraw(1);return;}
+    var t0=null,dur=2600;
+    (function step(ts){
+      if(t0===null)t0=ts;
+      var raw=Math.min(1,(ts-t0)/dur);
+      var e=raw<0.5?4*raw*raw*raw:1-Math.pow(-2*raw+2,3)/2;
+      bADraw(e);
+      if(raw<1)bARaf=requestAnimationFrame(step);else bARaf=null;
+    })(performance.now());
+  }
+  function bAReset(){
+    if(bARaf)cancelAnimationFrame(bARaf);
+    bARaf=null;bAt=0;bAPlayLabel();bAEquation();bADraw(0);
+  }
+  var bAPre=document.getElementById("bAPre");
+  bAPresets.forEach(function(p,i){
+    var b=document.createElement("button");
+    b.className="btn";b.type="button";b.textContent=p.n;
+    b.setAttribute("aria-pressed",String(i===0));
+    b.addEventListener("click",function(){
+      bAPre.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed","false");});
+      b.setAttribute("aria-pressed","true");
+      bAM=p.M;bAPath=p.path||null;bAt=0;bAPlay();
+    });
+    bAPre.appendChild(b);
+  });
+  document.getElementById("bAPlay").addEventListener("click",bAPlay);
+  document.getElementById("bABack").addEventListener("click",bAReset);
+  document.getElementById("bAx").addEventListener("input",bARefresh);
+  document.getElementById("bAy").addEventListener("input",bARefresh);
+  bARefresh();
+
+  /* panel B */
+  var SQ=[[1,1],[3,1],[3,2],[1,2]],bBM=[[0,-1],[1,0]],bBi=0;
+  function bBRefresh(){
+    var svg=document.getElementById("bB");
+    gridBase(svg);
+    svg.appendChild(el("path",{d:polyD(SQ),fill:"none",stroke:"var(--muted)","stroke-width":1.8,"stroke-dasharray":"5 4"}));
+    if(bBi===4){
+      svg.appendChild(el("path",{d:polyD(SQ.map(function(p){return ap2(bBM,p);})),
+        fill:"var(--accent-fill)",stroke:"var(--accent)","stroke-width":2.4}));
+    }
+    if(bBi>0)addSeg(svg,SQ[bBi-1],ap2(bBM,SQ[bBi-1]),"var(--hot)");
+    SQ.forEach(function(p,i){addRing(svg,p,i===bBi-1?"var(--hot)":"var(--muted)");});
+    for(var k=0;k<bBi;k++)addDot(svg,ap2(bBM,SQ[k]),k===bBi-1?"var(--hot)":"var(--accent)");
+
+    var Pv=[[1,3,3,1],[1,1,2,2]],res=[["","","",""],["","","",""]];
+    for(var j=0;j<bBi;j++){var r=ap2(bBM,SQ[j]);res[0][j]=fmt(r[0]);res[1][j]=fmt(r[1]);}
+    var eq=document.getElementById("bBEq");eq.textContent="";
+    var nM=matrixNode(bBM,{}),nP=matrixNode(Pv,{}),nR=matrixNode(res,{});
+    if(bBi>0){
+      nP.querySelectorAll("td").forEach(function(td){if(+td.dataset.c===bBi-1)td.classList.add("colHit");});
+      nR.querySelectorAll("td").forEach(function(td){
+        if(+td.dataset.c===bBi-1)td.classList.add("cellHit");
+        else if(td.textContent!=="")td.classList.add("done");
+      });
+    }
+    var o1=document.createElement("span");o1.className="op";o1.textContent="×";
+    var o2=document.createElement("span");o2.className="op";o2.textContent="=";
+    eq.appendChild(nM);eq.appendChild(o1);eq.appendChild(nP);eq.appendChild(o2);eq.appendChild(nR);
+
+    var w=document.getElementById("bBWork");
+    if(bBi===0){
+      w.innerHTML="The four columns of P are the four corners of the square.";
+    }else{
+      var s=SQ[bBi-1],t=ap2(bBM,s);
+      w.innerHTML="corner "+bBi+" = ("+fmt(s[0])+", "+fmt(s[1])+")<br>"+
+        "x&prime; = "+term(bBM[0][0],s[0])+" + "+term(bBM[0][1],s[1])+" = <span class='hl'>"+fmt(t[0])+"</span><br>"+
+        "y&prime; = "+term(bBM[1][0],s[0])+" + "+term(bBM[1][1],s[1])+" = <span class='hl'>"+fmt(t[1])+"</span>";
+    }
+    document.getElementById("bBCap").textContent=
+      bBi===0?"Dashed is the original square":
+      bBi===4?"All four corners moved, by one multiplication":
+      "Corner "+bBi+" on its way";
+    document.getElementById("bBStep").textContent="Corner "+bBi+" of 4";
+    var nx=document.getElementById("bBNext");
+    document.getElementById("bBPrev").disabled=bBi===0;
+    nx.disabled=bBi===4;
+    nx.textContent=bBi===0?"Start":bBi===4?"Done":"Next corner";
+  }
+  document.getElementById("bBNext").addEventListener("click",function(){if(bBi<4){bBi++;bBRefresh();}});
+  document.getElementById("bBPrev").addEventListener("click",function(){if(bBi>0){bBi--;bBRefresh();}});
+  bBRefresh();
+
+  /* panel C */
+  var bCp=[2,1],bCS=[[2,0],[0,1]],bCR=[[0,-1],[1,0]],bCi=0;
+  function bCRefresh(){
+    var svg=document.getElementById("bC");
+    gridBase(svg);
+    var p1=ap2(bCS,bCp),p2=ap2(bCR,p1);
+    addRing(svg,bCp,"var(--muted)");
+    addLabel(svg,bCp,"p","var(--muted)");
+    if(bCi>=1){addSeg(svg,bCp,p1,"var(--hot)");addDot(svg,p1,"var(--hot)");addLabel(svg,p1,"Sp","var(--hot)");}
+    if(bCi>=2){addSeg(svg,p1,p2,"var(--accent)");addDot(svg,p2,"var(--accent)");addLabel(svg,p2,"R(Sp)","var(--accent)");}
+    var w=document.getElementById("bCWork"),lines=["p = (2, 1)"];
+    if(bCi>=1)lines.push("Sp = ("+fmt(p1[0])+", "+fmt(p1[1])+")&nbsp;&nbsp;stretched");
+    if(bCi>=2)lines.push("R(Sp) = (<span class='hl'>"+fmt(p2[0])+", "+fmt(p2[1])+"</span>)&nbsp;&nbsp;turned");
+    w.innerHTML=lines.join("<br>");
+    document.getElementById("bCCap").textContent=
+      bCi===0?"The point at rest":bCi===1?"Stretched along x by S":"Then turned a quarter circle by R";
+    var nx=document.getElementById("bCNext");
+    nx.textContent=bCi===0?"Stretch it with S":bCi===1?"Now turn it with R":"Fold them into one matrix";
+    nx.disabled=bCi>=3;
+    if(bCi>=3)nx.textContent="Folded";
+    var comb=document.getElementById("bCCombine");
+    comb.hidden=bCi<3;
+    if(bCi>=3){
+      var RS=[[bCR[0][0]*bCS[0][0]+bCR[0][1]*bCS[1][0],bCR[0][0]*bCS[0][1]+bCR[0][1]*bCS[1][1]],
+              [bCR[1][0]*bCS[0][0]+bCR[1][1]*bCS[1][0],bCR[1][0]*bCS[0][1]+bCR[1][1]*bCS[1][1]]];
+      var eq=document.getElementById("bCEq");eq.textContent="";
+      eq.appendChild(matrixNode(bCR,{}));
+      var o1=document.createElement("span");o1.className="op";o1.textContent="×";eq.appendChild(o1);
+      eq.appendChild(matrixNode(bCS,{}));
+      var o2=document.createElement("span");o2.className="op";o2.textContent="=";eq.appendChild(o2);
+      eq.appendChild(matrixNode(RS,{}));
+    }
+  }
+  document.getElementById("bCNext").addEventListener("click",function(){if(bCi<3){bCi++;bCRefresh();}});
+  document.getElementById("bCReset").addEventListener("click",function(){bCi=0;bCRefresh();});
+  bCRefresh();
+
+  /* ---------------- 6. transpose and inverse ---------------- */
+  var transposed=false;
+  function showTp(){
+    var host=document.getElementById("tpEq");host.textContent="";
+    var vals=transposed?[[1,4],[2,5],[3,6]]:[[1,2,3],[4,5,6]];
+    var node=matrixNode(vals,{});
+    node.querySelectorAll("td").forEach(function(td){
+      var r=+td.dataset.r,c=+td.dataset.c;
+      if(transposed?(r===0&&c===1):(r===1&&c===0))td.classList.add("cellHit");
+    });
+    host.appendChild(node);
+    var lbl=document.createElement("span");lbl.className="step";
+    lbl.textContent=transposed?"3 × 2, the 4 moved to row 1":"2 × 3, the 4 sits in row 2";
+    host.appendChild(lbl);
+    document.getElementById("tpBtn").textContent=transposed?"Put it back":"Transpose it";
+  }
+  document.getElementById("tpBtn").addEventListener("click",function(){transposed=!transposed;showTp();});
+  showTp();
+
+  var istate=0,IR=Rm(90),IRinv=Rm(-90);
+  function showInv(){
+    var M=istate===0?null:istate===1?IR:mul3(IRinv,IR);
+    drawCanvas(document.getElementById("ibox"),M);
+    document.getElementById("iCap").textContent=
+      istate===0?"At rest":istate===1?"Rotated by R":"R inverse applied, back where it started";
+    document.getElementById("invBtn").textContent=
+      istate===0?"Rotate":istate===1?"Apply the inverse":"Start again";
+  }
+  document.getElementById("invBtn").addEventListener("click",function(){istate=(istate+1)%3;showInv();});
+  showInv();
+
+  /* ---------------- 7. quiz ---------------- */
+  var QS=[
+    {q:"What is the size of the matrix [5 1 0; 2 7 3]?",
+     o:["3 × 2","2 × 3","6"],a:1,
+     w:"Count the rows first, then the columns. Two rows and three columns gives 2 × 3. The 6 is how many entries it holds, which is not its size."},
+    {q:"A = [3 1; 0 4] and B = [2 5; 6 1]. What is the entry in row 2, column 1 of A + B?",
+     o:["5","7","6"],a:2,
+     w:"Addition pairs entries in the same position. Row 2, column 1 of A is 0 and of B is 6, so the answer is 0 + 6 = 6. No other entry is involved."},
+    {q:"C = [4 −2; 1 5]. What is the entry in row 1, column 2 of 3C?",
+     o:["−6","6","−2"],a:0,
+     w:"A scalar multiplies every entry, and the entry in row 1, column 2 is −2. So 3 × (−2) = −6. The sign comes along with the number."},
+    {q:"P is 4 × 2 and Q is 2 × 5. Can PQ be worked out, and what size would it be?",
+     o:["No, the sizes do not match","Yes, and it is 2 × 2","Yes, and it is 4 × 5"],a:2,
+     w:"The two inner numbers are both 2, so a row of P and a column of Q are the same length and the product exists. The outer numbers, 4 and 5, give its size."},
+    {q:"A = [2 3; 1 0] and B = [4 1; 5 2]. What is the entry in row 1, column 1 of AB?",
+     o:["11","23","8"],a:1,
+     w:"Pair row 1 of A, which is 2 and 3, with column 1 of B, which is 4 and 5. That gives 2(4) + 3(5) = 8 + 15 = 23. The 11 comes from using row 1 of B by mistake, and the 8 from stopping after the first product."},
+    {q:"A and B are both 2 × 2 matrices. Is AB always the same as BA?",
+     o:["No, the order usually changes the answer","Yes, multiplication always gives the same result either way","Yes, as long as both matrices are square"],a:0,
+     w:"Row 1 of A meeting column 1 of B is not the same pairing as row 1 of B meeting column 1 of A, so the two products are generally different matrices. Being square does not help."}
+  ];
+  var answered=0,correct=0;
+  var qhost=document.getElementById("quiz"),scoreEl=document.getElementById("score");
+  function updateScore(){
+    scoreEl.textContent=answered===0?"0 of "+QS.length+" answered":
+      answered<QS.length?answered+" of "+QS.length+" answered":
+      "All answered — "+correct+" of "+QS.length+" correct";
+  }
+  function buildQuiz(){
+    qhost.textContent="";answered=0;correct=0;updateScore();
+    QS.forEach(function(item,i){
+      var card=document.createElement("div");card.className="q";
+      var t=document.createElement("div");t.className="qt";
+      var qn=document.createElement("span");qn.className="qn";qn.textContent=(i+1)+".";
+      t.appendChild(qn);t.appendChild(document.createTextNode(item.q));
+      card.appendChild(t);
+      var opts=document.createElement("div");opts.className="opts";
+      var why=document.createElement("p");why.className="why";why.hidden=true;why.textContent=item.w;
+      item.o.forEach(function(text,k){
+        var b=document.createElement("button");
+        b.className="opt";b.type="button";b.textContent=text;
+        b.addEventListener("click",function(){
+          if(card.dataset.done)return;
+          card.dataset.done="1";answered++;
+          opts.querySelectorAll("button").forEach(function(x,xi){
+            x.disabled=true;if(xi===item.a)x.classList.add("right");
+          });
+          if(k!==item.a)b.classList.add("wrong");else correct++;
+          why.hidden=false;updateScore();
+        });
+        opts.appendChild(b);
+      });
+      card.appendChild(opts);card.appendChild(why);qhost.appendChild(card);
+    });
+  }
+  document.getElementById("quizReset").addEventListener("click",buildQuiz);
+  buildQuiz();
+})();
+</script>

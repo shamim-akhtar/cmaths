@@ -48,9 +48,30 @@ This lab supports Tutorial 02. It covers matrices, matrix operations and their a
 | 09 | Transpose and inverse | Explore the transpose and inverse of a matrix. |
 | 10 | Exit quiz | Complete six questions to check your understanding. |
 
+## Week 3: Determinants and Inverses
+
+https://shamim-akhtar.github.io/cmaths/week03/
+
+This lab supports Tutorial 03. It covers the transpose, determinants, the adjoint and the inverse of 2×2 and 3×3 matrices, and how the inverse is used to undo a transformation.
+
+| Station | Topic | What students can do |
+|---|---|---|
+| 01 | Week 2 recall | Review matrix order, the identity matrix and multiplication using flashcards and quick checks. |
+| 02 | The transpose | Watch rows become columns. Predict the order of a transpose and locate an entry. |
+| 03 | What is a determinant? | Learn to calculate a 2×2 determinant, decide whether a matrix has an inverse, then change the matrix and see what happens to a square. |
+| 04 | Finding the inverse of a 2×2 matrix | Build the inverse one step at a time, check it by multiplication, and apply it to undo a transformation. |
+| 05 | 3×3 determinant | Expand along the first row with the row and column crossed out at each step. Pick out the correct minor. |
+| 06 | 3×3 inverse | Find all nine cofactors with feedback on sign errors, transpose into the adjoint, divide by the determinant and verify. |
+| 07 | Guided practice | Three worked problems in Learn mode, which reveals the working line by line, or Practice mode, which checks each stage. |
+| 08 | Tutorial questions and LMS quiz | Work through the Tutorial 03 questions and three extra questions stage by stage, with hints and working on request. |
+| 09 | Undoing a transformation | See how a game engine uses the inverse to go from screen coordinates back to a sprite, and why a flattened sprite cannot be recovered. |
+| 10 | Exit quiz | Complete six questions to check your understanding. |
+
+The official LMS quiz for Tutorial 03 is separate and is not replaced by this page.
+
 ## Interactive Features
 
-Both labs include interactive activities to help students learn and practise.
+The labs include interactive activities to help students learn and practise.
 
 - **Interactive diagrams:** Move points, change values and see how the results change.
 - **Worked examples:** Follow calculations one step at a time.
@@ -85,12 +106,14 @@ These sections are marked as optional. Students can explore them to see how math
 index.html          Main page with links to the weekly labs
 week01/index.html   Week 1: Vectors
 week02/index.html   Week 2: Matrices
+week03/index.html   Week 3: Determinants and inverses
+src/                Editable sources and build scripts
 .nojekyll           GitHub Pages configuration
 ```
 
 ## Adding a New Week
 
-1. Create a new folder, such as `week03`.
+1. Create a new folder, such as `week04`.
 2. Add the `index.html` file to the folder.
 3. Add the new week to the main page.
 4. Update the week links in the existing labs.

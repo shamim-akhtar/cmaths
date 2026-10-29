@@ -1,0 +1,704 @@
+<div class="clock">
+  <div class="wrap clock-inner">
+    <div class="clock-title">Tutorial 01<span>Vectors</span></div>
+    <a href="#s1"><span class="t">0&ndash;8</span><span class="n">What a vector is</span></a>
+    <a href="#s2"><span class="t">8&ndash;20</span><span class="n">Adding &amp; subtracting</span></a>
+    <a href="#s3"><span class="t">20&ndash;28</span><span class="n">Scalar multiples</span></a>
+    <a href="#s4"><span class="t">28&ndash;40</span><span class="n">Magnitude &amp; unit vectors</span></a>
+    <span class="brk"><span class="t">40&ndash;48</span><span class="n">Break</span></span>
+    <a href="#s5"><span class="t">48&ndash;66</span><span class="n">The dot product</span></a>
+    <a href="#s6"><span class="t">66&ndash;78</span><span class="n">Angle between vectors</span></a>
+    <a href="#s7"><span class="t">78&ndash;90</span><span class="n">Parallel &amp; perpendicular</span></a>
+    <a href="#s8" class="opt"><span class="t">90&ndash;100</span><span class="n">Vectors in 3D</span></a>
+    <a href="#s9"><span class="t">100&ndash;112</span><span class="n">Practice questions</span></a>
+    <a href="#s10"><span class="t">112&ndash;120</span><span class="n">Exit quiz</span></a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <nav class="weeknav" aria-label="Weeks">
+      <a class="on" aria-current="page" href="https://shamim-akhtar.github.io/cmaths/week01/"><span class="wk">Week 1</span><span class="wt">Vectors</span></a>
+      <a href="https://shamim-akhtar.github.io/cmaths/week02/"><span class="wk">Week 2</span><span class="wt">Matrices</span></a>
+      <a href="https://shamim-akhtar.github.io/cmaths/week03/"><span class="wk">Week 3</span><span class="wt">Determinants &amp; inverses</span></a>
+    </nav>
+    <div class="hero-top">
+      <span class="eyebrow">Computing Mathematics &middot; Tutorial 01 &middot; Two hours</span>
+      <span class="hero-btns">
+        <button class="theme-btn" id="oneBtn" type="button" aria-pressed="true"
+          title="Left and right arrow keys move between stations">Show all</button>
+        <button class="theme-btn" id="themeBtn" type="button">Theme</button>
+      </span>
+    </div>
+    <h1>Vectors and Vector Operations</h1>
+    <p class="sub">A vector describes a quantity that has both a size and a direction. Computing uses vectors
+      everywhere: the position of a character in a game, the direction a camera is facing, the velocity of a moving
+      object, and the colour of a pixel. In this lesson you will learn what a vector is, how to add and scale
+      vectors, how to measure a vector's length, and how the dot product compares two directions.</p>
+  </header>
+
+  <!-- ============ 1 ============ -->
+  <section class="station" id="s1">
+    <div class="station-head"><span class="num">01</span><h2>What a vector is</h2><span class="eyebrow">0&ndash;8 min</span></div>
+    <p class="lede">A <b>scalar</b> has a size only. A <b>vector</b> has a size and a direction. A temperature of
+      20&nbsp;&deg;C is a scalar. A wind of 20&nbsp;km/h blowing north is a vector, because the direction matters
+      as much as the number.</p>
+
+    <div class="panel">
+      <h3>Drag the tip of the arrow</h3>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="p1" viewBox="0 0 340 340" role="img" aria-label="A grid with a draggable vector arrow from the origin"></svg>
+          <div class="capt">Drag the blue dot, or use the arrow keys</div>
+        </div>
+        <div>
+          <div class="prose">
+            <p>The arrow starts at the origin \((0,\,0)\). The tip of the arrow shows its \(x\) and \(y\)
+              <b>components</b>. These tell us how far the arrow goes horizontally and vertically.</p>
+          </div>
+          <div class="math-tint">
+            <div class="math" id="p1eq">\[ \mathbf{a} = (3,\,2) \]</div>
+            <p style="font-size:.9rem;color:var(--muted)">The same vector is often written as a column instead,
+              which is the form used in Tutorial 02.</p>
+          </div>
+          <div style="margin-top:16px">
+            <div class="stat"><span class="k">Across, the \(x\) component</span><span class="v" id="p1x">3</span></div>
+            <div class="stat"><span class="k">Up, the \(y\) component</span><span class="v" id="p1y">2</span></div>
+            <div class="stat"><span class="k">Length</span><span class="v" id="p1m">3.61</span></div>
+          </div>
+          <div class="btnrow" style="margin-top:16px">
+            <button class="btn" id="p1Reset" type="button">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Position does not matter</h3>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="p1b" viewBox="0 0 340 340" role="img" aria-label="Four identical arrows drawn at different places on the grid, then moved onto the origin"></svg>
+          <div class="capt" id="p1bcap">Four arrows, four starting points</div>
+        </div>
+        <div>
+          <div class="prose">
+            <p>All four arrows below are the <b>same vector</b>. Each one goes 3 across and 2 up, so each one has
+              the same length and the same direction. Where a vector sits on the grid is not part of what it is.</p>
+            <p>Press the button and watch them slide onto the origin. The arrows overlap because they have the
+              same length and direction.</p>
+          </div>
+          <div class="math-tint">
+            <div class="math">\[ \mathbf{a} = (3,\,2) \quad\text{wherever it is drawn} \]</div>
+          </div>
+          <div class="btnrow" style="margin-top:4px">
+            <button class="btn primary" id="p1bPlay" type="button">Move them to the origin</button>
+            <button class="btn" id="p1bReset" type="button">Spread them out again</button>
+          </div>
+          <p class="prose" style="color:var(--muted);font-size:.92rem;margin-top:16px">This is why a vector is
+            written as two numbers and nothing else. A <b>point</b> needs a position, because a point is a place. A
+            vector does not, because a vector is a movement: so far across and so far up, starting from wherever
+            you happen to be.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Three things worth remembering</h3>
+      <div class="sgal" id="w1cards"></div>
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section class="station" id="s2">
+    <div class="station-head"><span class="num">02</span><h2>Adding and subtracting vectors</h2><span class="eyebrow">8&ndash;20 min</span></div>
+    <p class="lede">To add two vectors, add the matching components. To subtract, subtract the matching components.
+      The picture explains why: place the second arrow at the tip of the first, and the answer is the arrow from
+      the start of the first to the tip of the second.</p>
+
+    <div class="panel">
+      <h3>Watch it happen</h3>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="p2" viewBox="0 0 340 340" role="img" aria-label="Two vectors joined tip to tail with the resultant drawn"></svg>
+          <div class="capt" id="p2cap">Green a, blue b, orange answer</div>
+        </div>
+        <div>
+          <div class="prose">
+            <p>Press <b>Play</b>. The blue arrow slides across until its tail sits on the tip of the green arrow.
+              The orange arrow is the answer, drawn from the start of the green arrow to the tip of the blue one.</p>
+            <p>For subtraction the blue arrow is reversed first, because \(\mathbf{a} - \mathbf{b}\) is the same as
+              \(\mathbf{a} + (-\mathbf{b})\).</p>
+          </div>
+          <div class="math-tint">
+            <div class="math" id="p2eq"></div>
+          </div>
+          <div class="btnrow" style="margin-top:4px">
+            <button class="btn primary" id="p2Play" type="button">Play</button>
+            <button class="btn" id="p2Mode" type="button" aria-pressed="false">Switch to subtraction</button>
+            <button class="btn" id="p2Reset" type="button">Back to the start</button>
+          </div>
+          <div class="ctl" style="margin-top:18px">
+            <label><span>Change \(\mathbf{a}\)</span><span class="v" id="p2av">(3, 1)</span></label>
+            <div class="vrow">
+              <span class="vsep">(</span>
+              <input type="number" class="vin" id="p2ax" value="3" min="-5" max="5" step="1" aria-label="a across">
+              <span class="vsep">,</span>
+              <input type="number" class="vin" id="p2ay" value="1" min="-5" max="5" step="1" aria-label="a up">
+              <span class="vsep">)</span>
+            </div>
+          </div>
+          <div class="ctl">
+            <label><span>Change \(\mathbf{b}\)</span><span class="v" id="p2bv">(1, 3)</span></label>
+            <div class="vrow">
+              <span class="vsep">(</span>
+              <input type="number" class="vin" id="p2bx" value="1" min="-5" max="5" step="1" aria-label="b across">
+              <span class="vsep">,</span>
+              <input type="number" class="vin" id="p2by" value="3" min="-5" max="5" step="1" aria-label="b up">
+              <span class="vsep">)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>The same thing with numbers</h3>
+      <div class="prose" style="margin-top:12px">
+        <p>Addition and subtraction work on one component at a time. The two vectors must have the same number of
+          components.</p>
+      </div>
+      <div class="math-tint">
+        <div class="math">\[ (a_1,\,a_2) + (b_1,\,b_2) = (a_1 + b_1,\; a_2 + b_2) \qquad (a_1,\,a_2) - (b_1,\,b_2) = (a_1 - b_1,\; a_2 - b_2) \]</div>
+      </div>
+      <div class="math">\[ (3,\,1) + (1,\,3) = (3 + 1,\; 1 + 3) = (4,\,4) \qquad (3,\,1) - (1,\,3) = (3 - 1,\; 1 - 3) = (2,\,-2) \]</div>
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section class="station" id="s3">
+    <div class="station-head"><span class="num">03</span><h2>Scalar multiples</h2><span class="eyebrow">20&ndash;28 min</span></div>
+    <p class="lede">Multiplying a vector by a number multiplies every component by that number, which changes its
+      length. A positive number keeps its direction. A negative number reverses its direction. Multiplying by zero
+      gives the zero vector.</p>
+
+    <div class="panel">
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="p3" viewBox="0 0 340 340" role="img" aria-label="A vector and a scaled copy of it"></svg>
+          <div class="capt">Dashed grey is the original vector</div>
+        </div>
+        <div>
+          <div class="math-tint">
+            <div class="math" id="p3eq"></div>
+          </div>
+          <div class="ctl">
+            <label><span>The scalar \(k\)</span><span class="v" id="p3kv">2</span></label>
+            <input type="range" id="p3k" min="-3" max="3" step="0.25" value="2" aria-label="scalar k">
+          </div>
+          <div style="margin-top:14px">
+            <div class="stat"><span class="k">Length of \(\mathbf{a}\)</span><span class="v">3.61</span></div>
+            <div class="stat"><span class="k">Length of \(k\mathbf{a}\)</span><span class="v" id="p3m">7.21</span></div>
+            <div class="stat"><span class="k">Direction</span><span class="v" id="p3d">Unchanged</span></div>
+          </div>
+          <p class="prose" style="color:var(--muted);font-size:.92rem;margin-top:16px">The new length is the
+            original length multiplied by the absolute value of \(k\). For example, multiplying by \(-2\) doubles
+            the length and reverses the direction. Setting \(k\) to \(0\) gives the zero vector, which has no
+            direction at all.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section class="station" id="s4">
+    <div class="station-head"><span class="num">04</span><h2>Magnitude and unit vectors</h2><span class="eyebrow">28&ndash;40 min</span></div>
+    <p class="lede">The <b>magnitude</b> of a vector is its length, written \(|\mathbf{a}|\). A <b>unit vector</b>
+      has length 1. It shows the direction of the original vector, which is why graphics code uses unit vectors to
+      describe which way something is facing.</p>
+
+    <div class="panel">
+      <h3>Magnitude comes from Pythagoras</h3>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="p4" viewBox="0 0 340 340" role="img" aria-label="A vector with its x and y components drawn as a right-angled triangle"></svg>
+          <div class="capt">The two components form a right-angled triangle</div>
+        </div>
+        <div>
+          <div class="prose">
+            <p>The \(x\) component and the \(y\) component are the two short sides of a right-angled triangle. The
+              vector itself is the hypotenuse, so its length comes straight from Pythagoras' theorem.</p>
+          </div>
+          <div class="math-tint">
+            <div class="math">\[ |\mathbf{a}| = \sqrt{a_1^{\,2} + a_2^{\,2}} \]</div>
+          </div>
+          <div class="math" id="p4eq"></div>
+          <div class="ctl" style="margin-top:14px">
+            <label><span>Drag the tip, or type the numbers</span><span class="v" id="p4v">(3, 4)</span></label>
+            <div class="vrow">
+              <span class="vsep">(</span>
+              <input type="number" class="vin" id="p4x" value="3" min="-5" max="5" step="1" aria-label="x component">
+              <span class="vsep">,</span>
+              <input type="number" class="vin" id="p4y" value="4" min="-5" max="5" step="1" aria-label="y component">
+              <span class="vsep">)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Shrinking a vector to length 1</h3>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="p5" viewBox="0 0 340 340" role="img" aria-label="A vector shrinking onto the unit circle"></svg>
+          <div class="capt">The circle has radius 1</div>
+        </div>
+        <div>
+          <div class="prose">
+            <p>To find a unit vector, divide each component by the vector's length. The new vector has length 1
+              and points in the same direction. It is written with a hat, \(\hat{\mathbf{a}}\), and the step is
+              called <b>normalising</b>.</p>
+          </div>
+          <div class="math-tint">
+            <div class="math">\[ \hat{\mathbf{a}} = \frac{\mathbf{a}}{|\mathbf{a}|} \]</div>
+          </div>
+          <div class="math" id="p5eq"></div>
+          <div class="btnrow" style="margin-top:12px">
+            <button class="btn primary" id="p5Play" type="button">Normalise it</button>
+            <button class="btn" id="p5Reset" type="button">Back to the start</button>
+          </div>
+          <p class="prose" style="color:var(--muted);font-size:.92rem;margin-top:14px">Check the answer by working
+            out its magnitude. It should come to 1 every time. The one vector that cannot be normalised is the zero
+            vector, because dividing by a length of zero is not defined.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section class="station" id="s5">
+    <div class="station-head"><span class="num">05</span><h2>The dot product</h2><span class="eyebrow">48&ndash;66 min</span></div>
+    <p class="lede">The dot product takes two vectors and gives back a single number, not a vector. It helps us
+      compare the directions of two vectors, and its value can be positive, zero or negative. It is also the piece of
+      this lesson that Tutorial 02 uses most, because matrix multiplication is built from it.</p>
+
+    <div class="panel">
+      <h3>One pair at a time</h3>
+      <div class="prose" style="margin-top:12px">
+        <p>Multiply the two \(x\) components together. Multiply the two \(y\) components together. Add the two
+          results. That single number is the dot product.</p>
+      </div>
+      <div class="math-tint">
+        <div class="math">\[ \mathbf{a} \cdot \mathbf{b} = a_1 b_1 + a_2 b_2 \]</div>
+      </div>
+      <div class="eq" id="dpEq"></div>
+      <div class="work" id="dpWork">Press <b style="font-family:var(--mono)">&nbsp;Start&nbsp;</b> to take the first pair.</div>
+      <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:16px">
+        <button class="btn" id="dpPrev" type="button" disabled>Back</button>
+        <span class="step" id="dpStep">Step 0 of 3</span>
+        <button class="btn primary" id="dpNext" type="button">Start</button>
+        <button class="btn" id="dpReset" type="button">Reset</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>What the number is telling you</h3>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="p6" viewBox="0 0 340 340" role="img" aria-label="Two vectors with the angle between them marked"></svg>
+          <div class="capt" id="p6cap">Turn b and watch the sign change</div>
+        </div>
+        <div>
+          <div class="prose">
+            <p>Turn the blue arrow with the slider. The green arrow stays where it is. Watch the sign of the dot
+              product as the angle between them opens out.</p>
+          </div>
+          <div class="ctl">
+            <label><span>Angle of \(\mathbf{b}\)</span><span class="v" id="p6av">60&deg;</span></label>
+            <input type="range" id="p6a" min="0" max="360" step="1" value="60" aria-label="angle of b in degrees">
+          </div>
+          <div style="margin-top:14px">
+            <div class="stat"><span class="k">Angle between them</span><span class="v" id="p6t">60&deg;</span></div>
+            <div class="stat"><span class="k">\(\mathbf{a} \cdot \mathbf{b}\)</span><span class="v" id="p6d">6.00</span></div>
+          </div>
+          <div class="verdict ok" id="p6say" style="margin-top:14px"></div>
+          <div class="math-tint">
+            <div class="math">\[ \mathbf{a} \cdot \mathbf{b} = |\mathbf{a}|\,|\mathbf{b}|\cos\theta \]</div>
+            <p style="font-size:.9rem;color:var(--muted)">For two non-zero vectors, their lengths are positive. So
+              the dot product is positive when the angle is less than 90&deg;, zero at 90&deg;, and negative when the
+              angle is greater than 90&deg;.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>The three cases</h3>
+      <div class="sgal" id="dpcards"></div>
+    </div>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section class="station" id="s6">
+    <div class="station-head"><span class="num">06</span><h2>The angle between two vectors</h2><span class="eyebrow">66&ndash;78 min</span></div>
+    <p class="lede">Rearranging the formula above gives the angle itself. This is how a game works out whether an
+      enemy is in front of the player or behind them, and how lighting decides how bright a surface should be.</p>
+
+    <div class="panel">
+      <div class="math-tint">
+        <div class="math">\[ \cos\theta = \frac{\mathbf{a} \cdot \mathbf{b}}{|\mathbf{a}|\,|\mathbf{b}|} \qquad\qquad \theta = \cos^{-1}\!\left( \frac{\mathbf{a} \cdot \mathbf{b}}{|\mathbf{a}|\,|\mathbf{b}|} \right) \]</div>
+        <p style="font-size:.9rem;color:var(--muted)">Work out the dot product first, then the two magnitudes, then
+          divide. The answer is always between 0&deg; and 180&deg;.</p>
+      </div>
+      <div class="cols" style="margin-top:4px">
+        <div>
+          <svg class="tbox" id="p7" viewBox="0 0 340 340" role="img" aria-label="Two vectors with the angle between them shaded"></svg>
+          <div class="capt">Drag either arrow tip, or type the numbers</div>
+        </div>
+        <div>
+          <div class="ctl">
+            <label><span>Vector \(\mathbf{a}\)</span><span class="v" id="p7av">(4, 1)</span></label>
+            <div class="vrow">
+              <span class="vsep">(</span>
+              <input type="number" class="vin" id="p7ax" value="4" min="-5" max="5" step="1" aria-label="a x">
+              <span class="vsep">,</span>
+              <input type="number" class="vin" id="p7ay" value="1" min="-5" max="5" step="1" aria-label="a y">
+              <span class="vsep">)</span>
+            </div>
+          </div>
+          <div class="ctl">
+            <label><span>Vector \(\mathbf{b}\)</span><span class="v" id="p7bv">(1, 4)</span></label>
+            <div class="vrow">
+              <span class="vsep">(</span>
+              <input type="number" class="vin" id="p7bx" value="1" min="-5" max="5" step="1" aria-label="b x">
+              <span class="vsep">,</span>
+              <input type="number" class="vin" id="p7by" value="4" min="-5" max="5" step="1" aria-label="b y">
+              <span class="vsep">)</span>
+            </div>
+          </div>
+          <div class="work" id="p7work"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section class="station" id="s7">
+    <div class="station-head"><span class="num">07</span><h2>Parallel, perpendicular and collinear</h2><span class="eyebrow">78&ndash;90 min</span></div>
+    <p class="lede">Let's learn how to check whether two vectors are parallel or perpendicular, and whether three
+      points lie on the same straight line.</p>
+
+    <div class="panel">
+      <h3>The three tests</h3>
+      <div class="sgal" id="pccards"></div>
+    </div>
+
+    <div class="panel">
+      <h3>How to check whether three points are collinear</h3>
+      <div class="prose" style="margin-top:12px">
+        <p>Three points are collinear when they all lie on one straight line. You cannot tell by looking, so you
+          test it with vectors. There are four steps.</p>
+      </div>
+      <ol class="steps">
+        <li>Pick one of the three points as the starting point. We will use \(P\).</li>
+        <li>Find \(\overrightarrow{PQ}\). Subtract the coordinates of \(P\) from the coordinates of \(Q\).</li>
+        <li>Find \(\overrightarrow{PR}\) the same way.</li>
+        <li>Check whether one vector is a multiple of the other. If \(\overrightarrow{PR} = k\,\overrightarrow{PQ}\)
+          for some number \(k\), the three points are collinear.</li>
+      </ol>
+      <div class="math-tint">
+        <div class="math">\[ \overrightarrow{PQ} = (q_1 - p_1,\; q_2 - p_2) \qquad \overrightarrow{PR} = (r_1 - p_1,\; r_2 - p_2) \]</div>
+        <p style="font-size:.9rem;color:var(--muted)">Both vectors must start from the same point. Two parallel
+          vectors that start from different points do not make the three points collinear.</p>
+      </div>
+      <p style="color:var(--muted);font-size:.92rem;margin:16px 0">Drag the points or change any coordinate, then
+        press <b>Work it through</b> to see the four steps one at a time.</p>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="p8" viewBox="0 0 340 340" role="img" aria-label="Three points plotted with the vectors between them"></svg>
+          <div class="capt">Drag any of the three points</div>
+        </div>
+        <div>
+          <div class="ctl">
+            <label><span>Point \(P\)</span></label>
+            <div class="vrow">
+              <span class="vsep">(</span>
+              <input type="number" class="vin" id="cPx" value="-3" min="-8" max="8" step="1" aria-label="P x">
+              <span class="vsep">,</span>
+              <input type="number" class="vin" id="cPy" value="-2" min="-8" max="8" step="1" aria-label="P y">
+              <span class="vsep">)</span>
+            </div>
+          </div>
+          <div class="ctl">
+            <label><span>Point \(Q\)</span></label>
+            <div class="vrow">
+              <span class="vsep">(</span>
+              <input type="number" class="vin" id="cQx" value="-1" min="-8" max="8" step="1" aria-label="Q x">
+              <span class="vsep">,</span>
+              <input type="number" class="vin" id="cQy" value="1" min="-8" max="8" step="1" aria-label="Q y">
+              <span class="vsep">)</span>
+            </div>
+          </div>
+          <div class="ctl">
+            <label><span>Point \(R\)</span></label>
+            <div class="vrow">
+              <span class="vsep">(</span>
+              <input type="number" class="vin" id="cRx" value="3" min="-8" max="8" step="1" aria-label="R x">
+              <span class="vsep">,</span>
+              <input type="number" class="vin" id="cRy" value="7" min="-8" max="8" step="1" aria-label="R y">
+              <span class="vsep">)</span>
+            </div>
+          </div>
+          <div class="work" id="cWork"></div>
+          <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:14px">
+            <button class="btn" id="cPrev" type="button" disabled>Back</button>
+            <span class="step" id="cStep">Step 0 of 4</span>
+            <button class="btn primary" id="cNext" type="button">Work it through</button>
+            <button class="btn" id="cRestart" type="button">Reset</button>
+          </div>
+          <div class="verdict ok" id="cSay"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 8 ============ -->
+  <section class="station" id="s8">
+    <div class="station-head"><span class="num">08</span><h2>Vectors in three dimensions</h2><span class="eyebrow">90&ndash;100 min</span><span class="vchip ext">Optional application</span></div>
+    <p class="lede">A 3D vector has three components: \(x\), \(y\) and \(z\). We can use the same methods to
+      find its length and its dot product. There is simply one more component to carry.</p>
+
+    <div class="panel">
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="p9" viewBox="0 0 340 340" role="img" aria-label="Three-dimensional axes with a vector drawn from the origin"></svg>
+          <div class="capt">x to the right, y up, z towards you</div>
+        </div>
+        <div>
+          <div class="math-tint">
+            <div class="math">\[ |\mathbf{u}| = \sqrt{u_1^{\,2} + u_2^{\,2} + u_3^{\,2}} \qquad \mathbf{u} \cdot \mathbf{v} = u_1 v_1 + u_2 v_2 + u_3 v_3 \]</div>
+          </div>
+          <div class="ctl">
+            <label><span>Vector \(\mathbf{u}\)</span><span class="v" id="p9v">(2, 3, 1)</span></label>
+            <div class="vrow">
+              <span class="vsep">(</span>
+              <input type="number" class="vin" id="p9x" value="2" min="-3" max="3" step="1" aria-label="u x">
+              <span class="vsep">,</span>
+              <input type="number" class="vin" id="p9y" value="3" min="-3" max="3" step="1" aria-label="u y">
+              <span class="vsep">,</span>
+              <input type="number" class="vin" id="p9z" value="1" min="-3" max="3" step="1" aria-label="u z">
+              <span class="vsep">)</span>
+            </div>
+          </div>
+          <div class="work" id="p9work"></div>
+          <p class="prose" style="color:var(--muted);font-size:.92rem;margin-top:14px">In 3D games, vectors are used
+            to represent positions, directions and movement. Dot products help compare directions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 9 ============ -->
+  <section class="station" id="s9">
+    <div class="station-head"><span class="num">09</span><h2>Practice questions</h2><span class="eyebrow">100&ndash;112 min, or 8 on the core four</span></div>
+    <p class="lede">Practise what you have learnt. Start with the four questions marked <b>core</b>: a magnitude, a
+      scalar multiple, a dot product and an angle. You can then try the extension questions, or leave them for your
+      own time. Type your answer and press <b>Check</b>. If you need help, press <b>Working</b> to see the steps.</p>
+    <div class="panel">
+      <p style="font-size:.95rem;margin-bottom:16px">Throughout, \(\mathbf{p} = (4,\,3)\), \(\mathbf{q} = (-2,\,6)\)
+        and \(\mathbf{r} = (1,\,-5)\).</p>
+      <div class="btnrow" style="justify-content:center;margin-bottom:20px">
+        <button class="btn" id="vCore" type="button" aria-pressed="false">Core four only</button>
+        <button class="btn" id="vReveal" type="button">Show every working</button>
+        <button class="btn" id="vReset" type="button">Clear</button>
+      </div>
+
+      <div class="vq" data-core="1" data-ans="5" data-tol="0.01">
+        <div class="qt"><span class="qn">1.</span>Find the magnitude \(|\mathbf{p}|\).</div>
+        <div class="vrow">
+          <input type="number" step="any" class="vin" aria-label="Question 1 answer">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>\( |\mathbf{p}| = \sqrt{4^2 + 3^2} = \sqrt{16 + 9} = \sqrt{25} = 5 \). Square each component, add them, then take the square root.</div>
+      </div>
+
+      <div class="vq" data-ans="2,9" data-tol="0.01">
+        <div class="qt"><span class="qn">2.</span>Find \(\mathbf{p} + \mathbf{q}\).</div>
+        <div class="vrow">
+          <span class="vsep">(</span>
+          <input type="number" step="any" class="vin" aria-label="Question 2 x component">
+          <span class="vsep">,</span>
+          <input type="number" step="any" class="vin" aria-label="Question 2 y component">
+          <span class="vsep">)</span>
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>\( \mathbf{p} + \mathbf{q} = (4 + (-2),\; 3 + 6) = (2,\,9) \). Add the matching components.</div>
+      </div>
+
+      <div class="vq" data-core="1" data-ans="14,3" data-tol="0.01">
+        <div class="qt"><span class="qn">3.</span>Find \(3\mathbf{p} - \mathbf{q}\).</div>
+        <div class="vrow">
+          <span class="vsep">(</span>
+          <input type="number" step="any" class="vin" aria-label="Question 3 x component">
+          <span class="vsep">,</span>
+          <input type="number" step="any" class="vin" aria-label="Question 3 y component">
+          <span class="vsep">)</span>
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>\( 3\mathbf{p} = (12,\,9) \), so \( 3\mathbf{p} - \mathbf{q} = (12 - (-2),\; 9 - 6) = (14,\,3) \). Multiply every component of \(\mathbf{p}\) by 3 first, then subtract the matching components of \(\mathbf{q}\).</div>
+      </div>
+
+      <div class="vq" data-core="1" data-ans="10" data-tol="0.01">
+        <div class="qt"><span class="qn">4.</span>Find the dot product \(\mathbf{p} \cdot \mathbf{q}\).</div>
+        <div class="vrow">
+          <input type="number" step="any" class="vin" aria-label="Question 4 answer">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>\( \mathbf{p} \cdot \mathbf{q} = (4)(-2) + (3)(6) = -8 + 18 = 10 \). Multiply the matching components, then add the results.</div>
+      </div>
+
+      <div class="vq" data-ans="0.8,0.6" data-tol="0.01">
+        <div class="qt"><span class="qn">5.</span>Find the unit vector \(\hat{\mathbf{p}}\).</div>
+        <div class="vrow">
+          <span class="vsep">(</span>
+          <input type="number" step="any" class="vin" aria-label="Question 5 x component">
+          <span class="vsep">,</span>
+          <input type="number" step="any" class="vin" aria-label="Question 5 y component">
+          <span class="vsep">)</span>
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>\( \hat{\mathbf{p}} = \dfrac{\mathbf{p}}{|\mathbf{p}|} = \dfrac{1}{5}(4,\,3) = (0.8,\,0.6) \). Divide each component by the magnitude found in question 1.</div>
+      </div>
+
+      <div class="vq" data-core="1" data-ans="72" data-tol="1">
+        <div class="qt"><span class="qn">6.</span>Find the angle between \(\mathbf{p}\) and \(\mathbf{q}\), to the nearest degree.</div>
+        <div class="vrow">
+          <input type="number" step="any" class="vin" aria-label="Question 6 answer">
+          <span class="vsep">&deg;</span>
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>\( |\mathbf{q}| = \sqrt{(-2)^2 + 6^2} = \sqrt{40} \approx 6.325 \), so \( \cos\theta = \dfrac{10}{5 \times 6.325} \approx 0.3162 \) and \( \theta \approx 72^\circ \). Find the dot product and both magnitudes, then divide.</div>
+      </div>
+
+      <div class="vq" data-ans="-3" data-tol="0.01">
+        <div class="qt"><span class="qn">7.</span>Find \(m\) so that \((m,\,4)\) is perpendicular to \(\mathbf{p}\).</div>
+        <div class="vrow">
+          <input type="number" step="any" class="vin" aria-label="Question 7 answer">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>Perpendicular means the dot product is zero: \( (4)(m) + (3)(4) = 0 \), so \( 4m + 12 = 0 \) and \( m = -3 \). Write the dot product out and solve for \(m\).</div>
+      </div>
+
+      <div class="vq" data-ans="6" data-tol="0.01">
+        <div class="qt"><span class="qn">8.</span>Find \(n\) so that \((8,\,n)\) is parallel to \(\mathbf{p}\).</div>
+        <div class="vrow">
+          <input type="number" step="any" class="vin" aria-label="Question 8 answer">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>Parallel means one vector is a multiple of the other: \( (8,\,n) = k(4,\,3) \). The first components give \( 8 = 4k \), so \( k = 2 \), and then \( n = 3k = 6 \). Both components must give the same \(k\).</div>
+      </div>
+
+      <div class="vgroup" id="vgroup3d">
+        <div class="vghead">
+          <h3>Question 9, in three dimensions</h3>
+          <span class="vtag">Extended 3D question</span>
+        </div>
+        <p style="font-size:.93rem;color:var(--muted);margin:8px 0 16px">Let \(\mathbf{u} = (1,\,2,\,2)\) and
+          \(\mathbf{v} = (3,\,0,\,4)\). This question uses vectors with three components instead of two. The
+          calculation steps are the same. You just need to include the third component.</p>
+
+        <div class="vq" data-ans="3" data-tol="0.01">
+          <div class="qt"><span class="qn">9(a).</span>Find \(|\mathbf{u}|\).</div>
+          <div class="vrow">
+            <input type="number" step="any" class="vin" aria-label="Question 9a answer">
+            <button class="btn vcheck" type="button">Check</button>
+            <button class="btn vwork" type="button">Working</button>
+            <span class="vfb"></span>
+          </div>
+          <div class="why vsol" hidden>\( |\mathbf{u}| = \sqrt{1^2 + 2^2 + 2^2} = \sqrt{1 + 4 + 4} = \sqrt{9} = 3 \). Square all three components and add them, then find the square root.</div>
+        </div>
+
+        <div class="vq" data-ans="11" data-tol="0.01">
+          <div class="qt"><span class="qn">9(b).</span>Find \(\mathbf{u} \cdot \mathbf{v}\).</div>
+          <div class="vrow">
+            <input type="number" step="any" class="vin" aria-label="Question 9b answer">
+            <button class="btn vcheck" type="button">Check</button>
+            <button class="btn vwork" type="button">Working</button>
+            <span class="vfb"></span>
+          </div>
+          <div class="why vsol" hidden>\( \mathbf{u} \cdot \mathbf{v} = (1)(3) + (2)(0) + (2)(4) = 3 + 0 + 8 = 11 \). Multiply the three pairs of matching components, then add the results.</div>
+        </div>
+
+        <div class="vq" data-ans="43" data-tol="1">
+          <div class="qt"><span class="qn">9(c).</span>Find the angle between \(\mathbf{u}\) and \(\mathbf{v}\), to the nearest degree.</div>
+          <div class="vrow">
+            <input type="number" step="any" class="vin" aria-label="Question 9c answer">
+            <span class="vsep">&deg;</span>
+            <button class="btn vcheck" type="button">Check</button>
+            <button class="btn vwork" type="button">Working</button>
+            <span class="vfb"></span>
+          </div>
+          <div class="why vsol" hidden>\( |\mathbf{v}| = \sqrt{9 + 0 + 16} = 5 \), so \( \cos\theta = \dfrac{11}{3 \times 5} = \dfrac{11}{15} \approx 0.7333 \) and \( \theta \approx 43^\circ \). Find both magnitudes, then use the dot product formula.</div>
+        </div>
+
+        <div class="vq" data-ans="-4" data-tol="0.01">
+          <div class="qt"><span class="qn">9(d).</span>Find \(t\) so that \((t,\,3,\,-1)\) is perpendicular to \(\mathbf{u}\).</div>
+          <div class="vrow">
+            <input type="number" step="any" class="vin" aria-label="Question 9d answer">
+            <button class="btn vcheck" type="button">Check</button>
+            <button class="btn vwork" type="button">Working</button>
+            <span class="vfb"></span>
+          </div>
+          <div class="why vsol" hidden>The dot product is zero because the vectors are perpendicular: \( (1)(t) + (2)(3) + (2)(-1) = 0 \), so \( t + 6 - 2 = 0 \) and \( t = -4 \). Check it: \( -4 + 6 - 2 = 0 \).</div>
+        </div>
+
+        <div class="vq" data-ans="6" data-tol="0.01">
+          <div class="qt"><span class="qn">9(e).</span>The points \(A(1,\,0,\,2)\), \(B(3,\,2,\,5)\) and \(C(7,\,k,\,11)\) are collinear. Find \(k\).</div>
+          <div class="vrow">
+            <input type="number" step="any" class="vin" aria-label="Question 9e answer">
+            <button class="btn vcheck" type="button">Check</button>
+            <button class="btn vwork" type="button">Working</button>
+            <span class="vfb"></span>
+          </div>
+          <div class="why vsol" hidden>\( \overrightarrow{AB} = (2,\,2,\,3) \) and \( \overrightarrow{AC} = (6,\,k,\,9) \). Collinear means \( \overrightarrow{AC} = m\,\overrightarrow{AB} \). The first components give \( 6 = 2m \), so \( m = 3 \), and the third components agree because \( 9 = 3 \times 3 \). The second components then give \( k = 3 \times 2 = 6 \). All three components must give the same multiplier.</div>
+        </div>
+      </div>
+
+      <div class="score" id="vscore" style="margin-top:18px">0 of 13 correct</div>
+    </div>
+  </section>
+
+  <!-- ============ 10 ============ -->
+  <section class="station" id="s10">
+    <div class="station-head"><span class="num">10</span><h2>Exit quiz</h2><span class="eyebrow">112&ndash;120 min</span></div>
+    <p class="lede">Answer these six questions to check what you have learnt. The questions are different from those
+      in your tutorial paper.</p>
+    <div id="quiz"></div>
+    <div class="score" id="score">0 of 6 answered</div>
+    <div class="btnrow" style="justify-content:center;margin-top:14px">
+      <button class="btn" id="quizReset" type="button">Clear answers</button>
+    </div>
+  </section>
+
+  <footer>
+    Computing Mathematics, Tutorial 01. Everything runs in your browser, so the page works the same on every
+    machine and keeps working with no internet connection.
+  </footer>
+</div>

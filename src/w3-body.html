@@ -1,0 +1,589 @@
+<div class="clock">
+  <div class="wrap clock-inner">
+    <div class="clock-title">Tutorial 03<span>Determinants &amp; inverses</span></div>
+    <a href="#s1"><span class="t">0&ndash;10</span><span class="n">Week 2 recall</span></a>
+    <a href="#s2"><span class="t">10&ndash;15</span><span class="n">The transpose</span></a>
+    <a href="#s3"><span class="t">15&ndash;23</span><span class="n">What is a determinant?</span></a>
+    <a href="#s4"><span class="t">23&ndash;30</span><span class="n">2&times;2 inverse</span></a>
+    <a href="#s5"><span class="t">30&ndash;40</span><span class="n">3&times;3 determinant</span></a>
+    <a href="#s6"><span class="t">40&ndash;50</span><span class="n">3&times;3 inverse</span></a>
+    <span class="brk"><span class="t">50&ndash;60</span><span class="n">Break</span></span>
+    <a href="#s7"><span class="t">60&ndash;80</span><span class="n">Guided practice</span></a>
+    <a href="#s8"><span class="t">80&ndash;105</span><span class="n">Tutorial questions &amp; LMS quiz</span></a>
+    <a href="#s9" class="opt"><span class="t">105&ndash;113</span><span class="n">Undoing a transformation</span></a>
+    <a href="#s10"><span class="t">113&ndash;120</span><span class="n">Exit quiz</span></a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <nav class="weeknav" aria-label="Weeks">
+      <a href="https://shamim-akhtar.github.io/cmaths/week01/"><span class="wk">Week 1</span><span class="wt">Vectors</span></a>
+      <a href="https://shamim-akhtar.github.io/cmaths/week02/"><span class="wk">Week 2</span><span class="wt">Matrices</span></a>
+      <a class="on" aria-current="page" href="https://shamim-akhtar.github.io/cmaths/week03/"><span class="wk">Week 3</span><span class="wt">Determinants &amp; inverses</span></a>
+    </nav>
+    <div class="hero-top">
+      <span class="eyebrow">Computing Mathematics &middot; Tutorial 03 &middot; Two hours</span>
+      <span class="hero-btns">
+        <button class="theme-btn" id="oneBtn" type="button" aria-pressed="true"
+          title="Left and right arrow keys move between stations">Show all</button>
+        <button class="theme-btn" id="themeBtn" type="button">Theme</button>
+      </span>
+    </div>
+    <h1>Determinants and Inverses</h1>
+    <div class="compact-line" id="compactLine" hidden></div>
+    <div class="sub hero-intro">
+      <p>In Week 2, you learnt how to work with matrices. This week, you will learn two new things:</p>
+      <ul class="intro-list">
+        <li>How to calculate the determinant of a matrix.</li>
+        <li>How to find the inverse of a matrix.</li>
+      </ul>
+      <p>You will also see how these are used in computing.</p>
+    </div>
+  </header>
+
+  <!-- ============ 1 ============ -->
+  <section class="station" id="s1">
+    <div class="station-head"><span class="num">01</span><h2>Week 2 recall</h2><span class="eyebrow">0&ndash;10 min</span></div>
+    <p class="lede">Let's check what you remember about matrices from Week 2. Turn each card over when you have
+      your answer, then try the three short checks.</p>
+
+    <div class="panel">
+      <h3>Four cards</h3>
+      <div class="gal1" id="recap"></div>
+      <div class="btnrow" style="justify-content:center;margin-top:14px">
+        <button class="btn" id="rAll" type="button">Turn them all over</button>
+      </div>
+    </div>
+
+    <div class="panel" data-vqgroup="recall">
+      <h3>Three quick checks</h3>
+      <p style="font-size:.93rem;color:var(--muted);margin:8px 0 14px">Type your answer and press <b>Check</b>. Press
+        <b>Working</b> if you need the steps.</p>
+
+      <div class="vq" data-ans="3,2">
+        <div class="qt"><span class="qn">1.</span>What is the order of \( \begin{pmatrix} 4 &amp; 0 \\ 1 &amp; 7 \\ 2 &amp; 5 \end{pmatrix} \)? Give rows first.</div>
+        <div class="vrow">
+          <input type="text" inputmode="numeric" class="vin" aria-label="Question 1 rows">
+          <span class="vsep">&times;</span>
+          <input type="text" inputmode="numeric" class="vin" aria-label="Question 1 columns">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>Count the rows from the top: there are 3. Count the columns from the left: there are 2. The order is \(3 \times 2\). Rows always come first.</div>
+      </div>
+
+      <div class="vq" data-ans="6">
+        <div class="qt"><span class="qn">2.</span>Let \( P = \begin{pmatrix} 1 &amp; 2 \\ 3 &amp; 0 \end{pmatrix} \) and \( Q = \begin{pmatrix} 2 &amp; 1 \\ 1 &amp; 4 \end{pmatrix} \). Find the entry in row 2, column 1 of \(PQ\).</div>
+        <div class="vrow">
+          <input type="text" inputmode="numeric" class="vin" aria-label="Question 2 answer">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>Take row 2 of \(P\), which is \((3,\,0)\), and column 1 of \(Q\), which is \((2,\,1)\). Multiply the pairs and add: \( 3 \times 2 + 0 \times 1 = 6 \).</div>
+      </div>
+
+      <div class="vq" data-ans="5,-2,0,8">
+        <div class="qt"><span class="qn">3.</span>Let \( M = \begin{pmatrix} 5 &amp; -2 \\ 0 &amp; 8 \end{pmatrix} \). Find \(IM\), where \(I\) is the \(2 \times 2\) identity matrix.</div>
+        <div class="vrow">
+          <span class="mxin" data-rows="2" data-cols="2" data-label="Question 3"></span>
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>Multiplying by the identity matrix changes nothing, so \(IM = M\). Check one entry: row 1 of \(I\) is \((1,\,0)\), column 1 of \(M\) is \((5,\,0)\), and \(1 \times 5 + 0 \times 0 = 5\). This is the fact that makes the inverse work later in the lesson.</div>
+      </div>
+      <div class="score vscore" style="margin-top:14px">0 of 3 correct</div>
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section class="station" id="s2">
+    <div class="station-head"><span class="num">02</span><h2>The transpose of a matrix</h2><span class="eyebrow">10&ndash;15 min</span></div>
+    <p class="lede">The transpose of a matrix changes its rows into columns. It is written \(A^{\mathsf{T}}\).
+      Let's see how it works.</p>
+
+    <div class="panel">
+      <h3>Watch the rows become columns</h3>
+      <div class="cols">
+        <div>
+          <p class="prose" style="font-size:.93rem;color:var(--muted);margin-bottom:12px">Change any of the six
+            numbers, then press <b>Play all</b>, or <b>One number at a time</b> to move them yourself. Watch where each number lands.</p>
+          <div class="eq" id="tpEq"></div>
+          <div class="btnrow" style="justify-content:center;margin-top:16px">
+            <button class="btn primary" id="tpPlay" type="button">Play all</button>
+            <button class="btn" id="tpStep" type="button">One number at a time</button>
+            <button class="btn" id="tpReset" type="button">Reset</button>
+          </div>
+          <div class="capt" id="tpCap">A is 2 &times; 3</div>
+        </div>
+        <div>
+          <div class="prose">
+            <p>Row 1 becomes column 1. Row 2 becomes column 2. A matrix with 2 rows and 3 columns becomes a matrix
+              with 3 rows and 2 columns.</p>
+          </div>
+          <details class="more">
+            <summary>More detail</summary>
+            <div class="math-tint">
+              <div class="math">\[ \bigl(A^{\mathsf{T}}\bigr)_{ij} = a_{ji} \]</div>
+              <p style="font-size:.9rem;color:var(--muted)">The entry in row \(i\), column \(j\) of the transpose is
+                the entry in row \(j\), column \(i\) of the original. The row number and the column number swap
+                places. The main diagonal stays where it is, and transposing twice gives back the original matrix.</p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" data-vqgroup="tp">
+      <h3>Two predictions</h3>
+      <div class="vq" data-ans="4,3">
+        <div class="qt"><span class="qn">1.</span>A matrix \(B\) has order \(3 \times 4\). What is the order of \(B^{\mathsf{T}}\)?</div>
+        <div class="vrow">
+          <input type="text" inputmode="numeric" class="vin" aria-label="Prediction 1 rows">
+          <span class="vsep">&times;</span>
+          <input type="text" inputmode="numeric" class="vin" aria-label="Prediction 1 columns">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>Rows become columns, so the 3 rows of \(B\) become the 3 columns of \(B^{\mathsf{T}}\). The order is \(4 \times 3\).</div>
+      </div>
+      <div class="vq" data-ans="9">
+        <div class="qt"><span class="qn">2.</span>Let \( C = \begin{pmatrix} 2 &amp; 9 &amp; 4 \\ 6 &amp; 1 &amp; 8 \end{pmatrix} \). Without writing out \(C^{\mathsf{T}}\), what is the entry in row 2, column 1 of \(C^{\mathsf{T}}\)?</div>
+        <div class="vrow">
+          <input type="text" inputmode="numeric" class="vin" aria-label="Prediction 2 answer">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>Swap the row and column numbers. Row 2, column 1 of \(C^{\mathsf{T}}\) is row 1, column 2 of \(C\), which is 9.</div>
+      </div>
+      <div class="score vscore" style="margin-top:14px">0 of 2 correct</div>
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section class="station" id="s3">
+    <div class="station-head"><span class="num">03</span><h2>What is a determinant?</h2><span class="eyebrow">15&ndash;23 min</span></div>
+    <div class="lede">
+      <p>First, a new word. The <b>inverse</b> of a matrix is another matrix that reverses what it does. For example,
+        if a matrix makes a shape twice as big, its inverse makes it half the size again. You will learn how to find
+        an inverse in station 04.</p>
+      <p style="margin-top:8px">Not every matrix has an inverse. The <b>determinant</b> tells us which ones do. It is
+        a number that we calculate from a square matrix.</p>
+      <ul class="intro-list">
+        <li>If the determinant is 0, the matrix has no inverse.</li>
+        <li>If the determinant is not 0, the matrix has an inverse.</li>
+      </ul>
+      <p>Let's learn how to calculate it.</p>
+    </div>
+
+    <div class="panel">
+      <h3>How to calculate the determinant</h3>
+      <div class="math-tint">
+        <div class="mathrow">
+          <div class="math">\[ A = \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix} \]</div>
+          <div class="math">\[ \det(A) = ad - bc \]</div>
+        </div>
+        <p style="font-size:.9rem;color:var(--muted)">Multiply the main diagonal, top left to bottom right. Multiply
+          the other diagonal, top right to bottom left. Subtract the second from the first.</p>
+      </div>
+      <p class="prose" style="margin-bottom:10px">Example. Press <b>Start</b> to see the two steps.</p>
+      <div class="eq" id="dfEq"></div>
+      <div class="work" id="dfWork">Press <b style="font-family:var(--mono)">&nbsp;Start&nbsp;</b> to take the first diagonal.</div>
+      <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:16px">
+        <button class="btn" id="dfPrev" type="button" disabled>Back</button>
+        <span class="step" id="dfStep">Step 0 of 3</span>
+        <button class="btn primary" id="dfNext" type="button">Start</button>
+        <button class="btn" id="dfReset" type="button">Reset</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Is the determinant zero?</h3>
+      <div class="cols">
+        <div>
+          <p class="prose" style="font-size:.93rem;color:var(--muted);margin-bottom:12px">Calculate the determinant of
+            this matrix. Is it zero or not zero?</p>
+          <div class="eq" id="pgEq"></div>
+        </div>
+        <div>
+          <div class="btnrow" style="justify-content:center">
+            <button class="btn pgBtn" data-sign="1" type="button">Not zero</button>
+            <button class="btn pgBtn" data-sign="0" type="button">Zero</button>
+          </div>
+          <div class="verdict ok" id="pgSay" hidden></div>
+          <div class="btnrow" style="justify-content:center;margin-top:14px">
+            <button class="btn" id="pgNext" type="button">Another matrix</button>
+          </div>
+          <div class="score" id="pgScore" style="margin-top:14px">0 of 0 correct</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>What the determinant does to a shape</h3>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="dbox" viewBox="0 0 340 340" role="img" aria-label="A grid showing the unit square and its image under the matrix"></svg>
+          <div class="capt" id="dCap">Dotted is the original square. Coloured is the new shape.</div>
+        </div>
+        <div>
+          <div class="prose" style="font-size:.95rem">
+            <p>The dotted square is the original shape. The coloured shape shows what happens when we apply the
+              matrix.</p>
+            <p>Change the numbers in the matrix and watch the shape. What happens when the determinant is 0?</p>
+          </div>
+          <div class="presets" style="margin-top:14px">
+            <button class="btn" data-dpre="2,1,0,2" type="button">det 4</button>
+            <button class="btn" data-dpre="1,0,0,1" type="button">det 1</button>
+            <button class="btn" data-dpre="2,4,1,2" type="button">det 0</button>
+            <button class="btn" data-dpre="1,2,2,1" type="button">det &minus;3</button>
+          </div>
+          <div class="eq" id="dEq"></div>
+          <div class="btnrow" style="justify-content:center;margin:14px 0 6px">
+            <button class="btn primary" id="dPlay" type="button">Play the transformation</button>
+          </div>
+          <div style="margin-top:8px">
+            <div class="stat"><span class="k">Determinant, \(ad - bc\)</span><span class="v" id="dDet">4</span></div>
+            <div class="stat"><span class="k">Area of the new shape</span><span class="v" id="dArea">4</span></div>
+          </div>
+          <div class="verdict ok" id="dSay"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>What the number tells you</h3>
+      <table class="dtab">
+        <thead><tr><th>Determinant</th><th>What happens to the square</th></tr></thead>
+        <tbody>
+          <tr><td>4</td><td>The new shape has four times the original area. The matrix has an inverse.</td></tr>
+          <tr><td>1</td><td>The area stays the same. The shape may still move or change its appearance.</td></tr>
+          <tr><td>0</td><td>The square becomes a line or a point. The matrix has no inverse.</td></tr>
+          <tr><td>&minus;2</td><td>The new area is twice the original area, but the direction of the shape is reversed.</td></tr>
+        </tbody>
+      </table>
+      <details class="more">
+        <summary>More detail: positive and negative</summary>
+        <p class="prose" style="font-size:.92rem;margin-top:10px">The size of the determinant is the area factor.
+          The sign tells you the direction. A positive determinant keeps the shape the same way round. A negative
+          determinant turns it over, like turning a page. In the figure, the blue arrow going anticlockwise to the
+          orange arrow means positive; clockwise means negative. Both have an inverse. Only 0 does not.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section class="station" id="s4">
+    <div class="station-head"><span class="num">04</span><h2>Finding the inverse of a 2&times;2 matrix</h2><span class="eyebrow">23&ndash;30 min</span></div>
+    <p class="lede">An inverse is a matrix that reverses what another matrix does. It is written \(A^{-1}\).
+      Let's learn how to find it.</p>
+
+    <div class="panel">
+      <h3>The three steps</h3>
+      <ol class="steps" style="margin-top:8px">
+        <li>Calculate the determinant. If it is 0, stop: there is no inverse.</li>
+        <li>Find the adjoint. Swap the two entries on the main diagonal, and change the sign of the other two.</li>
+        <li>Divide the adjoint by the determinant.</li>
+      </ol>
+      <div class="math-tint">
+        <div class="mathrow">
+          <div class="math">\[ A = \begin{pmatrix} a &amp; b \\ c &amp; d \end{pmatrix} \]</div>
+          <div class="math">\[ \operatorname{adj}(A) = \begin{pmatrix} d &amp; -b \\ -c &amp; a \end{pmatrix} \]</div>
+          <div class="math">\[ A^{-1} = \frac{1}{\det(A)}\,\operatorname{adj}(A) \]</div>
+        </div>
+      </div>
+      <details class="more">
+        <summary>More detail</summary>
+        <p class="prose" style="font-size:.92rem;margin-top:10px">Multiplying a matrix by its inverse gives the
+          identity matrix: \( A\,A^{-1} = A^{-1}A = I \). This is how you check an inverse. The adjoint is
+          sometimes called the adjugate. It is not the same as the transpose.</p>
+      </details>
+    </div>
+
+    <div class="panel">
+      <h3>Try it: change the matrix and follow the steps</h3>
+      <div class="cols">
+        <div>
+          <div class="presets">
+            <button class="btn" data-ipre="3,1,1,2" type="button">det 5</button>
+            <button class="btn" data-ipre="2,-1,1,3" type="button">det 7</button>
+            <button class="btn" data-ipre="1,2,3,4" type="button">det &minus;2</button>
+            <button class="btn" data-ipre="2,4,1,2" type="button">det 0</button>
+          </div>
+          <div class="eq" id="iEq"></div>
+          <p style="font-size:.88rem;color:var(--muted);margin-top:10px;text-align:center">Type your own numbers into
+            \(A\), or use a preset.</p>
+        </div>
+        <div>
+          <div class="work" id="iWork" style="margin-top:0;text-align:left"></div>
+          <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:14px">
+            <button class="btn" id="iPrev" type="button" disabled>Back</button>
+            <span class="step" id="iStep">Step 0 of 4</span>
+            <button class="btn primary" id="iNext" type="button">Start</button>
+            <button class="btn" id="iReset" type="button">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Check: the inverse reverses the matrix</h3>
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="ubox" viewBox="0 0 340 340" role="img" aria-label="A shape transformed by the matrix and returned by its inverse"></svg>
+          <div class="capt" id="uCap">At rest</div>
+        </div>
+        <div>
+          <p class="prose" style="font-size:.93rem;color:var(--muted)">This shape uses the matrix \(A\) from the
+            panel above. Press <b>Apply A</b>, then <b>Apply A<sup>&minus;1</sup></b>. The shape returns to where
+            it started.</p>
+          <div class="btnrow" style="justify-content:center;margin-top:14px">
+            <button class="btn primary" id="uApply" type="button">Apply A</button>
+            <button class="btn" id="uUndo" type="button" disabled>Apply A<sup>&minus;1</sup></button>
+            <button class="btn" id="uReset" type="button">Reset</button>
+          </div>
+          <div class="verdict ok" id="uSay" hidden></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section class="station" id="s5">
+    <div class="station-head"><span class="num">05</span><h2>The determinant of a 3&times;3 matrix</h2><span class="eyebrow">30&ndash;40 min</span></div>
+    <div class="lede">
+      <p>A \(3 \times 3\) determinant is built from three \(2 \times 2\) determinants.</p>
+      <p style="margin-top:8px">Cross out the row and column of an entry. Four numbers remain. Calculate the
+        determinant of this smaller \(2 \times 2\) matrix. This number is called the <b>minor</b>.</p>
+      <p style="margin-top:8px">Do this for each entry in the first row. Multiply each entry by its minor, use the
+        signs \(+\), \(-\), \(+\), and add.</p>
+    </div>
+
+    <div class="panel">
+      <div class="math-tint">
+        <div class="math">\[ \det\begin{pmatrix} a &amp; b &amp; c \\ d &amp; e &amp; f \\ g &amp; h &amp; i \end{pmatrix}
+          = a\begin{vmatrix} e &amp; f \\ h &amp; i \end{vmatrix}
+          - b\begin{vmatrix} d &amp; f \\ g &amp; i \end{vmatrix}
+          + c\begin{vmatrix} d &amp; e \\ g &amp; h \end{vmatrix} \]</div>
+        <p style="font-size:.9rem;color:var(--muted)">The middle term is subtracted. The walkthrough below shows the
+          sign before each term.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Expand along the first row</h3>
+      <div class="cols">
+        <div>
+          <div class="presets">
+            <button class="btn" data-tpre="2,1,3,1,0,2,3,1,1" type="button">det 4</button>
+            <button class="btn" data-tpre="1,2,1,0,1,2,1,0,3" type="button">det 6</button>
+            <button class="btn" data-tpre="1,2,3,2,4,6,0,1,5" type="button">det 0</button>
+            <button class="btn" data-tpre="3,0,2,2,0,-2,0,1,1" type="button">det 10</button>
+          </div>
+          <div class="eq" id="tEq"></div>
+          <p style="font-size:.88rem;color:var(--muted);margin-top:10px;text-align:center">Type your own numbers, or
+            use a preset. The crossed-out entries show the row and column being removed.</p>
+        </div>
+        <div>
+          <div class="work" id="tWork" style="margin-top:0;text-align:left"></div>
+          <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:14px">
+            <button class="btn" id="tPrev" type="button" disabled>Back</button>
+            <span class="step" id="tStep">Step 0 of 4</span>
+            <button class="btn primary" id="tNext" type="button">Start</button>
+            <button class="btn" id="tReset" type="button">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Choose the minor</h3>
+      <div class="cols">
+        <div>
+          <p class="prose" style="font-size:.93rem;color:var(--muted);margin-bottom:12px" id="cmAsk"></p>
+          <div class="eq" id="cmEq"></div>
+          <p style="font-size:.88rem;color:var(--muted);margin-top:10px;text-align:center">Click the four entries that
+            remain, then press <b>Check</b>.</p>
+        </div>
+        <div>
+          <div class="btnrow" style="justify-content:center">
+            <button class="btn primary" id="cmCheck" type="button">Check</button>
+            <button class="btn" id="cmClear" type="button">Clear</button>
+            <button class="btn" id="cmNext" type="button">Another entry</button>
+          </div>
+          <div class="verdict ok" id="cmSay" hidden></div>
+          <div class="score" id="cmScore" style="margin-top:14px">0 of 0 correct</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section class="station" id="s6">
+    <div class="station-head"><span class="num">06</span><h2>The inverse of a 3&times;3 matrix</h2><span class="eyebrow">40&ndash;50 min</span></div>
+    <p class="lede">Finding a \(3 \times 3\) inverse takes more steps. We will work through them one at a time.</p>
+
+    <div class="panel">
+      <h3>The four steps</h3>
+      <ol class="steps" style="margin-top:8px">
+        <li>Find the minor of every entry. There are nine.</li>
+        <li>Give each minor a sign from the pattern below. The result is called a <b>cofactor</b>.</li>
+        <li>Transpose the matrix of cofactors. This is the adjoint.</li>
+        <li>Divide the adjoint by the determinant.</li>
+      </ol>
+      <div class="math-tint">
+        <div class="mathrow">
+          <div class="math">\[ \text{Sign pattern:}\quad \begin{pmatrix} + &amp; - &amp; + \\ - &amp; + &amp; - \\ + &amp; - &amp; + \end{pmatrix} \]</div>
+          <div class="math">\[ A^{-1} = \frac{1}{\det(A)}\,\operatorname{adj}(A) \]</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Cofactor builder</h3>
+      <p style="font-size:.93rem;color:var(--muted);margin:0 0 14px">Click a cell of the cofactor matrix on the
+        right. The matrix on the left crosses out that row and column. Work out the cofactor, type it in and press
+        <b>Check</b>. Press <b>Reveal</b> if you are stuck.</p>
+      <div class="cols">
+        <div>
+          <div class="presets">
+            <button class="btn" data-cpre="2,1,3,1,0,2,3,1,1" type="button">det 4</button>
+            <button class="btn" data-cpre="1,2,1,0,1,2,1,0,3" type="button">det 6</button>
+            <button class="btn" data-cpre="3,0,2,2,0,-2,0,1,1" type="button">det 10</button>
+            <button class="btn" data-cpre="1,2,3,2,4,6,0,1,5" type="button">det 0</button>
+          </div>
+          <div class="eq" id="cEq"></div>
+          <div class="work" id="cWork" style="text-align:left"></div>
+        </div>
+        <div>
+          <div class="capt" style="margin:0 0 8px">Cofactor matrix</div>
+          <div class="eq" id="cGrid"></div>
+          <div class="vrow" style="justify-content:center;margin-top:12px">
+            <input type="text" inputmode="numeric" class="vin" id="cIn" aria-label="Cofactor value" placeholder="cofactor">
+            <button class="btn primary" id="cCheck" type="button">Check</button>
+            <button class="btn" id="cReveal" type="button">Reveal</button>
+            <button class="btn" id="cAll" type="button">Reveal all</button>
+          </div>
+          <div class="verdict ok" id="cSay" hidden></div>
+          <div class="score" id="cScore" style="margin-top:12px">0 of 9 cofactors found</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>From cofactors to the inverse</h3>
+      <p style="font-size:.93rem;color:var(--muted);margin:0 0 14px">Once all nine cofactors are in place, step
+        through the last three moves.</p>
+      <div class="work" id="c2Work" style="text-align:left;margin-top:0"></div>
+      <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:14px">
+        <button class="btn" id="c2Prev" type="button" disabled>Back</button>
+        <span class="step" id="c2Step">Step 0 of 3</span>
+        <button class="btn primary" id="c2Next" type="button">Transpose</button>
+        <button class="btn" id="c2Reset" type="button">Reset</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section class="station" id="s7">
+    <div class="station-head"><span class="num">07</span><h2>Guided practice</h2><span class="eyebrow">60&ndash;80 min</span></div>
+    <p class="lede">Watch the solution in <b>Learn</b> mode, or try the steps yourself in <b>Practice</b> mode.</p>
+    <div id="guided"></div>
+  </section>
+
+  <!-- ============ 8 ============ -->
+  <section class="station" id="s8">
+    <div class="station-head"><span class="num">08</span><h2>Tutorial questions and the LMS quiz</h2><span class="eyebrow">80&ndash;105 min</span></div>
+    <p class="lede">Try these tutorial questions. Check your answers as you go. Remember to complete the LMS quiz.</p>
+
+    <div class="panel" style="border-color:var(--accent)">
+      <div class="vghead">
+        <h3>LMS quiz</h3><span class="vtag" style="color:var(--accent)">Required</span>
+      </div>
+      <p style="font-size:.93rem;margin-top:8px">The quiz on the LMS uses the same questions as the Tutorial 03
+        questions below. Finish these first, then complete the quiz on the LMS.</p>
+    </div>
+
+    <div class="vgroup" style="margin-top:18px">
+      <div class="vghead"><h3>Tutorial 03 questions</h3><span class="vtag">Core</span></div>
+      <p style="font-size:.93rem;color:var(--muted);margin:8px 0 14px">Find the inverse of each matrix, if it
+        exists.</p>
+      <div id="core8"></div>
+    </div>
+
+    <div class="vgroup">
+      <div class="vghead"><h3>Extra practice</h3><span class="vtag" style="color:var(--hot)">Supplementary</span></div>
+      <p style="font-size:.93rem;color:var(--muted);margin:8px 0 14px">Three more questions. One of them has no
+        inverse.</p>
+      <div id="extra8"></div>
+    </div>
+    <div class="score" id="score8" style="margin-top:18px">0 of 6 questions completed</div>
+  </section>
+
+  <!-- ============ 9 ============ -->
+  <section class="station" id="s9">
+    <div class="station-head"><span class="num">09</span><h2>Undoing a transformation in a game</h2><span class="eyebrow">105&ndash;113 min</span><span class="vchip ext">Optional application</span></div>
+    <p class="lede">In games, matrices can change the size, position or direction of objects. An inverse matrix can
+      help reverse these changes.</p>
+
+    <div class="panel">
+      <div class="cols">
+        <div>
+          <svg class="tbox" id="gbox" viewBox="0 0 340 340" role="img" aria-label="A sprite shape, transformed by a matrix and recovered by its inverse"></svg>
+          <div class="capt" id="gCap">The sprite in its own coordinates</div>
+        </div>
+        <div>
+          <div class="presets">
+            <button class="btn" data-gpre="scale" type="button">Scale</button>
+            <button class="btn" data-gpre="rot" type="button">Rotate</button>
+            <button class="btn" data-gpre="shear" type="button">Shear</button>
+            <button class="btn" data-gpre="flat" type="button">Flatten</button>
+          </div>
+          <div class="eq" id="gEq"></div>
+          <div class="btnrow" style="justify-content:center;margin-top:14px">
+            <button class="btn primary" id="gApply" type="button">Apply A</button>
+            <button class="btn" id="gUndo" type="button" disabled>Apply A<sup>&minus;1</sup></button>
+            <button class="btn" id="gReset" type="button">Reset</button>
+          </div>
+          <div class="work" id="gTable" style="text-align:left;font-size:.9rem"></div>
+          <div class="verdict ok" id="gSay" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Where else this is used</h3>
+      <div class="sgal" id="gcards"></div>
+      <details class="more">
+        <summary>Optional reading: 3&times;3 matrices in graphics</summary>
+        <p class="prose" style="font-size:.9rem;color:var(--muted);margin-top:10px">A \(3 \times 3\) matrix can mean
+          two different things in graphics. It can be a transformation of 3D space. It can also be a transformation
+          of 2D points written with a third coordinate equal to 1, which lets a single matrix include a move. Both
+          kinds have inverses found by the method in this lesson.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 10 ============ -->
+  <section class="station" id="s10">
+    <div class="station-head"><span class="num">10</span><h2>Exit quiz</h2><span class="eyebrow">113&ndash;120 min</span></div>
+    <p class="lede">Try these six questions to check your understanding.</p>
+    <div id="quiz"></div>
+    <div class="score" id="score">0 of 6 answered</div>
+    <div class="verdict" id="revisit" hidden style="background:var(--accent-soft);color:var(--fg);border:1px solid var(--accent)"></div>
+    <div class="btnrow" style="justify-content:center;margin-top:14px">
+      <button class="btn" id="quizReset" type="button">Clear answers</button>
+    </div>
+  </section>
+
+  <footer>
+    Computing Mathematics, Tutorial 03. Everything runs in your browser, so the page works the same on every
+    machine and keeps working with no internet connection.
+  </footer>
+</div>
