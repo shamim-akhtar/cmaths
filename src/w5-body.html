@@ -1,0 +1,470 @@
+<div class="clock">
+  <div class="wrap clock-inner">
+    <div class="clock-title">Tutorial 05<span>Limits</span></div>
+    <a href="#s1"><span class="t">0&ndash;15</span><span class="n">Matrix recall</span></a>
+    <a href="#s2"><span class="t">15&ndash;25</span><span class="n">What is a limit?</span></a>
+    <a href="#s3"><span class="t">25&ndash;40</span><span class="n">Limits from a table</span></a>
+    <a href="#s4"><span class="t">40&ndash;60</span><span class="n">Limits from a graph</span></a>
+    <span class="brk"><span class="t">60&ndash;70</span><span class="n">Break</span></span>
+    <a href="#s5"><span class="t">70&ndash;80</span><span class="n">Does the limit exist?</span></a>
+    <a href="#s6"><span class="t">80&ndash;95</span><span class="n">Limits using algebra</span></a>
+    <a href="#s7" class="opt"><span class="t">95&ndash;105</span><span class="n">Limits in computing</span></a>
+    <a href="#s8"><span class="t">105&ndash;115</span><span class="n">Tutorial questions</span></a>
+    <a href="#s9"><span class="t">115&ndash;120</span><span class="n">Exit quiz</span></a>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <nav class="weeknav" aria-label="Weeks">
+      <a href="https://shamim-akhtar.github.io/cmaths/week01/"><span class="wk">Week 1</span><span class="wt">Vectors</span></a>
+      <a href="https://shamim-akhtar.github.io/cmaths/week02/"><span class="wk">Week 2</span><span class="wt">Matrices</span></a>
+      <a href="https://shamim-akhtar.github.io/cmaths/week03/"><span class="wk">Week 3</span><span class="wt">Determinants &amp; inverses</span></a>
+      <span class="nolab" title="There is no lab page for Week 4"><span class="wk">Week 4</span><span class="wt">No lab</span></span>
+      <a class="on" aria-current="page" href="https://shamim-akhtar.github.io/cmaths/week05/"><span class="wk">Week 5</span><span class="wt">Limits</span></a>
+    </nav>
+    <div class="hero-top">
+      <span class="eyebrow">Computing Mathematics &middot; Tutorial 05 &middot; Two hours</span>
+      <span class="hero-btns">
+        <button class="theme-btn" id="oneBtn" type="button" aria-pressed="true"
+          title="Left and right arrow keys move between stations">Show all</button>
+        <button class="theme-btn" id="themeBtn" type="button">Theme</button>
+      </span>
+    </div>
+    <h1>Limits</h1>
+    <div class="compact-line" id="compactLine" hidden></div>
+    <div class="sub hero-intro">
+      <p>A limit tells us what value a function gets close to when \(x\) gets close to a number.</p>
+      <p>We will use tables, graphs and calculations to find limits.</p>
+    </div>
+  </header>
+
+  <!-- ============ 1 ============ -->
+  <section class="station" id="s1">
+    <div class="station-head"><span class="num">01</span><h2>Matrix recall</h2><span class="eyebrow">0&ndash;15 min</span></div>
+    <p class="lede">Let's check what you remember about matrices.</p>
+
+    <div class="panel">
+      <h3>Four cards</h3>
+      <div class="gal1" id="recap"></div>
+      <div class="btnrow" style="justify-content:center;margin-top:14px">
+        <button class="btn" id="rAll" type="button">Turn them all over</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Row by column</h3>
+      <p class="prose" style="font-size:.93rem;color:var(--muted);margin-bottom:12px">Click a cell of \(AB\). The row
+        of \(A\) and the column of \(B\) that make it light up, and the working appears below.</p>
+      <div class="eq" id="mmEq"></div>
+      <div class="work" id="mmWork">Click any cell of \(AB\).</div>
+      <div class="score" id="mmScore" style="margin-top:12px">0 of 4 cells opened</div>
+    </div>
+
+    <div class="panel" data-vqgroup="recall">
+      <h3>Three quick checks</h3>
+      <p style="font-size:.93rem;color:var(--muted);margin:8px 0 14px">Type your answer and press <b>Check</b>.
+        Press <b>Working</b> if you need the steps.</p>
+
+      <div class="vq" data-ans="6,2,2,6">
+        <div class="qt"><span class="qn">1.</span>Find \( \begin{pmatrix} 1 &amp; 2 \\ 3 &amp; 4 \end{pmatrix} + \begin{pmatrix} 5 &amp; 0 \\ -1 &amp; 2 \end{pmatrix} \).</div>
+        <div class="vrow">
+          <span class="mxin" data-rows="2" data-cols="2" data-label="Question 1"></span>
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>Add the entries in the same position: \(1+5=6\), \(2+0=2\), \(3+(-1)=2\), \(4+2=6\).</div>
+      </div>
+
+      <div class="vq" data-ans="2,3">
+        <div class="qt"><span class="qn">2.</span>A matrix has order \(3 \times 2\). What is the order of its transpose? Give rows first.</div>
+        <div class="vrow">
+          <input type="text" inputmode="numeric" class="vin" aria-label="Question 2 rows">
+          <span class="vsep">&times;</span>
+          <input type="text" inputmode="numeric" class="vin" aria-label="Question 2 columns">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>The transpose changes rows into columns, so 3 rows and 2 columns become 2 rows and 3 columns.</div>
+      </div>
+
+      <div class="vq" data-ans="2">
+        <div class="qt"><span class="qn">3.</span>Find \( \det\begin{pmatrix} 4 &amp; 2 \\ 3 &amp; 2 \end{pmatrix} \). Does the matrix have an inverse?</div>
+        <div class="vrow">
+          <input type="text" inputmode="numeric" class="vin" aria-label="Question 3 determinant">
+          <button class="btn vcheck" type="button">Check</button>
+          <button class="btn vwork" type="button">Working</button>
+          <span class="vfb"></span>
+        </div>
+        <div class="why vsol" hidden>\( (4)(2) - (2)(3) = 8 - 6 = 2 \). It is not zero, so the matrix has an inverse.</div>
+      </div>
+      <div class="score vscore" style="margin-top:14px">0 of 3 correct</div>
+    </div>
+
+    <div class="panel">
+      <h3>Match the equations to the matrix form</h3>
+      <div class="cols">
+        <div>
+          <div class="math">\[ \begin{aligned} 2x + y &amp;= 5 \\ 4x - 3y &amp;= -1 \end{aligned} \]</div>
+          <p class="prose" style="font-size:.93rem;color:var(--muted)">Which matrix equation \(A\mathbf{x} = \mathbf{b}\)
+            describes these two equations?</p>
+        </div>
+        <div>
+          <div class="opts" id="lsOpts"></div>
+          <p class="why" id="lsWhy" hidden></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 2 ============ -->
+  <section class="station" id="s2">
+    <div class="station-head"><span class="num">02</span><h2>What is a limit?</h2><span class="eyebrow">15&ndash;25 min</span></div>
+    <p class="lede">Watch the numbers. What value are they getting close to?</p>
+
+    <div class="panel">
+      <h3>The hidden number</h3>
+      <div class="cols">
+        <div>
+          <svg class="nline" id="hnLine" viewBox="0 0 400 120" role="img" aria-label="A number line with the numbers moving towards a hidden value"></svg>
+          <div class="btnrow" style="justify-content:center;margin-top:8px">
+            <button class="btn" id="hnBack" type="button">Back</button>
+            <button class="btn primary" id="hnNext" type="button">Next number</button>
+            <button class="btn" id="hnPlay" type="button">Play</button>
+            <button class="btn" id="hnReset" type="button">Reset</button>
+          </div>
+          <label class="tog"><input type="checkbox" id="hnZoom"> Zoom in near the end of the line</label>
+        </div>
+        <div>
+          <table class="ltab" id="hnTab">
+            <thead><tr><th>Number</th><th>Gap to the hidden number</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <div class="vrow" style="margin-top:12px">
+            <label for="hnGuess" style="font-size:.9rem">The numbers are getting close to</label>
+            <input type="text" inputmode="decimal" class="vin" id="hnGuess" aria-label="Your guess">
+            <button class="btn" id="hnCheck" type="button">Check</button>
+          </div>
+          <div class="verdict" id="hnSay" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Move \(x\) towards 3</h3>
+      <p class="prose" style="font-size:.93rem;color:var(--muted);margin-bottom:10px">Watch \(x\) move towards 3
+        from both sides. What number does \(f(x) = 2x + 1\) move towards?</p>
+      <div class="cols">
+        <div>
+          <svg class="gbox" id="mvBox" viewBox="0 0 400 320" role="img" aria-label="Graph of f of x equals 2x plus 1 with markers approaching x equals 3 from both sides"></svg>
+          <div class="legend"><span class="lg-l">&#9654; From the left</span><span class="lg-r">&#9664; From the right</span></div>
+          <div class="btnrow" style="justify-content:center;margin-top:8px">
+            <button class="btn" id="mvBack" type="button">Back</button>
+            <button class="btn primary" id="mvPlay" type="button">Play</button>
+            <button class="btn" id="mvStep" type="button">Step</button>
+            <button class="btn" id="mvReset" type="button">Reset</button>
+          </div>
+        </div>
+        <div>
+          <table class="ltab">
+            <thead><tr><th></th><th>From the left</th><th>From the right</th></tr></thead>
+            <tbody>
+              <tr><th>\(x\)</th><td id="mvLx"></td><td id="mvRx"></td></tr>
+              <tr><th>\(f(x)\)</th><td id="mvLy"></td><td id="mvRy"></td></tr>
+              <tr><th>Gap from \(x\) to 3</th><td id="mvLdx"></td><td id="mvRdx"></td></tr>
+              <tr><th>Gap from \(f(x)\) to the target</th><td id="mvLdy"></td><td id="mvRdy"></td></tr>
+            </tbody>
+          </table>
+          <div class="vrow" style="margin-top:12px">
+            <label for="mvGuess" style="font-size:.9rem">\(f(x)\) moves towards</label>
+            <input type="text" inputmode="decimal" class="vin" id="mvGuess" aria-label="Your prediction">
+            <button class="btn" id="mvCheck" type="button">Check</button>
+          </div>
+          <div class="verdict" id="mvSay" hidden></div>
+          <div class="math-tint" id="mvReveal" hidden>
+            <div class="math">\[ \lim_{x \to 3} (2x + 1) = 7 \]</div>
+            <p style="font-size:.9rem;color:var(--muted)">Read this as "the limit of \(2x + 1\) as \(x\) gets close to
+              3 is 7". Here \(f(3) = 7\) as well, so the limit and the value at the point are the same. That is not
+              always true, as station 04 will show.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>The notation</h3>
+      <div class="math-tint">
+        <div class="math">\[ \lim_{x \to a} f(x) = L \]</div>
+        <p style="font-size:.9rem;color:var(--muted)">As \(x\) gets close to \(a\), \(f(x)\) gets close to \(L\). The
+          limit is about what happens <b>near</b> \(a\), not only at \(a\).</p>
+      </div>
+      <details class="more">
+        <summary>Optional: an AI model's confidence</summary>
+        <div class="cols" style="margin-top:12px">
+          <div>
+            <svg class="gbox" id="aiBox" viewBox="0 0 400 260" role="img" aria-label="Bar chart of an AI model's confidence over six iterations"></svg>
+            <div class="btnrow" style="justify-content:center;margin-top:8px">
+              <button class="btn primary" id="aiPlay" type="button">Play</button>
+              <button class="btn" id="aiStep" type="button">Step</button>
+              <button class="btn" id="aiReset" type="button">Reset</button>
+            </div>
+          </div>
+          <div class="prose" style="font-size:.93rem">
+            <p>An AI model is learning to spot a cat. After each round of training, its confidence goes up:
+              62%, 79%, 91%, 97%, 99.2%, 99.8%.</p>
+            <p>The values are heading towards 100%.</p>
+            <p class="note">This is an illustrative trend. It does not prove the confidence will reach 100%, and
+              real training does not always behave like this.</p>
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ============ 3 ============ -->
+  <section class="station" id="s3">
+    <div class="station-head"><span class="num">03</span><h2>Find a limit using a table</h2><span class="eyebrow">25&ndash;40 min</span></div>
+    <p class="lede">Choose \(x\) values close to the target, from both sides. What happens to \(f(x)\)?</p>
+
+    <div class="panel">
+      <div class="presets" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
+        <button class="btn" data-tpre="lin" type="button" aria-pressed="true">Example: \(2x+1\), \(x \to 3\)</button>
+        <button class="btn" data-tpre="sq" type="button" aria-pressed="false">Tutorial Q1: \(x^2\), \(x \to 5\)</button>
+      </div>
+      <div class="math" id="tbTitle"></div>
+      <div class="cols">
+        <div>
+          <svg class="gbox" id="tbBox" viewBox="0 0 400 300" role="img" aria-label="Graph of the function near the target"></svg>
+          <svg class="nline" id="tbLine" viewBox="0 0 400 80" role="img" aria-label="Number line near the target"></svg>
+          <div class="ctl" style="margin-top:8px">
+            <label for="tbSlide"><span>Try your own \(x\)</span><span class="v" id="tbSv"></span></label>
+            <input type="range" id="tbSlide" min="-1000" max="1000" step="1" value="-500" aria-describedby="tbSv">
+          </div>
+        </div>
+        <div>
+<div class="tscroll">
+          <table class="ltab" id="tbTab">
+            <thead><tr><th>\(x\) below</th><th>\(f(x)\)</th><th>\(x\) above</th><th>\(f(x)\)</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          </div>
+          <div class="btnrow" style="justify-content:center;margin-top:10px">
+            <button class="btn primary" id="tbCloser" type="button">Closer</button>
+            <button class="btn" id="tbBoth" type="button">Show both sides</button>
+            <button class="btn" id="tbReset" type="button">Reset</button>
+          </div>
+          <div class="vrow" style="margin-top:14px">
+            <label for="tbGuess" style="font-size:.9rem">The limit is</label>
+            <input type="text" inputmode="decimal" class="vin" id="tbGuess" aria-label="Your estimate of the limit">
+            <button class="btn" id="tbCheck" type="button">Check</button>
+          </div>
+          <div class="verdict" id="tbSay" hidden></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4 ============ -->
+  <section class="station" id="s4">
+    <div class="station-head"><span class="num">04</span><h2>Read a limit from a graph</h2><span class="eyebrow">40&ndash;60 min</span></div>
+    <p class="lede">Move towards the marked \(x\) value from the left and from the right. What \(y\)-value do you see?</p>
+
+    <div class="panel">
+      <div class="presets" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))" id="gePre">
+        <button class="btn" data-gpre="cube" type="button">Example 2: \(x^3\)</button>
+        <button class="btn" data-gpre="q2" type="button">Tutorial Q2</button>
+        <button class="btn" data-gpre="q3" type="button">Tutorial Q3</button>
+        <button class="btn" data-gpre="q4" type="button">Preview: Q4</button>
+      </div>
+      <div class="math" id="geTitle"></div>
+      <div class="cols">
+        <div>
+          <svg class="gbox big" id="geBox" viewBox="0 0 440 340" role="img" aria-label="Graph explorer"></svg>
+          <div class="legend"><span class="lg-l">&#9654; L: from the left</span><span class="lg-r">&#9664; R: from the right</span><span class="lg-o">&#9675; open: not on the graph</span><span class="lg-f">&#9679; filled: on the graph</span></div>
+        </div>
+        <div>
+          <div class="ctl">
+            <label for="geTarget"><span>Target \(x\)</span><span class="v" id="geTv"></span></label>
+            <select id="geTarget" class="sel"></select>
+          </div>
+          <div class="btnrow">
+            <button class="btn primary" id="gePlayL" type="button">Play left</button>
+            <button class="btn primary" id="gePlayR" type="button">Play right</button>
+            <button class="btn primary" id="gePlayB" type="button">Play both</button>
+          </div>
+          <div class="btnrow" style="margin-top:8px">
+            <button class="btn" id="gePause" type="button">Pause</button>
+            <button class="btn" id="geBack" type="button">Step back</button>
+            <button class="btn" id="geStep" type="button">Step</button>
+            <button class="btn" id="geReset" type="button">Reset</button>
+          </div>
+          <table class="ltab" style="margin-top:12px">
+            <thead><tr><th></th><th>L: from the left</th><th>R: from the right</th></tr></thead>
+            <tbody>
+              <tr><th>\(x\)</th><td id="geLx"></td><td id="geRx"></td></tr>
+              <tr><th>\(y\)</th><td id="geLy"></td><td id="geRy"></td></tr>
+            </tbody>
+          </table>
+          <div class="ask" id="geAsk">
+            <p style="font-size:.93rem;margin:12px 0 8px"><b>Predict.</b> What \(y\)-value does each side head towards?</p>
+            <div class="vrow">
+              <label for="geL" style="font-size:.88rem">Left</label>
+              <input type="text" inputmode="decimal" class="vin" id="geL" aria-label="Left side heads towards">
+              <label for="geR" style="font-size:.88rem">Right</label>
+              <input type="text" inputmode="decimal" class="vin" id="geR" aria-label="Right side heads towards">
+              <button class="btn" id="geCheck" type="button">Check</button>
+            </div>
+            <div class="verdict" id="geSay1" hidden></div>
+            <div id="geQ2" hidden>
+              <p style="font-size:.93rem;margin:12px 0 8px"><b>Do both sides head towards the same \(y\)-value?</b></p>
+              <div class="btnrow">
+                <button class="btn" id="geYes" type="button">Yes, the same</button>
+                <button class="btn" id="geNo" type="button">No, different</button>
+              </div>
+              <div class="verdict" id="geSay2" hidden></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5 ============ -->
+  <section class="station" id="s5">
+    <div class="station-head"><span class="num">05</span><h2>Does the limit exist?</h2><span class="eyebrow">70&ndash;80 min</span></div>
+    <p class="lede">A limit exists when both sides move towards the same number. Look from both sides, then decide.</p>
+    <div class="btnrow" style="justify-content:center;margin-bottom:14px">
+      <button class="btn primary" id="ldPlay" type="button">Play all three</button>
+      <button class="btn" id="ldReset" type="button">Reset</button>
+      <button class="btn" id="ldPoint" type="button" aria-pressed="false">What about the actual point?</button>
+    </div>
+    <div class="detective" id="ldHost"></div>
+    <details class="more">
+      <summary>More detail: \(f(x) = \frac{1}{x}\) near 0</summary>
+      <p class="prose" style="font-size:.92rem;margin-top:10px">From the left, \(\frac{1}{x}\) becomes a larger and
+        larger negative number. From the right, it becomes a larger and larger positive number. We write
+        \(f(x) \to -\infty\) and \(f(x) \to \infty\). Neither side settles on a number, and the two sides go opposite
+        ways, so there is no finite two-sided limit. \(f(0)\) is not defined, because we cannot divide by 0.</p>
+    </details>
+  </section>
+
+  <!-- ============ 6 ============ -->
+  <section class="station" id="s6">
+    <div class="station-head"><span class="num">06</span><h2>Calculate limits using algebra</h2><span class="eyebrow">80&ndash;95 min</span></div>
+    <p class="lede">Try putting the number into the expression. If you get \(\frac{0}{0}\), simplify the expression first.</p>
+    <div class="panel">
+      <h3>The method</h3>
+      <ol class="steps" style="margin-top:8px">
+        <li>Substitute the value of \(x\). If you get a number, that is the limit.</li>
+        <li>If you get \(\frac{0}{0}\), you cannot find the limit by direct substitution. For the questions in this lesson, try factorising and cancelling the common factor.</li>
+        <li>Substitute into the simplified expression.</li>
+      </ol>
+      <details class="more">
+        <summary>Why \(\frac{0}{0}\) is not the answer</summary>
+        <p class="prose" style="font-size:.92rem;margin-top:10px">\(\frac{0}{0}\) is not 0, not 1 and not a number at
+          all. It only tells us the expression cannot be used as it stands at that point. Cancelling a factor such as
+          \((x - 2)\) is allowed for every \(x \ne 2\). The limit only looks at values near 2, never at 2 itself, so
+          the simplified expression gives the same limit.</p>
+      </details>
+    </div>
+    <div id="alg"></div>
+  </section>
+
+  <!-- ============ 7 ============ -->
+  <section class="station" id="s7">
+    <div class="station-head"><span class="num">07</span><h2>Where are limits used in computing?</h2><span class="eyebrow">95&ndash;105 min</span><span class="vchip ext">Applications</span></div>
+    <p class="lede">Limits help us understand what happens as a value gets closer to a point, or as something keeps
+      growing or changing.</p>
+    <div class="apps">
+      <div class="panel">
+        <h3>1. Machine learning</h3>
+        <div class="cols">
+          <div><svg class="gbox" id="apMl" viewBox="0 0 400 260" role="img" aria-label="Model error falling over training steps"></svg></div>
+          <div>
+        <div class="ctl" style="margin-top:6px">
+          <label for="apMlS"><span>Training steps</span><span class="v" id="apMlV"></span></label>
+          <input type="range" id="apMlS" min="1" max="12" step="1" value="1">
+        </div>
+        <div class="btnrow"><button class="btn primary" id="apMlPlay" type="button">Play</button><button class="btn" id="apMlReset" type="button">Reset</button></div>
+        <p class="prose" style="font-size:.9rem;margin-top:10px">The error goes 0.5, 0.2, 0.08 and so on. Move the
+          slider and watch where it is heading.</p>
+        <p class="note">An illustrative curve. Real training is not guaranteed to follow it.</p>
+          <div class="cq"><label for="cq1">What value is the error getting close to?</label>
+            <div class="vrow"><input type="text" inputmode="decimal" class="vin" id="cq1"><button class="btn" id="cq1c" type="button">Check</button></div>
+            <div class="verdict" id="cq1s" hidden></div></div>
+      </div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>2. How fast an algorithm grows</h3>
+        <div class="cols">
+          <div><svg class="gbox" id="apAl" viewBox="0 0 400 260" role="img" aria-label="Operation counts for n and n squared"></svg></div>
+          <div>
+        <div class="ctl" style="margin-top:6px">
+          <label for="apAlS"><span>Input size \(n\)</span><span class="v" id="apAlV"></span></label>
+          <input type="range" id="apAlS" min="1" max="130" step="1" value="5">
+        </div>
+        <div class="btnrow"><button class="btn primary" id="apAlPlay" type="button">Play</button><button class="btn" id="apAlReset" type="button">Reset</button></div>
+        <p class="prose" style="font-size:.9rem;margin-top:10px" id="apAlTxt"></p>
+        <p class="note">A simplified picture of long-run growth.</p>
+          <div class="cq"><p class="cql">As \(n\) gets very large, what happens to \(n^2 \div n\)?</p>
+            <div class="opts" id="cq2"></div><p class="why" id="cq2s" hidden></p></div>
+      </div>
+        </div>
+      </div>
+      <div class="panel">
+        <h3>3. Rate of change</h3>
+        <div class="cols">
+          <div><svg class="gbox" id="apRt" viewBox="0 0 400 260" role="img" aria-label="Laptop temperature over time with two sample points"></svg></div>
+          <div>
+        <div class="ctl" style="margin-top:6px">
+          <label for="apRtS"><span>Gap between the two samples</span><span class="v" id="apRtV"></span></label>
+          <input type="range" id="apRtS" min="0" max="5" step="1" value="0">
+        </div>
+        <div class="btnrow"><button class="btn primary" id="apRtPlay" type="button">Bring them closer</button><button class="btn" id="apRtReset" type="button">Reset</button></div>
+        <p class="prose" style="font-size:.9rem;margin-top:10px" id="apRtTxt"></p>
+        <p class="note">This is a preview of the next topic, derivatives.</p>
+          <div class="cq"><label for="cq3">What value does the average rate settle near, in &deg;C per second?</label>
+            <div class="vrow"><input type="text" inputmode="decimal" class="vin" id="cq3"><button class="btn" id="cq3c" type="button">Check</button></div>
+            <div class="verdict" id="cq3s" hidden></div></div>
+      </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ============ 8 ============ -->
+  <section class="station" id="s8">
+    <div class="station-head"><span class="num">08</span><h2>Tutorial questions</h2><span class="eyebrow">105&ndash;115 min</span></div>
+    <p class="lede">Try the question yourself. Use a hint only if you need one. In <b>Learn</b> mode you can watch the
+      working one step at a time.</p>
+    <p class="note" style="margin:-8px 0 18px">Choose the questions you need to practise. You can complete the remaining
+      questions after class.</p>
+    <div class="vgroup"><div class="vghead"><h3>Numerical</h3><span class="vtag">Q1</span></div><div id="pNum"></div></div>
+    <div class="vgroup"><div class="vghead"><h3>Graphical</h3><span class="vtag">Q2, Q3 and Q4</span></div><div id="pGra"></div></div>
+    <div class="vgroup"><div class="vghead"><h3>Algebraic</h3><span class="vtag">Q5 and Q6</span></div><div id="pAlg"></div></div>
+    <div class="vgroup"><div class="vghead"><h3>Extra practice</h3><span class="vtag" style="color:var(--hot)">Not on the tutorial paper</span></div><div id="pExt"></div></div>
+    <div class="score" id="pScore" style="margin-top:18px">Questions completed: 0</div>
+  </section>
+
+  <!-- ============ 9 ============ -->
+  <section class="station" id="s9">
+    <div class="station-head"><span class="num">09</span><h2>Exit quiz</h2><span class="eyebrow">115&ndash;120 min</span></div>
+    <p class="lede">Check what you have learnt about limits.</p>
+    <div id="quiz"></div>
+    <div class="score" id="score">0 of 6 answered</div>
+    <div class="verdict" id="revisit" hidden style="background:var(--accent-soft);color:var(--fg);border:1px solid var(--accent)"></div>
+    <div class="btnrow" style="justify-content:center;margin-top:14px">
+      <button class="btn" id="quizReset" type="button">New set of questions</button>
+    </div>
+  </section>
+
+  <footer>
+    Computing Mathematics, Tutorial 05. Everything runs in your browser, so the page works the same on every
+    machine and keeps working with no internet connection.
+  </footer>
+</div>

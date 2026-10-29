@@ -67,6 +67,24 @@ This lab supports Tutorial 03. It covers the transpose, determinants, the adjoin
 | 09 | Undoing a transformation | See how a game engine uses the inverse to go from screen coordinates back to a sprite, and why a flattened sprite cannot be recovered. |
 | 10 | Exit quiz | Complete six questions to check your understanding. |
 
+## Week 5: Limits
+
+https://shamim-akhtar.github.io/cmaths/week05/
+
+This lab supports Tutorial 05. It covers what a limit is and how to find one from a table, from a graph and by calculation. There is no lab for Week 4.
+
+| Station | Topic | What students can do |
+|---|---|---|
+| 01 | Matrix recall | Review matrices with flashcards, row-by-column multiplication, quick checks and a matrix-form matching task. |
+| 02 | What is a limit? | Watch numbers close in on a hidden value, move x towards 3 from both sides, then see the limit notation. |
+| 03 | Limits from a table | Fill a two-sided table step by step for 2x + 1 and for Tutorial Q1, with exact values and a matching graph. |
+| 04 | Limits from a graph | Move markers towards a target from the left and right on Tutorial Q2, Q3 and Q4, then decide whether the two sides agree. |
+| 05 | Does the limit exist? | Compare a hole, a jump and 1/x near 0, and decide whether each limit exists. |
+| 06 | Limits using algebra | Try substitution, and simplify first when it gives 0/0, for Tutorial Q5. |
+| 07 | Limits in computing | Explore model error during training, how fast algorithms grow, and a preview of rate of change. |
+| 08 | Tutorial questions | Work through Tutorial Q1 to Q6 and three extra questions in Learn or Practice mode. |
+| 09 | Exit quiz | Answer six questions chosen from a small bank, and retake with a new set. |
+
 ## Interactive Features
 
 The labs include interactive activities to help students learn and practise.
@@ -105,13 +123,14 @@ index.html          Main page with links to the weekly labs
 week01/index.html   Week 1: Vectors
 week02/index.html   Week 2: Matrices
 week03/index.html   Week 3: Determinants and inverses
+week05/index.html   Week 5: Limits
 src/                Editable sources and build scripts
 .nojekyll           GitHub Pages configuration
 ```
 
 ## Adding a New Week
 
-1. Create a new folder, such as `week04`.
+1. Create a new folder, such as `week06`.
 2. Add the `index.html` file to the folder.
 3. Add the new week to the main page.
 4. Update the week links in the existing labs.

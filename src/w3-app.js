@@ -1232,22 +1232,4 @@
     buildQuiz();
   })();
 
-  /* ---------------- the full title on station 01 only, a compact line elsewhere ---------------- */
-  (function(){
-    var hero=document.querySelector("header.hero"),line=document.getElementById("compactLine"),one=document.getElementById("oneBtn");
-    if(!hero||!line)return;
-    var secs=Array.prototype.slice.call(document.querySelectorAll("section.station"));
-    function upd(){
-      var single=one.getAttribute("aria-pressed")==="true";
-      var vis=secs.filter(function(x){return !x.hidden;});
-      var idx=vis.length===1?secs.indexOf(vis[0]):0;
-      var compact=single&&idx>0;
-      if(hero.classList.contains("compact")!==compact)hero.classList.toggle("compact",compact);
-      if(line.hidden!==!compact)line.hidden=!compact;
-      var txt=compact?"Week 3 · Station "+(idx<9?"0":"")+(idx+1)+" of "+secs.length:"";
-      if(line.textContent!==txt)line.textContent=txt;
-    }
-    if("MutationObserver" in window)
-      new MutationObserver(upd).observe(document.body,{attributes:true,attributeFilter:["hidden","aria-pressed"],subtree:true});
-    upd();
-  })();
+

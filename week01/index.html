@@ -266,6 +266,9 @@ input[type=range]{width:100%;accent-color:var(--accent)}
 .weeknav a{text-decoration:none;color:var(--muted);border:1px solid var(--line);border-radius:999px;
   background:var(--surface);padding:6px 14px;display:flex;align-items:baseline;gap:8px}
 .weeknav a:hover{border-color:var(--accent);color:var(--fg)}
+.weeknav .nolab{color:var(--muted);border:1px dashed var(--line);border-radius:999px;padding:6px 14px;display:flex;align-items:baseline;gap:8px;opacity:.75;cursor:default}
+.weeknav .nolab .wk{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+.weeknav .nolab .wt{font-size:.84rem}
 .weeknav a.on{background:var(--accent);border-color:var(--accent);color:#fff}
 .weeknav .wk{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
 .weeknav .wt{font-size:.84rem}
@@ -316,6 +319,9 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
   .mx td{padding:4px 6px;min-width:30px;font-size:.85rem}
   .mx input{width:38px}
 }
+header.hero.compact{padding-block:22px 16px}
+header.hero.compact h1,header.hero.compact .hero-intro{display:none}
+.compact-line{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
 
 .weeknav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
 .weeknav a{text-decoration:none;color:var(--muted);border:1px solid var(--line);border-radius:999px;
@@ -355,6 +361,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       <a class="on" aria-current="page" href="https://shamim-akhtar.github.io/cmaths/week01/"><span class="wk">Week 1</span><span class="wt">Vectors</span></a>
       <a href="https://shamim-akhtar.github.io/cmaths/week02/"><span class="wk">Week 2</span><span class="wt">Matrices</span></a>
       <a href="https://shamim-akhtar.github.io/cmaths/week03/"><span class="wk">Week 3</span><span class="wt">Determinants &amp; inverses</span></a>
+      <span class="nolab" title="There is no lab page for Week 4"><span class="wk">Week 4</span><span class="wt">No lab</span></span>
+      <a href="https://shamim-akhtar.github.io/cmaths/week05/"><span class="wk">Week 5</span><span class="wt">Limits</span></a>
     </nav>
     <div class="hero-top">
       <span class="eyebrow">Computing Mathematics &middot; Tutorial 01 &middot; Two hours</span>
@@ -365,7 +373,8 @@ footer{padding-block:28px 40px;color:var(--muted);font-size:.86rem}
       </span>
     </div>
     <h1>Vectors and Vector Operations</h1>
-    <p class="sub">A vector describes a quantity that has both a size and a direction. Computing uses vectors
+    <div class="compact-line" id="compactLine" hidden></div>
+    <p class="sub hero-intro">A vector describes a quantity that has both a size and a direction. Computing uses vectors
       everywhere: the position of a character in a game, the direction a camera is facing, the velocity of a moving
       object, and the colour of a pixel. In this lesson you will learn what a vector is, how to add and scale
       vectors, how to measure a vector's length, and how the dot product compares two directions.</p>
@@ -1211,6 +1220,28 @@ window.MathJax={
     card.classList.toggle("turned",on);
     setTimeout(function(){card.classList.remove("flipF","flipB");},660);
   }
+
+  /* ---------------- the full title on station 01 only, a compact line elsewhere ---------------- */
+  (function(){
+    var hero=document.querySelector("header.hero"),line=document.getElementById("compactLine"),one=document.getElementById("oneBtn");
+    if(!hero||!line||!one)return;
+    var wk=document.querySelector(".weeknav a.on .wk"),week=wk?wk.textContent:"";
+    var secs=Array.prototype.slice.call(document.querySelectorAll("section.station"));
+    function upd(){
+      var single=one.getAttribute("aria-pressed")==="true";
+      var vis=secs.filter(function(x){return !x.hidden;});
+      var idx=vis.length===1?secs.indexOf(vis[0]):0;
+      var compact=single&&idx>0;
+      if(hero.classList.contains("compact")!==compact)hero.classList.toggle("compact",compact);
+      if(line.hidden!==!compact)line.hidden=!compact;
+      var h=compact?vis[0].querySelector("h2"):null;
+      var txt=compact?week+" \u00b7 Station "+(idx<9?"0":"")+(idx+1)+" of "+secs.length+(h?" \u00b7 "+h.textContent:""):"";
+      if(line.textContent!==txt)line.textContent=txt;
+    }
+    if("MutationObserver" in window)
+      new MutationObserver(upd).observe(document.body,{attributes:true,attributeFilter:["hidden","aria-pressed"],subtree:true});
+    upd();
+  })();
 
   /* ---------------- a small plotting helper, shared by every figure ---------------- */
   var NS="http://www.w3.org/2000/svg";

@@ -5,7 +5,7 @@ conventions the next week must follow.
 
 ## What exists
 
-Three interactive labs for **CMA1C03 Computing Mathematics** at Temasek Polytechnic,
+Four interactive labs for **CMA1C03 Computing Mathematics** at Temasek Polytechnic,
 School of Informatics & IT.
 
 | Week | Tutorial | Topic | URL |
@@ -13,6 +13,10 @@ School of Informatics & IT.
 | 1 | Tutorial 01 | Vectors and Vector Operations | https://shamim-akhtar.github.io/cmaths/week01/ |
 | 2 | Tutorial 02 | Matrices and Matrix Operations | https://shamim-akhtar.github.io/cmaths/week02/ |
 | 3 | Tutorial 03 | Determinants and Inverses | https://shamim-akhtar.github.io/cmaths/week03/ |
+| 5 | Tutorial 05 | Limits | https://shamim-akhtar.github.io/cmaths/week05/ |
+
+Week 4 has no lab. The week switcher shows it as a greyed "No lab" label, not a link, so
+there is no broken link. Do not create a `week04` folder unless a Week 4 lab is made.
 
 Repository on my computer: `C:\dev\github\cmaths`. It is published through GitHub
 Pages from the `main` branch.
@@ -25,6 +29,7 @@ Pages from the `main` branch.
     week01/index.html   built Week 1 file, about 2.2 MB
     week02/index.html   built Week 2 file, about 2.2 MB
     week03/index.html   built Week 3 file, about 2.2 MB
+    week05/index.html   built Week 5 file, about 2.5 MB (fonts embedded)
 
 ## What I need to supply before the next week starts
 
@@ -130,6 +135,34 @@ that names the specific mistake (wrong subtraction order, missing sign change,
 cofactor matrix given instead of its transpose, adjoint not divided by the
 determinant). Pass `{modes:false}` for Practice mode only.
 
+**Week 5 parts** (`w5-app-1.js` and `w5-app-3.js`). `GPlot` plots functions on labelled,
+correctly scaled axes, with open circles, filled dots, a dashed target line and L and R
+markers that point in the direction of travel. `Approach` moves the L and R markers
+towards a target one step at a time, with play, pause, step, back and reset; it tracks
+where each marker is heading, so rapid clicks add up correctly. `dec` prints a fraction
+as an exact decimal (24.990001, not 24.99) and only rounds, with a ≈ sign, when the
+decimal does not end. `Prob` is the Learn and Practice engine for stations 06 and 08;
+every question and its answers are in `PROBS`.
+
+**MathJax extensions.** Only the extensions inside the tex-svg build work offline.
+`\color`, `\cancel`, `\bbox` and `\enclose` load from the internet and fail, showing
+raw TeX. Use `\boxed` to highlight, as Week 5 does for the factors that cancel.
+
+**Fonts.** Weeks 1 to 3 load their fonts from Google Fonts and fall back to system fonts
+offline. Week 5 embeds the same three fonts from `src/fonts`, so it looks the same with
+no connection. Later weeks should do the same.
+
+**Reduced motion.** Weeks 1 and 2 skip their animations when the computer is set to
+reduce motion. Week 3 always plays them, because each one is started by a button and
+shows a step of the maths. Week 5 plays stepped animations with reduced motion: no
+sliding between positions, but each step still appears in turn.
+
+**Compact header.** Every week shows its full title and introduction on station 01 only.
+On the other stations, a short line reads "Week N · Station NN of NN · title". The code is in
+the shared section of `matrix-lab.html`, so every week picks it up. It reads the week from the
+current pill in the week switcher. A new week needs `<div class="compact-line" id="compactLine"
+hidden></div>` after its `<h1>` and the class `hero-intro` on its introduction.
+
 **Deferred typesetting.** Week 3's `retex` puts off MathJax typesetting for any element
 that is hidden and runs it when the station is shown. Typesetting into a hidden
 element makes MathJax log NaN size errors.
@@ -141,7 +174,7 @@ Four things need updating, not just the new folder.
 1. Create `weekNN/index.html`.
 2. Add a card to `index.html`.
 3. Add a pill to the **week switcher** at the top of every existing week and rebuild
-   them. It is the `<nav class="weeknav">` block in each source file, with absolute
+   them. A week with no lab gets a `<span class="nolab">` label instead of a link. It is the `<nav class="weeknav">` block in each source file, with absolute
    links to the live site so it works from a downloaded copy too. The current week
    carries `class="on"`.
 4. Add a section and station table to `README.md`.
@@ -187,7 +220,8 @@ interpolates the angle.
 ## Testing before committing
 
 I check every build in a headless browser before it goes to the repository. For
-Week 3 the whole list below is automated in `src/test-week03.js`, which also answers
+Weeks 3 and 5 the whole list below is automated in `src/test-week03.js` and
+`src/test-week05.js`, which also answer
 every walkthrough stage with its own independent calculation:
 
 - Load the built file with the network blocked, to prove it works offline.

@@ -37,9 +37,6 @@ mjx-container[display="true"]{display:block;max-width:100%;overflow-x:auto;overf
 .intro-list li{margin-bottom:4px}
 .lede p{margin:0}
 .lede .intro-list{color:var(--fg)}
-header.hero.compact{padding-block:22px 16px}
-header.hero.compact h1,header.hero.compact .hero-intro{display:none}
-.compact-line{font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
 details.more{margin-top:14px;border:1px solid var(--line);border-radius:9px;padding:10px 14px;background:var(--surface)}
 details.more summary{cursor:pointer;font-size:.88rem;font-weight:500;color:var(--accent)}
 details.more[open] summary{margin-bottom:4px}
