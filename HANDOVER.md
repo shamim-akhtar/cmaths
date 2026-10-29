@@ -181,6 +181,10 @@ Four things need updating, not just the new folder.
 
 ## Conventions
 
+**Footer.** Every week ends with the same two lines:
+"Computing Mathematics | Week N – Title" and "Supplementary learning material for revision
+and practice."
+
 **Opening introduction.** Every week opens with three sentences, about 35 to 45 words, in
 one paragraph under the title:
 
