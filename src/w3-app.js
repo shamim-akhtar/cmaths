@@ -1201,7 +1201,7 @@
       if(answered===QS.length){
         var ss=Object.keys(wrongS).map(Number).sort(function(a,b){return a-b;});
         rev.hidden=false;
-        rev.textContent=ss.length?"Worth another look: station"+(ss.length>1?"s ":" ")+ss.map(function(s){return (s<10?"0":"")+s;}).join(", ")+". Use the panel to go back, or press Show all for revision.":"All six correct. You are ready for the LMS quiz.";
+        rev.textContent=ss.length?"Worth another look: station"+(ss.length>1?"s ":" ")+ss.map(function(s){return (s<10?"0":"")+s;}).join(", ")+". Use the panel to go back, or press Show all for revision.":"All six correct. Well done.";
       }else rev.hidden=true;
     }
     function buildQuiz(){
