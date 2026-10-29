@@ -181,6 +181,20 @@ Four things need updating, not just the new folder.
 
 ## Conventions
 
+**Opening introduction.** Every week opens with three sentences, about 35 to 45 words, in
+one paragraph under the title:
+
+1. What is it? Introduce the idea in simple language.
+2. What will you learn? Name the main things students will do. Start with "In this
+   lesson, you will learn".
+3. Why is it useful? Start with "You will also explore how" and link the topic to
+   computing.
+
+Example, from Week 5: "A limit tells us what value a function gets close to as its input
+approaches a number. In this lesson, you will learn how to find limits using tables, graphs
+and calculations. You will also explore how limits are used in computing." Keep detailed
+explanations inside the stations, not in the introduction.
+
 **Language.** Simple British English. Short sentences, one idea each. No em-dashes.
 Write for a first-year polytechnic student, not for a colleague. No clauses added for
 effect. No lecturer-facing instructions on the page; everything addresses the student.
