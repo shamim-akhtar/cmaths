@@ -56,6 +56,9 @@ const path=require('path');
     {const ask=$('#cmAsk').textContent;const m=ask.match(/row (\d), column (\d)/);const ri=+m[1]-1,ci=+m[2]-1;
      $$('#cmEq td').forEach(td=>{if(+td.dataset.r!==ri&&+td.dataset.c!==ci)td.click();});$('#cmCheck').click();out.cm=$('#cmSay').className+'|'+$('#cmScore').textContent;}
     go(5);
+    {$$('#cGrid td')[0].click();out.lockedBefore=$('#cCheck').disabled+'|'+$('#cWork').textContent;
+     $('#cDetIn').value='16';$('#cDetCheck').click();out.detWrongAdd=$('#cDetSay').textContent;
+     $('#cDetIn').value='4';$('#cDetCheck').click();out.detOk=$('#cDetSay').textContent+'|locked:'+$('#cCheck').disabled;}
     // station 6: compute cofactors independently and type them
     {const A=[[2,1,3],[1,0,2],[3,1,1]];const minor=(i,j)=>{const r=[];for(let a=0;a<3;a++){if(a===i)continue;const row=[];for(let b=0;b<3;b++){if(b===j)continue;row.push(A[a][b]);}r.push(row);}return r;};
      const d2=m=>m[0][0]*m[1][1]-m[0][1]*m[1][0];let okc=0;
@@ -63,6 +66,7 @@ const path=require('path');
      // wrong sign test
      out.cof=okc+'|'+$('#cScore').textContent;
      $('#c2Next').click();$('#c2Next').click();$('#c2Next').click();await sleep(300);out.c2=$('#c2Work').textContent.replace(/\s+/g,' ').slice(-160);}
+    {$$('[data-cpre]')[3].click();$('#cDetShow').click();await sleep(200);out.zero=$('#cDetSay').textContent+'|locked:'+$('#cCheck').disabled+'|'+$('#c2Next').disabled+'|'+$('#c2Work').textContent.slice(0,60);$$('[data-cpre]')[0].click();}
     // station 7/8 walkthroughs in practice mode, answered with an independent computation
     const F=(n,d=1)=>{const g=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b];}return a||1;};if(d<0){n=-n;d=-d;}const k=g(n,d);return [n/k,d/k];};
     const det=M=>M.length===2?M[0][0]*M[1][1]-M[0][1]*M[1][0]:M[0][0]*(M[1][1]*M[2][2]-M[1][2]*M[2][1])-M[0][1]*(M[1][0]*M[2][2]-M[1][2]*M[2][0])+M[0][2]*(M[1][0]*M[2][1]-M[1][1]*M[2][0]);

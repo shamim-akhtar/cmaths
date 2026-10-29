@@ -263,9 +263,9 @@
         <thead><tr><th>Determinant</th><th>What happens to the square</th></tr></thead>
         <tbody>
           <tr><td>4</td><td>The new shape has four times the original area. The matrix has an inverse.</td></tr>
-          <tr><td>1</td><td>The area stays the same. The shape may still move or change its appearance.</td></tr>
+          <tr><td>1</td><td>The area stays the same, but the shape may still rotate or become slanted.</td></tr>
           <tr><td>0</td><td>The square becomes a line or a point. The matrix has no inverse.</td></tr>
-          <tr><td>&minus;2</td><td>The new area is twice the original area, but the direction of the shape is reversed.</td></tr>
+          <tr><td>&minus;2</td><td>The new area is twice the original area. The shape is also flipped.</td></tr>
         </tbody>
       </table>
       <details class="more">
@@ -432,8 +432,9 @@
     <div class="panel">
       <h3>The four steps</h3>
       <ol class="steps" style="margin-top:8px">
-        <li>Find the minor of every entry. There are nine.</li>
-        <li>Give each minor a sign from the pattern below. The result is called a <b>cofactor</b>.</li>
+        <li>Calculate the determinant, as in station 05. If it is 0, stop: there is no inverse.</li>
+        <li>Find the cofactor of every entry. There are nine. Cross out the entry's row and column, find the minor,
+          then give it a sign from the pattern below.</li>
         <li>Transpose the matrix of cofactors. This is the adjoint.</li>
         <li>Divide the adjoint by the determinant.</li>
       </ol>
@@ -446,19 +447,41 @@
     </div>
 
     <div class="panel">
-      <h3>Cofactor builder</h3>
+      <h3>Step 1: the determinant</h3>
+      <div class="cols">
+        <div>
+          <div class="presets">
+            <button class="btn" data-cpre="2,1,3,1,0,2,3,1,1" type="button">Matrix 1</button>
+            <button class="btn" data-cpre="1,2,1,0,1,2,1,0,3" type="button">Matrix 2</button>
+            <button class="btn" data-cpre="3,0,2,2,0,-2,0,1,1" type="button">Matrix 3</button>
+            <button class="btn" data-cpre="1,2,3,2,4,6,0,1,5" type="button">Matrix 4</button>
+          </div>
+          <div class="eq" id="cEq"></div>
+          <p style="font-size:.88rem;color:var(--muted);margin-top:10px;text-align:center">Use a preset or type your
+            own numbers.</p>
+        </div>
+        <div>
+          <p class="prose" style="font-size:.93rem;margin-bottom:10px">Expand along the first row. Type the
+            determinant and press <b>Check</b>.</p>
+          <div class="vrow" style="justify-content:center">
+            <input type="text" inputmode="numeric" class="vin" id="cDetIn" aria-label="Determinant of A" placeholder="det A">
+            <button class="btn primary" id="cDetCheck" type="button">Check</button>
+            <button class="btn" id="cDetShow" type="button">Show working</button>
+          </div>
+          <div class="verdict ok" id="cDetSay" hidden></div>
+          <div class="work" id="cDetWork" style="text-align:left" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="cStep2">
+      <h3>Step 2: the cofactors</h3>
       <p style="font-size:.93rem;color:var(--muted);margin:0 0 14px">Click a cell of the cofactor matrix on the
         right. The matrix on the left crosses out that row and column. Work out the cofactor, type it in and press
         <b>Check</b>. Press <b>Reveal</b> if you are stuck.</p>
       <div class="cols">
         <div>
-          <div class="presets">
-            <button class="btn" data-cpre="2,1,3,1,0,2,3,1,1" type="button">det 4</button>
-            <button class="btn" data-cpre="1,2,1,0,1,2,1,0,3" type="button">det 6</button>
-            <button class="btn" data-cpre="3,0,2,2,0,-2,0,1,1" type="button">det 10</button>
-            <button class="btn" data-cpre="1,2,3,2,4,6,0,1,5" type="button">det 0</button>
-          </div>
-          <div class="eq" id="cEq"></div>
+          <div class="eq" id="cView"></div>
           <div class="work" id="cWork" style="text-align:left"></div>
         </div>
         <div>
@@ -477,9 +500,9 @@
     </div>
 
     <div class="panel">
-      <h3>From cofactors to the inverse</h3>
-      <p style="font-size:.93rem;color:var(--muted);margin:0 0 14px">Once all nine cofactors are in place, step
-        through the last three moves.</p>
+      <h3>Steps 3 and 4: the adjoint and the inverse</h3>
+      <p style="font-size:.93rem;color:var(--muted);margin:0 0 14px">Once all nine cofactors are in place, transpose
+        them, divide by the determinant from step 1, then check the answer.</p>
       <div class="work" id="c2Work" style="text-align:left;margin-top:0"></div>
       <div style="display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:14px">
         <button class="btn" id="c2Prev" type="button" disabled>Back</button>
@@ -565,7 +588,7 @@
         <p class="prose" style="font-size:.9rem;color:var(--muted);margin-top:10px">A \(3 \times 3\) matrix can mean
           two different things in graphics. It can be a transformation of 3D space. It can also be a transformation
           of 2D points written with a third coordinate equal to 1, which lets a single matrix include a move. Both
-          kinds have inverses found by the method in this lesson.</p>
+          types of matrices have inverses if their determinants are not zero.</p>
       </details>
     </div>
   </section>

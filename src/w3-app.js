@@ -685,36 +685,84 @@
     var host=document.getElementById("cEq");if(!host)return;
     var A=mxNumInputs(3,3,[[2,1,3],[1,0,2],[3,1,1]],"c","A");
     var lab=texNode("A =");host.appendChild(lab);host.appendChild(A.el);retex(lab);
+    var V=null,vhost=document.getElementById("cView");
     var G=domMx(3,3,function(){return "?";});
     document.getElementById("cGrid").appendChild(G.el);
-    var found=[],sel=null,work=document.getElementById("cWork"),say=document.getElementById("cSay"),inp=document.getElementById("cIn");
-    function resetAll(){
-      found=[[null,null,null],[null,null,null],[null,null,null]];sel=null;
-      G.cells.forEach(function(c){c.textContent="?";c.className="";});
-      A.clearHl();inp.value="";say.hidden=true;
-      work.innerHTML="<p style='font-family:var(--body);font-size:.93rem;color:var(--muted);text-align:center'>Click a cell of the cofactor matrix to begin.</p>";
-      score();S2.set(0);
+    var found=[],sel=null,detState="todo"; /* todo, ok (not zero), zero */
+    var work=document.getElementById("cWork"),say=document.getElementById("cSay"),inp=document.getElementById("cIn");
+    var dIn=document.getElementById("cDetIn"),dSay=document.getElementById("cDetSay"),dWork=document.getElementById("cDetWork");
+    var step2=document.getElementById("cStep2");
+    function P(t,style){return "<p style='font-family:var(--body);font-size:.93rem;"+(style||"")+"'>"+t+"</p>";}
+
+    /* step 1: the determinant */
+    function detWorking(M){
+      var m=[0,1,2].map(function(j){return det2(minorOf(M,0,j));}),d=det3(M);
+      return "\\[ \\begin{aligned} \\det A &= ("+M[0][0]+")("+m[0]+") - ("+M[0][1]+")("+m[1]+") + ("+M[0][2]+")("+m[2]+") \\\\ &= "+
+        (M[0][0]*m[0])+" - ("+(M[0][1]*m[1])+") + ("+(M[0][2]*m[2])+") \\\\ &= "+d+" \\end{aligned} \\]"+
+        P("The three minors of the first row are "+m.map(neat).join(", ")+". The signs along the first row are +, −, +.","color:var(--muted);font-size:.9rem");
     }
+    function detDone(showWork){
+      var d=det3(A.read());detState=d===0?"zero":"ok";
+      if(showWork){dWork.hidden=false;dWork.innerHTML=detWorking(A.read());retex(dWork);}
+      dSay.hidden=false;
+      if(d===0){dSay.className="verdict no";dSay.textContent="det A = 0. Stop here: this matrix has no inverse, so there is no need to find the cofactors.";}
+      else{dSay.className="verdict ok";dSay.textContent="det A = "+neat(d)+". It is not zero, so the inverse exists. Go on to step 2.";}
+      lockBuilder();
+    }
+    document.getElementById("cDetCheck").addEventListener("click",function(){
+      var M=A.read(),d=det3(M),p=parseAns(dIn.value);
+      dIn.classList.remove("ok","no");dSay.hidden=false;
+      if(!p){dSay.className="verdict no";dSay.textContent="Type a whole number.";return;}
+      if(isValue(p,d)){dIn.classList.add("ok");detDone(false);return;}
+      dIn.classList.add("no");dSay.className="verdict no";
+      var m=[0,1,2].map(function(j){return det2(minorOf(M,0,j));});
+      if(isValue(p,M[0][0]*m[0]+M[0][1]*m[1]+M[0][2]*m[2]))dSay.textContent="Not yet. The middle term must be subtracted. The signs along the first row are +, −, +.";
+      else dSay.textContent="Not yet. Find the minors of the three entries in the first row, multiply each entry by its minor, then use the signs +, −, +.";
+    });
+    document.getElementById("cDetShow").addEventListener("click",function(){dIn.value=neat(det3(A.read())).replace("−","-");dIn.classList.remove("no");detDone(true);});
+
+    /* step 2: the cofactors */
+    function lockBuilder(){
+      var open=detState==="ok";
+      ["cIn","cCheck","cReveal","cAll"].forEach(function(id){document.getElementById(id).disabled=!open;});
+      G.cells.forEach(function(c){c.tabIndex=open?0:-1;c.style.cursor=open?"pointer":"default";c.setAttribute("aria-disabled",String(!open));});
+      step2.classList.toggle("locked",!open);
+      if(detState==="todo")work.innerHTML=P("Find the determinant in step 1 first.","color:var(--muted);text-align:center");
+      else if(detState==="zero")work.innerHTML=P("The determinant is 0, so this matrix has no inverse. There is nothing more to do.","color:var(--bad);text-align:center");
+      else if(!sel)work.innerHTML=P("Click a cell of the cofactor matrix to begin.","color:var(--muted);text-align:center");
+      S2.paint();
+    }
+    function view(){
+      vhost.innerHTML="";V=mxVals(A.read());var l=texNode("A =");vhost.appendChild(l);vhost.appendChild(V.el);retex(l);
+    }
+    function resetAll(){
+      found=[[null,null,null],[null,null,null],[null,null,null]];sel=null;detState="todo";
+      G.cells.forEach(function(c){c.textContent="?";c.className="";});
+      view();inp.value="";say.hidden=true;
+      dIn.value="";dIn.classList.remove("ok","no");dSay.hidden=true;dWork.hidden=true;dWork.innerHTML="";
+      S2.set(0);score();lockBuilder();
+    }
+    function count(){var n=0;found.forEach(function(r){r.forEach(function(v){if(v!==null)n++;});});return n;}
     function score(){
-      var n=0;found.forEach(function(r){r.forEach(function(v){if(v!==null)n++;});});
+      var n=count();
       document.getElementById("cScore").textContent=n===9?"All 9 cofactors found":n+" of 9 cofactors found";
-      document.getElementById("c2Next").disabled=n<9||S2.get()>=3;
-      return n;
+      S2.paint();return n;
     }
     function select(i,j){
+      if(detState!=="ok")return;
       sel=[i,j];var M=A.read(),mn=minorOf(M,i,j);
-      A.clearHl();
-      for(var r=0;r<3;r++)for(var c=0;c<3;c++){if(r===i||c===j)A.cell(r,c).className="cross";}
-      A.cell(i,j).className="cellHit";
+      V.clearHl();
+      for(var r=0;r<3;r++)for(var c=0;c<3;c++){if(r===i||c===j)V.cell(r,c).className="cross";}
+      V.cell(i,j).className="cellHit";
       G.cells.forEach(function(c){c.classList.remove("sel");});G.cell(i,j).classList.add("sel");
       var s=sgn(i,j)>0?"+":"-";
-      work.innerHTML="<p style='font-family:var(--body);font-size:.92rem'>Entry in row "+(i+1)+", column "+(j+1)+". The sign pattern gives <b>"+s+"</b> for this position.</p>"+
+      work.innerHTML=P("Entry in row "+(i+1)+", column "+(j+1)+". The sign pattern gives <b>"+s+"</b> for this position.")+
         "\\[ C_{"+(i+1)+(j+1)+"} = "+(s==="-"?"-":"")+"\\begin{vmatrix} "+mn[0][0]+" & "+mn[0][1]+" \\\\ "+mn[1][0]+" & "+mn[1][1]+" \\end{vmatrix} \\]"+
         (found[i][j]!==null?"\\[ = "+(s==="-"?"-":"")+"\\bigl(("+mn[0][0]+")("+mn[1][1]+") - ("+mn[0][1]+")("+mn[1][0]+")\\bigr) = "+found[i][j]+" \\]":"");
       retex(work);say.hidden=true;inp.value="";inp.focus();
     }
     G.cells.forEach(function(c){
-      c.tabIndex=0;c.setAttribute("role","button");c.style.cursor="pointer";
+      c.setAttribute("role","button");
       c.setAttribute("aria-label","Cofactor row "+(+c.dataset.r+1)+" column "+(+c.dataset.c+1));
       c.addEventListener("click",function(){select(+c.dataset.r,+c.dataset.c);});
       c.addEventListener("keydown",function(e){if(e.key===" "||e.key==="Enter"){e.preventDefault();select(+c.dataset.r,+c.dataset.c);}});
@@ -742,30 +790,32 @@
       for(var i=0;i<3;i++)for(var j=0;j<3;j++)fill(i,j);
       if(sel)select(sel[0],sel[1]);
     });
+
+    /* steps 3 and 4: transpose, divide, verify */
     var w2=document.getElementById("c2Work");
     var S2=stepper({prev:"c2Prev",next:"c2Next",step:"c2Step",reset:"c2Reset"},3,function(s){
-      var M=A.read(),C=cofactors(M),adj=transpose(C),d=det3(M),lines=[];
-      var n=0;found.forEach(function(r){r.forEach(function(v){if(v!==null)n++;});});
-      if(s===0)lines.push("<p style='font-family:var(--body);font-size:.93rem;color:var(--muted);text-align:center'>"+(n<9?"Find all nine cofactors above first. "+(9-n)+" to go.":"All nine cofactors are in place. Press <b>Transpose</b>.")+"</p>");
-      if(s>=1)lines.push("<p style='font-family:var(--body);font-size:.92rem'>Transpose the cofactor matrix. Row 1 becomes column 1, and so on. This gives the adjoint.</p>\\[ \\begin{aligned} \\operatorname{adj}(A) &= "+mtex(C)+"^{\\mathsf{T}} \\\\ &= "+mtex(adj)+" \\end{aligned} \\]");
-      if(s>=2){
-        lines.push("\\[ \\begin{aligned} \\det A &= ("+M[0][0]+")("+C[0][0]+") + ("+M[0][1]+")("+C[0][1]+") + ("+M[0][2]+")("+C[0][2]+") \\\\ &= "+d+" \\end{aligned} \\]<p style='font-family:var(--body);font-size:.9rem;color:var(--muted)'>The determinant is the first row of \\(A\\) multiplied by the first row of cofactors and added. The signs are already inside the cofactors.</p>");
-        if(d===0)lines.push("<p style='font-family:var(--body);font-size:.95rem;color:var(--bad)'>The determinant is 0. There is nothing to divide by, so this matrix has no inverse.</p>");
-        else{
-          var inv=inverse(M);
-          lines.push("\\[ \\begin{aligned} A^{-1} &= \\frac{1}{"+d+"}"+mtex(adj)+" \\\\ &= "+mtex(inv)+" \\end{aligned} \\]");
-          if(inv.some(function(r){return r.some(function(v){return v.d!==1;});}))
-            lines.push("<p style='font-family:var(--body);font-size:.9rem;color:var(--muted)'>Keep the fractions exact. As decimals the entries are roughly "+inv.map(function(r){return r.map(fdec).join(", ");}).join("; ")+".</p>");
-        }
+      var M=A.read(),C=cofactors(M),adj=transpose(C),d=det3(M),lines=[],n=count();
+      if(s===0){
+        var msg=detState==="todo"?"Find the determinant in step 1 first.":detState==="zero"?"The determinant is 0, so there is no inverse. Nothing to do here.":
+          n<9?"Find all nine cofactors in step 2 first. "+(9-n)+" to go.":"All nine cofactors are in place. Press <b>Transpose</b>.";
+        lines.push(P(msg,"color:var(--muted);text-align:center"));
       }
-      if(s>=3&&d!==0){
+      if(s>=1)lines.push(P("Step 3. Transpose the cofactor matrix. Row 1 becomes column 1, and so on. This gives the adjoint.")+"\\[ \\begin{aligned} \\operatorname{adj}(A) &= "+mtex(C)+"^{\\mathsf{T}} \\\\ &= "+mtex(adj)+" \\end{aligned} \\]");
+      if(s>=2){
+        var inv=inverse(M);
+        lines.push(P("Step 4. Divide every entry of the adjoint by the determinant from step 1, which is "+neat(d)+".")+
+          "\\[ \\begin{aligned} A^{-1} &= \\frac{1}{"+d+"}"+mtex(adj)+" \\\\ &= "+mtex(inv)+" \\end{aligned} \\]");
+        if(inv.some(function(r){return r.some(function(v){return v.d!==1;});}))
+          lines.push(P("Keep the fractions exact. As decimals the entries are roughly "+inv.map(function(r){return r.map(fdec).join(", ");}).join("; ").replace(/-/g,"−")+".","color:var(--muted);font-size:.9rem"));
+      }
+      if(s>=3){
         var prod=mulM(M,inverse(M));
-        lines.push("\\[ A\\,A^{-1} = "+mtex(prod)+" = I \\]<p style='font-family:var(--body);font-size:.92rem'>Every entry of the product is 1 on the diagonal and 0 elsewhere, so the inverse is right.</p>");
+        lines.push(P("Check. Multiply \\(A\\) by \\(A^{-1}\\).")+"\\[ A\\,A^{-1} = "+mtex(prod)+" = I \\]"+P("Every entry of the product is 1 on the diagonal and 0 elsewhere, so the inverse is right."));
       }
       w2.innerHTML=lines.join("");retex(w2);
       var nb=document.getElementById("c2Next");
-      nb.textContent=s===0?"Transpose":s===1?"Divide by the determinant":s===2?"Verify":"Next";
-      nb.disabled=n<9||s>=3||(s===2&&d===0);
+      nb.textContent=s===0?"Transpose":s===1?"Divide by the determinant":"Check";
+      nb.disabled=detState!=="ok"||n<9||s>=3;
     },"Transpose");
     document.querySelectorAll("[data-cpre]").forEach(function(b){
       b.addEventListener("click",function(){

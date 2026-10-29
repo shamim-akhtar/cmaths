@@ -25,6 +25,7 @@ W3_CSS = """
 .work .wnote{text-align:left}
 .pracbox{margin-top:14px}
 .verdict:empty{display:none}
+.panel.locked #cGrid,.panel.locked #cView{opacity:.45}
 .work,.walk .cols>*{min-width:0}
 mjx-container[display="true"]{display:block;max-width:100%;overflow-x:auto;overflow-y:hidden;padding-block:2px}
 .mathrow{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;column-gap:40px}
