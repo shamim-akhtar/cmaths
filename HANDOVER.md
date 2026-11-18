@@ -5,7 +5,7 @@ conventions the next week must follow.
 
 ## What exists
 
-Four interactive labs for **CMA1C03 Computing Mathematics** at Temasek Polytechnic,
+Five interactive labs for **CMA1C03 Computing Mathematics** at Temasek Polytechnic,
 School of Informatics & IT.
 
 | Week | Tutorial | Topic | URL |
@@ -13,10 +13,17 @@ School of Informatics & IT.
 | 1 | Tutorial 01 | Vectors and Vector Operations | https://shamim-akhtar.github.io/cmaths/week01/ |
 | 2 | Tutorial 02 | Matrices and Matrix Operations | https://shamim-akhtar.github.io/cmaths/week02/ |
 | 3 | Tutorial 03 | Determinants and Inverses | https://shamim-akhtar.github.io/cmaths/week03/ |
-| 5 | Tutorial 05 | Limits | https://shamim-akhtar.github.io/cmaths/week05/ |
+| 5 | Tutorial 04 | Linear Equations | https://shamim-akhtar.github.io/cmaths/week05/ |
+| 6 | Tutorial 05 | Limits | https://shamim-akhtar.github.io/cmaths/week06/ |
 
 Week 4 has no lab. The week switcher shows it as a greyed "No lab" label, not a link, so
-there is no broken link. Do not create a `week04` folder unless a Week 4 lab is made.
+there is no broken link. Do not put a lab in `week04` unless one is made for that week.
+
+Limits was first published as Week 5 at `week05/`. It moved to Week 6, and `week05/` now
+holds the Linear Equations lab, so old Week 5 links open Linear Equations. The Limits sources
+are now `w6-body.html`, `w6-app-1.js` to `w6-app-4.js`, `assemble-week06.py`,
+`build-week06.py`, `test-week06.js` and `overflow-week06.js`. The Linear Equations sources
+use the `w5` and `week05` names.
 
 Repository on my computer: `C:\dev\github\cmaths`. It is published through GitHub
 Pages from the `main` branch.
@@ -29,7 +36,8 @@ Pages from the `main` branch.
     week01/index.html   built Week 1 file, about 2.2 MB
     week02/index.html   built Week 2 file, about 2.2 MB
     week03/index.html   built Week 3 file, about 2.2 MB
-    week05/index.html   built Week 5 file, about 2.5 MB (fonts embedded)
+    week05/index.html   built Week 5 file (Linear Equations), about 2.5 MB (fonts embedded)
+    week06/index.html   built Week 6 file (Limits), about 2.5 MB (fonts embedded)
 
 ## What I need to supply before the next week starts
 
@@ -135,7 +143,7 @@ that names the specific mistake (wrong subtraction order, missing sign change,
 cofactor matrix given instead of its transpose, adjoint not divided by the
 determinant). Pass `{modes:false}` for Practice mode only.
 
-**Week 5 parts** (`w5-app-1.js` and `w5-app-3.js`). `GPlot` plots functions on labelled,
+**Week 6 (Limits) parts** (`w6-app-1.js` and `w6-app-3.js`). `GPlot` plots functions on labelled,
 correctly scaled axes, with open circles, filled dots, a dashed target line and L and R
 markers that point in the direction of travel. `Approach` moves the L and R markers
 towards a target one step at a time, with play, pause, step, back and reset; it tracks
@@ -144,17 +152,24 @@ as an exact decimal (24.990001, not 24.99) and only rounds, with a ≈ sign, whe
 decimal does not end. `Prob` is the Learn and Practice engine for stations 06 and 08;
 every question and its answers are in `PROBS`.
 
+**Week 5 (Linear Equations) parts** (`w5-app-1.js` and `w5-app-3.js`). The same helpers
+as Limits, plus `det3`, `cofactors`, `adjoint`, `inverseM`, `mulM` and `sysTex`, which
+writes a system of equations in TeX. `solveSteps` builds the Learn and Practice steps for
+any 2×2 or 3×3 system from its `A` and `b`: matrix form, determinant, adjoint (or
+cofactors and adjoint), inverse, `X = A⁻¹b` and a check. A system with determinant 0 stops
+after the determinant with a choice question. Every answer is computed, none is typed.
+
 **MathJax extensions.** Only the extensions inside the tex-svg build work offline.
 `\color`, `\cancel`, `\bbox` and `\enclose` load from the internet and fail, showing
-raw TeX. Use `\boxed` to highlight, as Week 5 does for the factors that cancel.
+raw TeX. Use `\boxed` to highlight, as the Limits lab does for the factors that cancel.
 
 **Fonts.** Weeks 1 to 3 load their fonts from Google Fonts and fall back to system fonts
-offline. Week 5 embeds the same three fonts from `src/fonts`, so it looks the same with
+offline. The Limits lab embeds the same three fonts from `src/fonts`, so it looks the same with
 no connection. Later weeks should do the same.
 
 **Reduced motion.** Weeks 1 and 2 skip their animations when the computer is set to
 reduce motion. Week 3 always plays them, because each one is started by a button and
-shows a step of the maths. Week 5 plays stepped animations with reduced motion: no
+shows a step of the maths. The Limits lab plays stepped animations with reduced motion: no
 sliding between positions, but each step still appears in turn.
 
 **Compact header.** Every week shows its full title and introduction on station 01 only.
@@ -194,7 +209,7 @@ one paragraph under the title:
 3. Why is it useful? Start with "You will also explore how" and link the topic to
    computing.
 
-Example, from Week 5: "A limit tells us what value a function gets close to as its input
+Example, from Week 6: "A limit tells us what value a function gets close to as its input
 approaches a number. In this lesson, you will learn how to find limits using tables, graphs
 and calculations. You will also explore how limits are used in computing." Keep detailed
 explanations inside the stations, not in the introduction.
@@ -227,7 +242,9 @@ Matrices already used on the Week 3 page, which later weeks should not reuse as
 fresh examples: the Tutorial 03 questions, the three extra practice questions, the
 Week 3 guided problems `[[2,5],[1,4]]`, `[[3,6],[1,2]]` and `[[1,2,1],[0,1,2],[1,0,3]]`,
 the station defaults `[[3,1],[1,2]]` and `[[2,1,3],[1,0,2],[3,1,1]]`, and the exit quiz
-matrices.
+matrices. Week 5 uses the Tutorial 04 systems, the slide examples, and the extra systems
+`[[3,1],[1,2]]` with b = (9, 8), `[[2,4],[1,2]]` with b = (6, 5) and
+`[[1,1,0],[0,1,1],[1,0,1]]` with b = (3, 5, 4).
 
 **Figures.** Prefer something the student operates over something they watch. Where
 an animation would help, run it over about a second with easing, and make sure the
@@ -238,8 +255,8 @@ interpolates the angle.
 ## Testing before committing
 
 I check every build in a headless browser before it goes to the repository. For
-Weeks 3 and 5 the whole list below is automated in `src/test-week03.js` and
-`src/test-week05.js`, which also answer
+Weeks 3, 5 and 6 the whole list below is automated in `src/test-week03.js`,
+`src/test-week05.js` and `src/test-week06.js`, which also answer
 every walkthrough stage with its own independent calculation:
 
 - Load the built file with the network blocked, to prove it works offline.

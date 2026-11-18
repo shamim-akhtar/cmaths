@@ -1,5 +1,5 @@
 import re, time, os
-src = open('limits-lab.html', encoding='utf8').read()
+src = open('linear-lab.html', encoding='utf8').read()
 mj  = re.sub(r'</script', r'<\\/script', open('mj/package/es5/tex-svg.js', encoding='utf8').read(), flags=re.I)
 title = re.search(r'<title>(.*?)</title>', src, re.S).group(1)
 split = src.index('<div class="clock">')
@@ -16,7 +16,7 @@ doc = ('<!doctype html>\n<html lang="en-GB">\n<head>\n<meta charset="utf-8">\n'
  + h + '</head>\n<body>\n' + b2 + '\n</body>\n</html>\n')
 stamp = time.strftime('%H%M%S')
 os.makedirs('/mnt/user-data/outputs/gh', exist_ok=True)
-open('/mnt/user-data/outputs/Week 5 Limits Lab.html','w',encoding='utf8').write(doc)
+open('/mnt/user-data/outputs/Week 5 Linear Equations Lab.html','w',encoding='utf8').write(doc)
 p='/mnt/user-data/outputs/gh/week05-%s.html'%stamp
 open(p,'w',encoding='utf8').write(doc)
 print(p, len(doc))

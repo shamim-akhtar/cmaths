@@ -1,5 +1,5 @@
   /* ================================================================
-     Week 5 helpers
+     Week 5 (Linear Equations) helpers, shared with the Limits page
      ================================================================ */
   var NS="http://www.w3.org/2000/svg";
   function mk(n,a){var e=document.createElementNS(NS,n);for(var p in a)e.setAttribute(p,a[p]);return e;}
@@ -266,3 +266,33 @@
   function dF(d){return F(Math.round(d*1e9),1e9);}
   function xAt(a,d,side){var A=dF(a),D=dF(d);return side==="L"?fsub(A,D):fadd(A,D);}
 
+
+  /* ================================================================
+     Matrix maths. Every displayed solution is computed here with exact fractions.
+     ================================================================ */
+  function det2(M){return M[0][0]*M[1][1]-M[0][1]*M[1][0];}
+  function minorOf(M,i,j){var r=[];for(var a=0;a<3;a++){if(a===i)continue;var row=[];for(var b=0;b<3;b++){if(b===j)continue;row.push(M[a][b]);}r.push(row);}return r;}
+  function sgn(i,j){return (i+j)%2?-1:1;}
+  function det3(M){return M[0][0]*det2(minorOf(M,0,0))-M[0][1]*det2(minorOf(M,0,1))+M[0][2]*det2(minorOf(M,0,2));}
+  function detN(M){return M.length===2?det2(M):det3(M);}
+  function cofactors(M){var C=[];for(var i=0;i<3;i++){C.push([]);for(var j=0;j<3;j++)C[i].push(sgn(i,j)*det2(minorOf(M,i,j)));}return C;}
+  function transposeM(M){var T=[];for(var j=0;j<M[0].length;j++){T.push([]);for(var i=0;i<M.length;i++)T[j].push(M[i][j]);}return T;}
+  function adjoint(M){return M.length===2?[[M[1][1],-M[0][1]],[-M[1][0],M[0][0]]]:transposeM(cofactors(M));}
+  function inverseM(M){var d=detN(M);if(d===0)return null;return adjoint(M).map(function(r){return r.map(function(v){return F(v,d);});});}
+  function mulM(A,B){var R=[];for(var i=0;i<A.length;i++){R.push([]);for(var j=0;j<B[0].length;j++){var s=F(0);for(var k=0;k<B.length;k++)s=fadd(s,fmul(F(A[i][k]),F(B[k][j])));R[i].push(s);}}return R;}
+  function col(v){return v.map(function(x){return [x];});}
+  function mtex(M){return "\\begin{pmatrix} "+M.map(function(r){return r.map(function(v){return ftex(F(v));}).join(" & ");}).join(" \\\\ ")+" \\end{pmatrix}";}
+  function vtex(v){return mtex(col(v));}
+  /* "2x + 3y" style text for one row of coefficients */
+  function rowTex(r,names){
+    var s="";
+    r.forEach(function(c,k){
+      if(c===0)return;var a=Math.abs(c),t=(a===1?"":a)+names[k];
+      s+=s===""?(c<0?"-":"")+t:(c<0?" - ":" + ")+t;
+    });
+    return s;
+  }
+  var NAMES2=["x","y"],NAMES3=["x","y","z"];
+  function sysTex(A,b,names){
+    return "\\begin{aligned} "+A.map(function(r,i){return rowTex(r,names)+" &= "+ftex(F(b[i]));}).join(" \\\\ ")+" \\end{aligned}";
+  }

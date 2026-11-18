@@ -1,149 +1,153 @@
   /* ================================================================
-     The problem engine for stations 06 and 08.
-     Each problem is a list of steps. Each step has lines of working (Learn mode)
-     and a task (Practice mode). The maths for every problem is in PROBS below.
+     Problems for stations 05 to 08. Each problem is a list of steps: lines of working
+     for Learn mode and a task for Practice mode. The steps for solving a system are
+     built from A and b by solveSteps(), so every answer is computed, not typed in.
      ================================================================ */
-  var HL="\\boxed";
-  function tb(rows,head){ /* a small table of values as HTML */
-    return "<table class='ltab mini'><thead><tr><th>"+head[0]+"</th><th>"+head[1]+"</th></tr></thead><tbody>"+
-      rows.map(function(r){return "<tr><td>"+r[0]+"</td><td>"+r[1]+"</td></tr>";}).join("")+"</tbody></table>";
-  }
   function P_(t){return "<p class='wnote'>"+t+"</p>";}
-  function vals(fn,xs){return xs.map(function(x){var X=parseAns(x).frac;return [neat(x),dec(fn(X))];});}
-  var SQ=function(x){return fmul(x,x);},SQ1=function(x){return fadd(fmul(x,x),F(1));};
+  /* input boxes laid out as a matrix; {n} placeholders are numbered from start */
+  function mTpl(rows,cols,start,wide){
+    var h="<span class='mx"+(wide?" wide":"")+"'><span class='br l'></span><table><tbody>";
+    for(var i=0;i<rows;i++){h+="<tr>";for(var j=0;j<cols;j++)h+="<td>{"+(start+i*cols+j)+"}</td>";h+="</tr>";}
+    return h+"</tbody></table><span class='br r'></span></span>";
+  }
+  function flat(M){return [].concat.apply([],M).map(toF);}
+  function vals(P){return P.map(function(p){return p?p.val:NaN;});}
+  function sameVals(V,W){for(var i=0;i<W.length;i++)if(Math.abs(V[i]-fnum(F(W[i])))>1e-9)return false;return true;}
+  function firstWrong(P,ans,cols){for(var i=0;i<ans.length;i++)if(!matches(P[i],ans[i]))return [Math.floor(i/cols)+1,i%cols+1];return null;}
 
-  var PROBS={
-    q1:{name:"Question 1",tag:"Numerical",q:"Estimate \\( \\displaystyle\\lim_{x \\to 5} x^2 \\) using a table of values.",
-      steps:[
-        {title:"Values below 5",learn:[P_("Choose \\(x\\) values just below 5 and square them."),tb(vals(SQ,["4.9","4.99","4.999"]),["\\(x\\)","\\(x^2\\)"])],
-         task:{kind:"num",tpl:"\\(4.99^2 = \\) {0}",ans:[F(249001,10000)],hint:"Work out 4.99 × 4.99. Do not round.",
-           diag:function(p){if(isValue(p[0],24.99))return "4.99² means 4.99 × 4.99, not 4.99 × 5.";if(isValue(p[0],25))return "Do not round yet. Work it out exactly.";return "Work out 4.99 × 4.99 on your calculator.";}}},
-        {title:"Values above 5",learn:[P_("Now choose \\(x\\) values just above 5."),tb(vals(SQ,["5.1","5.01","5.001"]),["\\(x\\)","\\(x^2\\)"])],
-         task:{kind:"num",tpl:"\\(5.01^2 = \\) {0}",ans:[F(251001,10000)],hint:"Work out 5.01 × 5.01.",diag:function(p){if(isValue(p[0],25.01))return "5.01² means 5.01 × 5.01.";return "Work out 5.01 × 5.01 on your calculator.";}}},
-        {title:"The limit",learn:[P_("From below, \\(x^2\\) goes 24.01, 24.9001, 24.990001. From above, it goes 26.01, 25.1001, 25.010001. Both sides get close to 25."),"\\[ \\lim_{x \\to 5} x^2 = 25 \\]"],
-         task:{kind:"num",tpl:"\\( \\displaystyle\\lim_{x \\to 5} x^2 = \\) {0}",ans:[F(25)],hint:"Which number are both columns getting close to?",diag:function(p){return "That is not it. Both sides are getting close to a whole number. Which one?";}}}
-      ]},
-    q2:{name:"Question 2",tag:"Graphical",q:"Given the graph \\( f(x) = \\frac{x^2 - 4}{x - 2} \\), find \\( \\displaystyle\\lim_{x \\to 2} \\frac{x^2 - 4}{x - 2} \\).",graph:"q2",
-      steps:[
-        {title:"From the left",learn:[P_("Follow the line towards \\(x = 2\\) from the left."),tb([["1.9","3.9"],["1.99","3.99"],["1.999","3.999"]],["\\(x\\)","\\(y\\)"]),P_("\\(y\\) gets close to 4.")],
-         task:{kind:"num",tpl:"From the left, \\(y\\) heads towards {0}",ans:[F(4)],hint:"Put your finger on the line left of the open circle and slide towards it. What is the y-value of the circle?",diag:function(){return "Look at the height of the open circle at x = 2.";}}},
-        {title:"From the right",learn:[P_("Now follow the line towards \\(x = 2\\) from the right."),tb([["2.1","4.1"],["2.01","4.01"],["2.001","4.001"]],["\\(x\\)","\\(y\\)"]),P_("\\(y\\) gets close to 4 again.")],
-         task:{kind:"num",tpl:"From the right, \\(y\\) heads towards {0}",ans:[F(4)],hint:"Slide along the line from the right towards the open circle.",diag:function(){return "Look at the height of the open circle at x = 2.";}}},
-        {title:"The limit",learn:[P_("Both sides head towards 4. The open circle means \\(f(2)\\) is undefined, but the limit only uses values near 2."),"\\[ \\lim_{x \\to 2} \\frac{x^2 - 4}{x - 2} = 4 \\]"],
-         task:{kind:"choice",ask:"So the limit is",opts:[
-           {t:"4",ok:true,w:"Correct. Both sides head towards 4, so the limit is 4."},
-           {t:"Undefined, because \\(f(2)\\) is undefined",w:"\\(f(2)\\) is undefined, but the limit only looks at values near 2. Both sides head towards 4."},
-           {t:"It does not exist",w:"A limit exists when both sides head towards the same number. Do they?"}]}}
-      ]},
-    q3:{name:"Question 3",tag:"Graphical",q:"Given the graph \\( f(x) = \\begin{cases} 2, & x < 1 \\\\ 5, & x \\ge 1 \\end{cases} \\), find \\( \\displaystyle\\lim_{x \\to 1} f(x) \\).",graph:"q3",
-      steps:[
-        {title:"From the left",learn:[P_("For \\(x < 1\\), the graph is the line \\(y = 2\\). It ends in an open circle at \\((1, 2)\\)."),P_("From the left, \\(y\\) heads towards 2.")],
-         task:{kind:"num",tpl:"From the left, \\(y\\) heads towards {0}",ans:[F(2)],hint:"Look only at the part of the graph where x is less than 1.",diag:function(p){if(isValue(p[0],5))return "5 is on the right of x = 1. Look at the left part of the graph.";return "Look at the height of the left-hand line.";}}},
-        {title:"From the right",learn:[P_("For \\(x \\ge 1\\), the graph is the line \\(y = 5\\). It starts with a filled dot at \\((1, 5)\\)."),P_("From the right, \\(y\\) heads towards 5.")],
-         task:{kind:"num",tpl:"From the right, \\(y\\) heads towards {0}",ans:[F(5)],hint:"Look only at the part of the graph where x is greater than 1.",diag:function(p){if(isValue(p[0],2))return "2 is on the left of x = 1. Look at the right part of the graph.";return "Look at the height of the right-hand line.";}}},
-        {title:"The limit",learn:[P_("The left gives 2 and the right gives 5. They are different."),"\\[ \\lim_{x \\to 1} f(x) \\text{ does not exist.} \\]",P_("\\(f(1) = 5\\), the filled dot. That is the value at the point, not the limit.")],
-         task:{kind:"choice",ask:"So the limit is",opts:[
-           {t:"2",w:"2 is only the left side. The right side heads towards 5."},
-           {t:"5",w:"5 is \\(f(1)\\), the filled dot, and the right side. The left side heads towards 2."},
-           {t:"It does not exist",ok:true,w:"Correct. The two sides head towards different numbers, so the limit does not exist."}]}}
-      ]},
-    q4:{name:"Question 4",tag:"Additional",q:"Given the graph \\( f(x) = \\begin{cases} x + 2, & x \\ne 2 \\\\ 7, & x = 2 \\end{cases} \\), find \\( \\displaystyle\\lim_{x \\to 2} f(x) \\).",graph:"q4",
-      steps:[
-        {title:"From the left",learn:[P_("Follow the line \\(y = x + 2\\) towards \\(x = 2\\) from the left. It heads towards the open circle at \\((2, 4)\\).")],
-         task:{kind:"num",tpl:"From the left, \\(y\\) heads towards {0}",ans:[F(4)],hint:"Follow the line, not the separate dot.",diag:function(p){if(isValue(p[0],7))return "7 is f(2), the filled dot. Follow the line instead: it heads towards the open circle.";return "Look at the height of the open circle on the line.";}}},
-        {title:"From the right",learn:[P_("From the right, the line also heads towards \\((2, 4)\\).")],
-         task:{kind:"num",tpl:"From the right, \\(y\\) heads towards {0}",ans:[F(4)],hint:"Follow the line, not the separate dot.",diag:function(p){if(isValue(p[0],7))return "7 is f(2), the filled dot. Follow the line instead.";return "Look at the height of the open circle on the line.";}}},
-        {title:"The limit",learn:["\\[ \\lim_{x \\to 2} f(x) = 4 \\]",P_("but"),"\\[ f(2) = 7 \\]",P_("The limit depends on values near 2. The value at 2 is a separate question.")],
-         task:{kind:"choice",ask:"So the limit is",opts:[
-           {t:"7",w:"7 is \\(f(2)\\), the value at the point. The limit is about the values near 2."},
-           {t:"4",ok:true,w:"Correct. Both sides head towards 4, even though \\(f(2) = 7\\)."},
-           {t:"It does not exist",w:"Both sides head towards the same number, so the limit does exist."}]}}
-      ]},
-    q5a:{name:"Question 5(a)",tag:"Algebraic",q:"Find \\( \\displaystyle\\lim_{x \\to 5} (2x - 1) \\).",graph:"q5a",
-      steps:[
-        {title:"Try substitution",learn:["\\[ 2(5) - 1 = 9 \\]",P_("Substitution gives a number, so that number is the limit.")],
-         task:{kind:"num",tpl:"\\(2(5) - 1 = \\) {0}",ans:[F(9)],hint:"Replace x with 5.",diag:function(p){if(isValue(p[0],11))return "Check the order: 2(5) is 10, then subtract 1.";return "Replace x with 5: 2 × 5 − 1.";}}},
-        {title:"The limit",learn:["\\[ \\lim_{x \\to 5} (2x - 1) = 9 \\]"],task:{kind:"none"}}
-      ]},
-    q5b:{name:"Question 5(b)",tag:"Algebraic",q:"Find \\( \\displaystyle\\lim_{x \\to 2} \\frac{x^2 + x - 6}{x - 2} \\).",graph:"q5b",
-      steps:[
-        {title:"Try substitution",learn:["\\[ \\frac{2^2 + 2 - 6}{2 - 2} = \\frac{0}{0} \\]",P_("This does not give the answer. Simplify first.")],
-         task:{kind:"num",tpl:"Numerator \\(2^2 + 2 - 6 = \\) {0} &nbsp; Denominator \\(2 - 2 = \\) {1}",ans:[F(0),F(0)],hint:"Replace every x with 2.",diag:function(){return "Replace every x with 2. 2² is 4.";}}},
-        {title:"What does 0/0 tell you?",learn:[P_("\\(\\frac{0}{0}\\) is not 0, not 1 and not the limit. It tells us to simplify the expression first.")],
-         task:{kind:"choice",ask:"Substitution gave \\(\\frac{0}{0}\\). What next?",opts:[
-           {t:"The limit is 0",w:"\\(\\frac{0}{0}\\) is not 0. It does not give the answer."},
-           {t:"Simplify the expression first",ok:true,w:"Correct. 0/0 is a signal to simplify."},
-           {t:"The limit does not exist",w:"\\(\\frac{0}{0}\\) does not tell us that. Simplify first, then decide."}]}},
-        {title:"Factorise the numerator",learn:["\\[ x^2 + x - 6 = (x + 3)(x - 2) \\]",P_("Check: \\((x + 3)(x - 2) = x^2 - 2x + 3x - 6 = x^2 + x - 6\\).")],
-         task:{kind:"num",tpl:"\\(x^2 + x - 6 = (x + \\) {0}\\()(x - \\) {1}\\()\\)",ans:[F(3),F(2)],hint:"Find two numbers that multiply to −6 and add to 1.",
-           diag:function(p){if(isValue(p[0],2)&&isValue(p[1],3))return "Those numbers give (x + 2)(x − 3) = x² − x − 6. The middle term has the wrong sign.";return "You need two numbers that multiply to −6 and add to 1.";}}},
-        {title:"Cancel the common factor",learn:["\\[ \\frac{(x + 3)"+HL+"{(x - 2)}}{"+HL+"{(x - 2)}} = x + 3 \\qquad \\text{for } x \\ne 2 \\]",P_("The boxed factors are the same, so they cancel."),P_("We may cancel \\((x - 2)\\) only when \\(x \\ne 2\\). That is fine, because the limit only uses values near 2.")],
-         task:{kind:"expr",tpl:"For \\(x \\ne 2\\), the expression simplifies to {e}",ans:[1,3],hint:"Cancel the (x − 2) that appears on the top and the bottom.",
-           diag:function(v){if(v[0]===1&&v[1]===-2)return "You cancelled the wrong factor. (x − 2) is the one on the top and the bottom.";return "After cancelling (x − 2), what is left on the top?";}}},
-        {title:"Substitute",learn:["\\[ \\begin{aligned} \\lim_{x \\to 2} \\frac{x^2 + x - 6}{x - 2} &= \\lim_{x \\to 2} (x + 3) \\\\ &= 2 + 3 = 5 \\end{aligned} \\]"],
-         task:{kind:"num",tpl:"\\(2 + 3 = \\) {0}",ans:[F(5)],hint:"Put x = 2 into x + 3.",diag:function(){return "Put x = 2 into the simplified expression x + 3.";}}}
-      ]},
-    q6a:{name:"Question 6(a)",tag:"Additional",q:"Find \\( \\displaystyle\\lim_{x \\to 4} \\frac{x + 5}{2x - 1} \\).",
-      steps:[
-        {title:"Try substitution",learn:["\\[ \\frac{4 + 5}{2(4) - 1} = \\frac{9}{7} \\]",P_("The denominator is not 0, so substitution works.")],
-         task:{kind:"num",tpl:"Numerator \\(4 + 5 = \\) {0} &nbsp; Denominator \\(2(4) - 1 = \\) {1}",ans:[F(9),F(7)],hint:"Replace every x with 4.",diag:function(p){if(isValue(p[1],8))return "Check the denominator: 2(4) − 1 = 8 − 1.";return "Replace every x with 4.";}}},
-        {title:"The limit",learn:["\\[ \\lim_{x \\to 4} \\frac{x + 5}{2x - 1} = \\frac{9}{7} \\]",P_("Leave the answer as the exact fraction \\(\\frac{9}{7}\\).")],
-         task:{kind:"num",tpl:"\\( \\displaystyle\\lim_{x \\to 4} \\frac{x + 5}{2x - 1} = \\) {0}",ans:[F(9,7)],hint:"Type the fraction as 9/7.",diag:function(p){if(p[0]&&Math.abs(p[0].val-9/7)<0.01)return "That is a rounded decimal. Give the exact fraction, typed as 9/7.";return "Divide the numerator by the denominator you found. Type it as a fraction.";}}}
-      ]},
-    q6b:{name:"Question 6(b)",tag:"Additional",q:"Find \\( \\displaystyle\\lim_{x \\to 2} \\frac{3x^2 - 12}{x - 2} \\).",
-      steps:[
-        {title:"Try substitution",learn:["\\[ \\frac{3(2)^2 - 12}{2 - 2} = \\frac{0}{0} \\]",P_("This does not give the answer. Simplify first.")],
-         task:{kind:"num",tpl:"Numerator \\(3(2)^2 - 12 = \\) {0} &nbsp; Denominator \\(2 - 2 = \\) {1}",ans:[F(0),F(0)],hint:"3(2)² is 3 × 4.",diag:function(p){if(isValue(p[0],24))return "Square first, then multiply by 3: 3 × 4 = 12, and 12 − 12 = 0.";return "Replace every x with 2.";}}},
-        {title:"Take out the common factor",learn:["\\[ 3x^2 - 12 = 3(x^2 - 4) \\]"],
-         task:{kind:"num",tpl:"\\(3x^2 - 12 = 3(x^2 - \\) {0}\\()\\)",ans:[F(4)],hint:"Divide both terms by 3.",diag:function(p){if(isValue(p[0],12))return "Divide 12 by 3 as well.";return "Divide both 3x² and 12 by 3.";}}},
-        {title:"Factorise",learn:["\\[ 3(x^2 - 4) = 3(x + 2)(x - 2) \\]",P_("\\(x^2 - 4\\) is a difference of two squares.")],
-         task:{kind:"num",tpl:"\\(x^2 - 4 = (x + \\) {0}\\()(x - \\) {1}\\()\\)",ans:[F(2),F(2)],hint:"4 is 2².",diag:function(){return "x² − 4 is a difference of two squares: x² − 2².";}}},
-        {title:"Cancel the common factor",learn:["\\[ \\frac{3(x + 2)"+HL+"{(x - 2)}}{"+HL+"{(x - 2)}} = 3(x + 2) \\qquad \\text{for } x \\ne 2 \\]",P_("The boxed factors are the same, so they cancel.")],
-         task:{kind:"expr",tpl:"For \\(x \\ne 2\\), the expression simplifies to {e}",ans:[3,6],hint:"Cancel (x − 2). Keep the 3.",
-           diag:function(v){if(v[0]===1&&v[1]===2)return "You dropped the 3. It is still there after cancelling.";return "After cancelling (x − 2), what is left on the top?";}}},
-        {title:"Substitute",learn:["\\[ \\begin{aligned} \\lim_{x \\to 2} \\frac{3x^2 - 12}{x - 2} &= \\lim_{x \\to 2} 3(x + 2) \\\\ &= 3(2 + 2) = 12 \\end{aligned} \\]"],
-         task:{kind:"num",tpl:"\\(3(2 + 2) = \\) {0}",ans:[F(12)],hint:"Put x = 2 into 3(x + 2).",diag:function(p){if(isValue(p[0],8))return "Add inside the bracket first: 2 + 2 = 4, then multiply by 3.";return "Put x = 2 into 3(x + 2).";}}}
-      ]},
-    e1:{name:"Extra 1",tag:"Extra practice",q:"Find \\( \\displaystyle\\lim_{x \\to -1} \\frac{x^2 - 1}{x + 1} \\).",
-      steps:[
-        {title:"Try substitution",learn:["\\[ \\frac{(-1)^2 - 1}{-1 + 1} = \\frac{0}{0} \\]",P_("Simplify first.")],
-         task:{kind:"num",tpl:"Numerator {0} &nbsp; Denominator {1}",ans:[F(0),F(0)],hint:"(−1)² is 1.",diag:function(p){if(isValue(p[0],-2))return "(−1)² = 1, not −1.";return "Replace every x with −1.";}}},
-        {title:"Factorise",learn:["\\[ x^2 - 1 = (x + 1)(x - 1) \\]"],
-         task:{kind:"num",tpl:"\\(x^2 - 1 = (x + \\) {0}\\()(x - \\) {1}\\()\\)",ans:[F(1),F(1)],hint:"1 is 1².",diag:function(){return "x² − 1 is a difference of two squares.";}}},
-        {title:"Cancel the common factor",learn:["\\[ \\frac{"+HL+"{(x + 1)}(x - 1)}{"+HL+"{(x + 1)}} = x - 1 \\qquad \\text{for } x \\ne -1 \\]",P_("The boxed factors are the same, so they cancel.")],
-         task:{kind:"expr",tpl:"For \\(x \\ne -1\\), the expression simplifies to {e}",ans:[1,-1],hint:"Cancel (x + 1).",diag:function(){return "Cancel the (x + 1) on the top and the bottom.";}}},
-        {title:"Substitute",learn:["\\[ \\lim_{x \\to -1} (x - 1) = -1 - 1 = -2 \\]"],
-         task:{kind:"num",tpl:"\\(-1 - 1 = \\) {0}",ans:[F(-2)],hint:"Put x = −1 into x − 1.",diag:function(p){if(isValue(p[0],0))return "−1 − 1 is −2, not 0.";return "Put x = −1 into x − 1.";}}}
-      ]},
-    e2:{name:"Extra 2",tag:"Extra practice",q:"Find \\( \\displaystyle\\lim_{x \\to 3} \\frac{x^2 + 2x}{x + 1} \\).",
-      steps:[
-        {title:"Try substitution",learn:["\\[ \\frac{3^2 + 2(3)}{3 + 1} = \\frac{15}{4} \\]",P_("The denominator is not 0, so substitution works.")],
-         task:{kind:"num",tpl:"Numerator {0} &nbsp; Denominator {1}",ans:[F(15),F(4)],hint:"Replace every x with 3.",diag:function(){return "3² + 2(3) = 9 + 6.";}}},
-        {title:"The limit",learn:["\\[ \\lim_{x \\to 3} \\frac{x^2 + 2x}{x + 1} = \\frac{15}{4} \\]"],
-         task:{kind:"num",tpl:"The limit is {0}",ans:[F(15,4)],hint:"Type it as a fraction, 15/4, or as a decimal.",diag:function(){return "Divide the numerator by the denominator.";}}}
-      ]},
-    e3:{name:"Extra 3",tag:"Extra practice",q:"Estimate \\( \\displaystyle\\lim_{x \\to 2} (x^2 + 1) \\) using a table of values.",
-      steps:[
-        {title:"Values below 2",learn:[tb(vals(SQ1,["1.9","1.99","1.999"]),["\\(x\\)","\\(x^2 + 1\\)"])],
-         task:{kind:"num",tpl:"\\(1.99^2 + 1 = \\) {0}",ans:[F(49601,10000)],hint:"Square 1.99 first, then add 1.",diag:function(p){if(isValue(p[0],3.9601))return "You squared it. Now add 1.";return "Square 1.99, then add 1.";}}},
-        {title:"Values above 2",learn:[tb(vals(SQ1,["2.1","2.01","2.001"]),["\\(x\\)","\\(x^2 + 1\\)"])],
-         task:{kind:"num",tpl:"\\(2.01^2 + 1 = \\) {0}",ans:[F(50401,10000)],hint:"Square 2.01 first, then add 1.",diag:function(p){if(isValue(p[0],4.0401))return "You squared it. Now add 1.";return "Square 2.01, then add 1.";}}},
-        {title:"The limit",learn:["\\[ \\lim_{x \\to 2} (x^2 + 1) = 5 \\]"],
-         task:{kind:"num",tpl:"The limit is {0}",ans:[F(5)],hint:"Both columns get close to the same whole number.",diag:function(){return "Look at both columns. Which whole number are they getting close to?";}}}
-      ]}
-  };
+  function solveSteps(o){
+    var A=o.A,b=o.b,n=A.length,nm=n===2?NAMES2:NAMES3,d=detN(A),adj=adjoint(A),inv=inverseM(A);
+    var X=inv?mulM(inv,col(b)).map(function(r){return r[0];}):null;
+    var steps=[];
+    /* 1. write as AX = b */
+    steps.push({title:"Write as AX = b",
+      learn:[P_("Put the numbers in front of the unknowns into \\(A\\), one row per equation. Put the right-hand sides into \\(b\\)."+(A.some(function(r){return r.indexOf(0)>=0;})?" A missing unknown gives 0.":"")),
+             "\\[ "+mtex(A)+vtex(nm)+" = "+vtex(b)+" \\]"],
+      task:{kind:"num",tpl:"\\(A = \\) "+mTpl(n,n,0)+" &nbsp; \\(b = \\) "+mTpl(n,1,n*n),ans:flat(A).concat(b.map(toF)),
+        hint:"Row 1 of A holds the numbers in front of "+nm.join(", ")+" in the first equation, in that order. If an unknown is missing, write 0.",
+        diag:function(P){var V=vals(P),Aw=V.slice(0,n*n),bw=V.slice(n*n);
+          if(sameVals(Aw,flat(transposeM(A))))return "Your A has rows and columns swapped. Each row of A comes from one equation.";
+          if(Aw.some(function(v,i){return Math.abs(v+fnum(flat(A)[i]))<1e-9&&fnum(flat(A)[i])!==0;}))return "Check the signs. A term such as −y gives −1 in A.";
+          var w=firstWrong(P.slice(0,n*n),flat(A),n);if(w)return "Check A, row "+w[0]+", column "+w[1]+". "+(fnum(flat(A)[(w[0]-1)*n+w[1]-1])===0?"That unknown is missing from the equation, so the entry is 0.":"It is the number in front of "+nm[w[1]-1]+" in equation "+w[0]+".");
+          return "Check b. It holds the numbers on the right of the equals signs, in order.";}}});
+    /* 2. determinant */
+    var dl;
+    if(n===2)dl=["\\[ \\det A = ("+A[0][0]+")("+A[1][1]+") - ("+A[0][1]+")("+A[1][0]+") = "+d+" \\]"];
+    else{var m=[0,1,2].map(function(j){return det2(minorOf(A,0,j));});
+      dl=["\\[ \\begin{aligned} \\det A &= ("+A[0][0]+")("+m[0]+") - ("+A[0][1]+")("+m[1]+") + ("+A[0][2]+")("+m[2]+") \\\\ &= "+d+" \\end{aligned} \\]",
+          P_("The three minors of the first row are "+m.map(neat).join(", ")+". The signs along the first row are +, −, +.")];}
+    steps.push({title:"Find the determinant",learn:dl.concat([P_(d===0?"The determinant is 0, so \\(A\\) has no inverse.":"The determinant is "+neat(d)+", not 0, so \\(A^{-1}\\) exists.")]),
+      task:{kind:"num",tpl:"\\(\\det A = \\) {0}",ans:[F(d)],hint:n===2?"Use ad − bc.":"Expand along the first row with the signs +, −, +.",
+        diag:function(P){var v=P[0];if(n===2&&isValue(v,-d))return "Check the order: ad − bc, with the main diagonal first.";
+          if(n===2&&isValue(v,A[0][0]*A[1][1]+A[0][1]*A[1][0]))return "The two products are subtracted, not added.";
+          if(n===3){var m2=[0,1,2].map(function(j){return det2(minorOf(A,0,j));});if(isValue(v,A[0][0]*m2[0]+A[0][1]*m2[1]+A[0][2]*m2[2]))return "The middle term is subtracted. The signs along the first row are +, −, +.";}
+          return n===2?"Multiply the main diagonal, multiply the other diagonal, then subtract.":"Find the minor of each entry in the first row, multiply, and use the signs +, −, +.";}}});
+    if(d===0){
+      steps.push({title:"Can the inverse be used?",learn:[P_("\\(A\\) has no inverse, so \\(X = A^{-1}b\\) cannot be used. On a graph the two lines are parallel or the same line, so there is no single crossing point."+(o.zeroNote?" "+o.zeroNote:""))],
+        task:{kind:"choice",ask:"The determinant is 0. What does that tell you?",opts:[
+          {t:"Use \\(X = A^{-1}b\\) as usual",w:"Not possible. A matrix with determinant 0 has no inverse."},
+          {t:"The system has no single solution, so the inverse method cannot be used",ok:true,w:"Correct. With det A = 0 there is no inverse, and no single crossing point."},
+          {t:"The solution is \\(x = 0\\) and \\(y = 0\\)",w:"A determinant of 0 does not mean the unknowns are 0. Try putting x = 0 and y = 0 into the equations."}]}});
+      return steps;
+    }
+    /* 3. inverse */
+    if(o.adjGiven){
+      steps.push({title:"Find the inverse",learn:["\\[ \\begin{aligned} A^{-1} &= \\frac{1}{\\det A}\\operatorname{adj}(A) = \\frac{1}{"+d+"}"+mtex(adj)+" \\\\ &= "+mtex(inv)+" \\end{aligned} \\]"],
+        task:{kind:"num",tpl:"\\(A^{-1} = \\) "+mTpl(n,n,0),ans:flat(inv),hint:"Divide every entry of the given adjoint by "+neat(d)+". Fractions such as -1/2, or decimals, are both fine.",
+          diag:function(P){if(sameVals(vals(P),flat(adj)))return "That is the adjoint. Divide every entry by the determinant, "+neat(d)+".";var w=firstWrong(P,flat(inv),n);return "Check row "+w[0]+", column "+w[1]+": divide that entry of the adjoint by "+neat(d)+".";}}});
+    }else if(n===2){
+      steps.push({title:"Find the adjoint",learn:[P_("Swap the two entries on the main diagonal, and change the signs of the other two."),"\\[ \\operatorname{adj}(A) = "+mtex(adj)+" \\]"],
+        task:{kind:"num",tpl:"\\(\\operatorname{adj}(A) = \\) "+mTpl(2,2,0),ans:flat(adj),hint:"Swap "+neat(A[0][0])+" and "+neat(A[1][1])+". Change the signs of "+neat(A[0][1])+" and "+neat(A[1][0])+".",
+          diag:function(P){var V=vals(P);if(sameVals(V,[A[1][1],A[0][1],A[1][0],A[0][0]]))return "The swap is right. Now change the signs of the other two entries.";
+            if(sameVals(V,[A[0][0],-A[0][1],-A[1][0],A[1][1]]))return "The signs are right. Now swap the two entries on the main diagonal.";
+            if(sameVals(V,flat(transposeM(A))))return "That is the transpose, not the adjoint.";return "Swap the main diagonal, then change the signs of the other two entries.";}}});
+      steps.push({title:"Find the inverse",learn:["\\[ \\begin{aligned} A^{-1} &= \\frac{1}{"+d+"}"+mtex(adj)+" \\\\ &= "+mtex(inv)+" \\end{aligned} \\]"],
+        task:{kind:"num",tpl:"\\(A^{-1} = \\) "+mTpl(2,2,0),ans:flat(inv),hint:"Divide every entry of the adjoint by "+neat(d)+".",
+          diag:function(P){if(sameVals(vals(P),flat(adj)))return "That is the adjoint. Divide every entry by "+neat(d)+".";var w=firstWrong(P,flat(inv),2);return "Check row "+w[0]+", column "+w[1]+". Divide the adjoint entry by "+neat(d)+", and watch the sign.";}}});
+    }else{
+      var C=cofactors(A);
+      steps.push({title:"Find the cofactors",learn:[P_("Cross out each entry's row and column, find the determinant of what is left, then use the sign pattern \\(+\\,-\\,+\\) / \\(-\\,+\\,-\\) / \\(+\\,-\\,+\\)."),"\\[ \\text{Cofactor matrix} = "+mtex(C)+" \\]"],
+        task:{kind:"num",tpl:"Cofactors "+mTpl(3,3,0),ans:flat(C),hint:"For each entry, cross out its row and column, find ad − bc of what is left, then apply the sign from the pattern.",
+          diag:function(P){for(var i=0;i<9;i++){if(!matches(P[i],F(flat(C)[i]))){var r=Math.floor(i/3),c=i%3;
+            if(flat(C)[i].n!==0&&isValue(P[i],-fnum(flat(C)[i])))return "Row "+(r+1)+", column "+(c+1)+" has the wrong sign. That position takes "+(sgn(r,c)>0?"+":"−")+" in the pattern.";
+            return "Check row "+(r+1)+", column "+(c+1)+". Cross out row "+(r+1)+" and column "+(c+1)+" of A first.";}}return "Check each cofactor.";}}});
+      steps.push({title:"Transpose to get the adjoint",learn:["\\[ \\operatorname{adj}(A) = "+mtex(adj)+" \\]",P_("Rows of the cofactor matrix become columns.")],
+        task:{kind:"num",tpl:"\\(\\operatorname{adj}(A) = \\) "+mTpl(3,3,0),ans:flat(adj),hint:"Row 1 of the cofactor matrix becomes column 1 of the adjoint.",
+          diag:function(P){if(sameVals(vals(P),flat(C)))return "That is the cofactor matrix. The adjoint is its transpose: swap rows and columns.";return "Write the rows of the cofactor matrix as columns.";}}});
+      steps.push({title:"Find the inverse",learn:["\\[ \\begin{aligned} A^{-1} &= \\frac{1}{"+d+"}"+mtex(adj)+" \\\\ &= "+mtex(inv)+" \\end{aligned} \\]"],
+        task:{kind:"num",tpl:"\\(A^{-1} = \\) "+mTpl(3,3,0,true),ans:flat(inv),hint:"Divide every entry of the adjoint by "+neat(d)+". Fractions such as -3/4 are fine.",
+          diag:function(P){if(sameVals(vals(P),flat(adj)))return "That is the adjoint. Divide every entry by "+neat(d)+".";var w=firstWrong(P,flat(inv),3);return "Check row "+w[0]+", column "+w[1]+". Divide the adjoint entry by "+neat(d)+".";}}});
+    }
+    /* 4. multiply */
+    var rowsW=inv.map(function(r,i){return nm[i]+" &= "+r.map(function(v,k){return (v.n<0?"\\left("+ftex(v)+"\\right)":ftex(v))+"("+b[k]+")";}).join(" + ")+" = "+ftex(X[i]);});
+    var adjb=mulM(adj,col(b)).map(function(r){return r[0];});
+    steps.push({title:"Multiply X = A⁻¹b",learn:["\\[ "+vtex(nm)+" = "+mtex(inv)+vtex(b)+" \\]","\\[ \\begin{aligned} "+rowsW.join(" \\\\ ")+" \\end{aligned} \\]"],
+      task:{kind:"num",tpl:nm.map(function(v,i){return "\\("+v+" = \\) {"+i+"}";}).join(" &nbsp; "),ans:X,hint:"Row 1 of A⁻¹ times b gives "+nm[0]+". Multiply the pairs and add.",
+        diag:function(P){if(sameVals(vals(P),adjb))return "Those are the products with the adjoint. Divide each by the determinant, "+neat(d)+".";
+          var w=firstWrong(P,X,1);return "Check "+nm[w[0]-1]+": multiply row "+w[0]+" of A⁻¹ by b, pair by pair, and add.";}}});
+    /* 5. check */
+    var chk=A.map(function(r,i){return r.map(function(c,k){return c===0?null:(c===1?"":c===-1?"-":c)+"("+ftex(X[k])+")";}).filter(Boolean).join(" + ").replace(/\+ -/g,"- ")+" = "+ftex(F(b[i]));});
+    steps.push({title:"Check",learn:[P_("Put the answers back into each equation."),"\\[ \\begin{aligned} "+chk.map(function(c){return c.replace(" = "," &= ");}).join(" \\\\ ")+" \\end{aligned} \\]",
+      P_("Every equation holds, so "+nm.map(function(v,i){return "\\("+v+" = "+ftex(X[i])+"\\)";}).join(", ")+"."+(o.meaning?" "+o.meaning:""))],task:{kind:"none"}});
+    return steps;
+  }
 
-  /* graphs used by the problems */
-  var PGRAPH={
-    q2:{x:[-4,5],y:[-3,7],ystep:1,a:2,draw:function(P){GEX.q2.draw(P);}},
-    q3:{x:[-0.5,2.5],y:[-1,7],xstep:0.5,ystep:1,a:1,draw:function(P){GEX.q3.draw(P);}},
-    q4:{x:[-3,5],y:[-1,8],ystep:1,a:2,draw:function(P){GEX.q4.draw(P);}},
-    q5a:{x:[0,7],y:[-2,14],ystep:2,a:5,draw:function(P){P.curve(function(x){return 2*x-1;},0,7,CF,2.4).filled(5,9,CF);P.text(5.2,9.9,"(5, 9)",CM,11,"start");}},
-    q5b:{x:[-4,5],y:[-2,9],ystep:1,a:2,toggle:"Show the simplified expression \\(x + 3\\)",
-      draw:function(P,on){P.curve(function(x){return x+3;},-4,1.999,CF,2.4).curve(function(x){return x+3;},2.001,5,CF,2.4).open(2,5,CF);P.text(2.25,5.4,"(2, 5) missing",CM,11,"start");
-        if(on){P.curve(function(x){return x+3;},-4,5,CG,2,true);P.filled(2,5,CG);P.text(2.25,4.2,"x + 3 has (2, 5)",CG,11,"start");}}}
-  };
+  /* graphs: each line ax + by = c */
+  function drawLine(P,a,b,c,colr,xr){
+    if(b===0){var x=c/a;P.line(x,-1e3,x,1e3,colr,2.4);return;}
+    P.curve(function(x){return (c-a*x)/b;},xr[0],xr[1],colr,2.4);
+  }
+  function sysGraph(A,b,x,y,step){
+    return {x:x,y:y,xstep:step,ystep:step,toggle:"Show where the lines cross",
+      draw:function(P,on){drawLine(P,A[0][0],A[0][1],b[0],CL,x);drawLine(P,A[1][0],A[1][1],b[1],CRt,x);
+        var d=det2(A);if(on&&d!==0){var X=mulM(inverseM(A),col(b));var px=fnum(X[0][0]),py=fnum(X[1][0]);P.filled(px,py,CG);P.text(px+(x[1]-x[0])*0.03,py+(y[1]-y[0])*0.05,"("+neat(+px.toFixed(3))+", "+neat(+py.toFixed(3))+")",CG,12,"start");}
+        if(on&&d===0){P.text(x[0]+(x[1]-x[0])*0.05,y[1]-(y[1]-y[0])*0.08,"The lines never cross",CB,12,"start");}}};
+  }
+  var PGRAPH={};
+  var PROBS={};
+  function addSolve(id,o){
+    PROBS[id]={name:o.name,tag:o.tag,q:o.q||("Solve the linear system \\[ "+sysTex(o.A,o.b,o.A.length===2?NAMES2:NAMES3)+" \\]"),steps:solveSteps(o),graph:o.graph?id:null};
+    if(o.graph)PGRAPH[id]=sysGraph(o.A,o.b,o.graph.x,o.graph.y,o.graph.step);
+  }
+  addSolve("muffin",{name:"The café problem",tag:"Slide example",A:[[2,3],[4,-1]],b:[8,2],graph:{x:[-1,4],y:[-1,4],step:1},
+    meaning:"A muffin costs $1 and a coffee costs $2."});
+  addSolve("ex9",{name:"Example 9",tag:"Slide example",A:[[1,2],[2,3]],b:[7,1],graph:{x:[-25,5],y:[-5,20],step:5}});
+  addSolve("ex10",{name:"Example 10",tag:"Slide example",A:[[1,1,-1],[1,2,3],[2,3,4]],b:[5,2,4],adjGiven:true,
+    q:"Given \\( \\operatorname{adj}\\begin{pmatrix} 1 & 1 & -1 \\\\ 1 & 2 & 3 \\\\ 2 & 3 & 4 \\end{pmatrix} = \\begin{pmatrix} -1 & -7 & 5 \\\\ 2 & 6 & -4 \\\\ -1 & -1 & 1 \\end{pmatrix} \\), solve \\[ \\begin{aligned} x + y - z &= 5 \\\\ x + 2y + 3z &= 2 \\\\ 2x + 3y + 4z &= 4 \\end{aligned} \\]"});
+  addSolve("t1",{name:"Question 1",tag:"Tutorial 04",A:[[2,0,1],[1,-3,1],[1,3,2]],b:[4,1,5]});
+  addSolve("t2",{name:"Question 2",tag:"Tutorial 04",A:[[1,1,1],[2,-1,1],[1,2,-1]],b:[6,3,2]});
+  addSolve("e1",{name:"Extra 1",tag:"Extra practice",A:[[3,1],[1,2]],b:[9,8],graph:{x:[-1,5],y:[-1,7],step:1}});
+  addSolve("e2",{name:"Extra 2",tag:"Extra practice",A:[[2,4],[1,2]],b:[6,5],graph:{x:[-2,6],y:[-2,4],step:1}});
+  addSolve("e3",{name:"Extra 3",tag:"Extra practice",A:[[1,1,0],[0,1,1],[1,0,1]],b:[3,5,4]});
 
+  /* station 05: writing the matrix form only */
+  function formSteps(A,b){
+    var n=A.length,nm=n===2?NAMES2:NAMES3,s=solveSteps({A:A,b:b});
+    var first=s[0];
+    return [first,{title:"Check one row",learn:[P_("Multiply row 1 of \\(A\\) by \\(X\\): you get back the left-hand side of equation 1."),"\\[ "+A[0].map(function(c,k){return "("+c+")"+nm[k];}).join(" + ")+" = "+rowTex(A[0],nm)+" \\]"],
+      task:{kind:"choice",ask:"Row 1 of \\(A\\) multiplied by \\(X\\) gives",opts:[
+        {t:"the left-hand side of equation 1",ok:true,w:"Correct. That is why AX = b holds the whole system."},
+        {t:"the value of \\("+nm[0]+"\\)",w:"Not yet. Row 1 of A times X gives a whole expression, the left-hand side of equation 1."},
+        {t:"the first entry of \\(b\\) times \\("+nm[0]+"\\)",w:"Not quite. Multiply row 1 of A by the column X, pair by pair, and add."}]}}];
+  }
+  PROBS.mf1={name:"A 2×2 system",tag:"Slide example",q:"Write in the form \\(AX = b\\): \\[ "+sysTex([[2,1],[1,3]],[50,120],NAMES2)+" \\]",steps:formSteps([[2,1],[1,3]],[50,120])};
+  PROBS.mf2={name:"A 3×3 system with missing unknowns",tag:"Slide example",q:"Write in the form \\(AX = b\\): \\[ "+sysTex([[1,-3,0],[0,5,-3],[3,0,1]],[12,14,10],NAMES3)+" \\]",steps:formSteps([[1,-3,0],[0,5,-3],[3,0,1]],[12,14,10])};
+
+  /* Tutorial 04 Q3: revenue by matrix multiplication */
+  PROBS.t3={name:"Question 3",tag:"Tutorial 04",
+    q:"A café has two branches. A coffee costs $3, a muffin $4 and a baked potato $5. Branch A sold 20 coffees, 15 muffins and 10 baked potatoes. Branch B sold 12 coffees, 18 muffins and 8 baked potatoes. Use matrix multiplication to find each branch's revenue.",
+    steps:[
+      {title:"Items sold as a matrix",learn:[P_("One row per branch, one column per item: coffee, muffin, baked potato."),"\\[ Q = \\begin{pmatrix} 20 & 15 & 10 \\\\ 12 & 18 & 8 \\end{pmatrix} \\]"],
+       task:{kind:"num",tpl:"\\(Q = \\) "+mTpl(2,3,0),ans:[20,15,10,12,18,8].map(toF),hint:"Row 1 is Branch A: coffees, muffins, baked potatoes.",
+         diag:function(P){return sameVals(vals(P),[20,12,15,18,10,8])?"Use one row per branch, not one column.":"Row 1 is Branch A and row 2 is Branch B, in the order coffee, muffin, baked potato.";}}},
+      {title:"Prices as a matrix",learn:[P_("One price per item, in the same order, as a column."),"\\[ P = \\begin{pmatrix} 3 \\\\ 4 \\\\ 5 \\end{pmatrix} \\]"],
+       task:{kind:"num",tpl:"\\(P = \\) "+mTpl(3,1,0),ans:[3,4,5].map(toF),hint:"Coffee, muffin, baked potato, in that order.",diag:function(){return "List the prices in the same order as the columns of Q.";}}},
+      {title:"Multiply QP",learn:["\\[ QP = \\begin{pmatrix} 20(3) + 15(4) + 10(5) \\\\ 12(3) + 18(4) + 8(5) \\end{pmatrix} = \\begin{pmatrix} 170 \\\\ 148 \\end{pmatrix} \\]",P_("\\(Q\\) is \\(2 \\times 3\\) and \\(P\\) is \\(3 \\times 1\\), so \\(QP\\) is \\(2 \\times 1\\): one revenue per branch.")],
+       task:{kind:"num",tpl:"Branch A $ {0} &nbsp; Branch B $ {1}",ans:[F(170),F(148)],hint:"Row 1 of Q times P gives Branch A's revenue.",
+         diag:function(P){if(isValue(P[0],45))return "Multiply each quantity by its price before adding.";return "Multiply row 1 of Q by P pair by pair and add, then do the same for row 2.";}}},
+      {title:"Compare",learn:[P_("Branch A earned more: \\(170 - 148 = 22\\) dollars more.")],
+       task:{kind:"num",tpl:"The difference is $ {0}",ans:[F(22)],hint:"Subtract the smaller revenue from the larger.",diag:function(){return "Work out 170 − 148.";}}}
+    ]};
   function Prob(host,id,opts){
     opts=opts||{};
     var pr=PROBS[id],steps=pr.steps,mode=opts.practiceFirst?"practice":"learn",si=0,li=0,done=[],shown=[],finished=false,replayT=[];
@@ -156,7 +160,7 @@
     host.appendChild(box);
     box.querySelector("h3").textContent=pr.name;
     var tag=box.querySelector(".vtag");tag.textContent=pr.tag;if(pr.tag==="Extra practice")tag.style.color="var(--hot)";if(pr.tag==="Additional")tag.style.color="var(--muted)";
-    box.querySelector(".pq").innerHTML="<p class='qtext'>"+pr.q+"</p>";
+    box.querySelector(".pq").innerHTML="<div class='qtext'>"+pr.q+"</div>";
     var left=box.querySelector(".pleft"),learn=box.querySelector(".learn"),prac=box.querySelector(".pracbox"),fb=box.querySelector(".fb"),stitle=box.querySelector(".stitle");
     var bPrev=box.querySelector("[data-n=prev]"),bNext=box.querySelector("[data-n=next]"),bRe=box.querySelector("[data-n=replay]"),pos=box.querySelector(".pos");
     /* the left column: the graph, or the list of steps */
@@ -167,7 +171,7 @@
       if(gspec.toggle){var lab=document.createElement("label");lab.className="tog";lab.innerHTML="<input type='checkbox'> "+gspec.toggle;left.appendChild(lab);
         lab.querySelector("input").addEventListener("change",function(){gon=this.checked;drawG();});}
     }
-    function drawG(){if(!G)return;G.clear().axes();G.vguide(gspec.a,CM,"x = "+neat(gspec.a));gspec.draw(G,gon);}
+    function drawG(){if(!G)return;G.clear().axes();if(gspec.a!==undefined)G.vguide(gspec.a,CM,"x = "+neat(gspec.a));gspec.draw(G,gon);}
     var list=document.createElement("ol");list.className="wsteps";left.appendChild(list);
     if(opts.modes===false)box.querySelector(".modes").hidden=true;
     box.querySelectorAll("[data-m]").forEach(function(b){b.addEventListener("click",function(){
@@ -201,7 +205,7 @@
           });o.appendChild(b);});
         retex(prac);return;
       }
-      var html=t.tpl.replace(/\{(\d)\}/g,function(m,i){return "<input type='text' class='vin' data-i='"+i+"' autocomplete='off' aria-label='Answer "+(+i+1)+"'>";})
+      var html=t.tpl.replace(/\{(\d+)\}/g,function(m,i){return "<input type='text' class='vin' data-i='"+i+"' autocomplete='off' aria-label='Answer "+(+i+1)+"'>";})
                     .replace("{e}","<input type='text' class='vin wide' data-e='1' autocomplete='off' aria-label='Simplified expression' placeholder='e.g. x + 1'>");
       prac.innerHTML="<div class='vrow tline'>"+html+"</div><div class='btnrow' style='margin-top:10px'>"+
         "<button class='btn primary' type='button' data-t='check'>Check</button><button class='btn' type='button' data-t='hint'>Hint</button>"+
@@ -285,19 +289,16 @@
     return {reset:function(){stopReplay();si=0;li=0;done=[];shown=[];finished=false;prac.dataset.step="";paint();}};
   }
 
-  /* station 06: Q5 with graphs */
-  (function(){
-    var host=$("alg");if(!host)return;
-    Prob(host,"q5a",{});Prob(host,"q5b",{});
-  })();
 
-  /* station 08: all tutorial questions and extra practice */
+  /* mounts */
   (function(){
-    if(!$("pNum"))return;
-    var fin={};
-    function onFinish(id){fin[id]=1;var n=Object.keys(fin).length;$("pScore").textContent="Questions completed: "+n;}
-    Prob($("pNum"),"q1",{onFinish:onFinish,practiceFirst:true});
-    ["q2","q3","q4"].forEach(function(id){Prob($("pGra"),id,{onFinish:onFinish,practiceFirst:true});});
-    ["q5a","q5b","q6a","q6b"].forEach(function(id){Prob($("pAlg"),id,{onFinish:onFinish,practiceFirst:true});});
-    ["e1","e2","e3"].forEach(function(id){Prob($("pExt"),id,{onFinish:onFinish,practiceFirst:true});});
+    if($("mf")){Prob($("mf"),"mf1",{});Prob($("mf"),"mf2",{practiceFirst:true});}
+    if($("two")){Prob($("two"),"muffin",{});Prob($("two"),"ex9",{practiceFirst:true});}
+    if($("three"))Prob($("three"),"ex10",{});
+    if($("pTut")){
+      var fin={};
+      function onFinish(id){fin[id]=1;$("pScore").textContent="Questions completed: "+Object.keys(fin).length;}
+      ["t1","t2","t3"].forEach(function(id){Prob($("pTut"),id,{onFinish:onFinish,practiceFirst:true});});
+      ["e1","e2","e3"].forEach(function(id){Prob($("pExt"),id,{onFinish:onFinish,practiceFirst:true});});
+    }
   })();

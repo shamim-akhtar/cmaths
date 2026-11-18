@@ -67,9 +67,28 @@ This lab supports Tutorial 03. It covers the transpose, determinants, the adjoin
 | 09 | Undoing a transformation | See how a game engine uses the inverse to go from screen coordinates back to a sprite, and why a flattened sprite cannot be recovered. |
 | 10 | Exit quiz | Complete six questions to check your understanding. |
 
-## Week 5: Limits
+## Week 5: Linear Equations
 
 https://shamim-akhtar.github.io/cmaths/week05/
+
+This lab supports Tutorial 04. It covers systems of linear equations and how to solve them with the inverse matrix.
+
+| Station | Topic | What students can do |
+|---|---|---|
+| 01 | Week 3 recall | Review determinants and inverses with flashcards and three quick checks. |
+| 02 | Two clues, one answer | Move sliders to find two prices that fit both clues, and see the answer where two lines cross. |
+| 03 | Solving by elimination | Step through the elimination method, then solve a short system. |
+| 04 | What a linear system is | Decide which equations are linear. Compare systems with one solution, no solution and infinitely many. |
+| 05 | Writing AX = b | Write a 2×2 and a 3×3 system in matrix form, including unknowns that are missing. |
+| 06 | Solving 2×2 systems | Solve systems with the inverse matrix in Learn or Practice mode, with a graph of the two lines. |
+| 07 | Solving 3×3 systems | Solve a 3×3 system using a given adjoint. |
+| 08 | Tutorial questions | Work through Tutorial Q1 to Q3 and three extra questions in Learn or Practice mode. |
+| 09 | Linear systems in computing | Predict a song rating from a listener's preferences, and work out coffee sales. |
+| 10 | Exit quiz | Answer six questions chosen from a small bank, and retake with a new set. |
+
+## Week 6: Limits
+
+https://shamim-akhtar.github.io/cmaths/week06/
 
 This lab supports Tutorial 05. It covers what a limit is and how to find one from a table, from a graph and by calculation. There is no lab for Week 4.
 
@@ -123,14 +142,15 @@ index.html          Main page with links to the weekly labs
 week01/index.html   Week 1: Vectors
 week02/index.html   Week 2: Matrices
 week03/index.html   Week 3: Determinants and inverses
-week05/index.html   Week 5: Limits
+week05/index.html   Week 5: Linear equations
+week06/index.html   Week 6: Limits
 src/                Editable sources and build scripts
 .nojekyll           GitHub Pages configuration
 ```
 
 ## Adding a New Week
 
-1. Create a new folder, such as `week06`.
+1. Create a new folder, such as `week07`.
 2. Add the `index.html` file to the folder.
 3. Add the new week to the main page.
 4. Update the week links in the existing labs.

@@ -1,133 +1,76 @@
   /* ================================================================
-     07. limits in computing
+     09. linear systems in computing
      ================================================================ */
   (function(){
-    if(!$("apMl"))return;
-    /* 1. model error: 0.5, 0.2, 0.08, ... (an illustrative sequence) */
-    var E=[];for(var k=1;k<=12;k++)E.push(0.5*Math.pow(0.4,k-1));
-    var PM=GPlot($("apMl"),{x:[0,12.5],y:[0,0.55],xstep:2,ystep:0.1,xlabel:"step",ylabel:"error"}),mt=null;
-    function ml(){
-      var n=+$("apMlS").value;PM.clear().axes();PM.line(0,0,12.5,0,CG,2,true);PM.text(12.3,0.02,"0",CG,11,"end");
-      for(var i=1;i<n;i++)PM.line(i,E[i-1],i+1,E[i],CL,2.2);
-      for(var j=1;j<=n;j++)PM.dot(j,E[j-1],CL,j===n?5:3.5);
-      $("apMlV").textContent=n+(n===1?" step":" steps")+", error "+String(+E[n-1].toPrecision(3));
+    var svg=$("muBox");if(!svg)return;
+    var WX=F(22,5),WY=F(12,5);
+    function bar(i,label,v,max,col,txt){
+      var W=400,H=260,ml=20,mb=40,bw=80,gap=(W-2*ml-3*bw)/2,x=ml+i*(bw+gap),h=(H-mb-30)*v/max,y=H-mb-h;
+      svg.appendChild(mk("rect",{x:x,y:y,width:bw,height:h,rx:4,fill:col}));
+      var t=mk("text",{x:x+bw/2,y:y-8,fill:"var(--fg)","font-size":14,"font-family":"var(--mono)","text-anchor":"middle"});t.textContent=txt;svg.appendChild(t);
+      label.forEach(function(s,k){var l=mk("text",{x:x+bw/2,y:H-mb+17+k*15,fill:"var(--muted)","font-size":12,"text-anchor":"middle"});l.textContent=s;svg.appendChild(l);});
     }
-    $("apMlS").addEventListener("input",function(){if(mt){clearInterval(mt);mt=null;$("apMlPlay").textContent="Play";}ml();});
-    $("apMlPlay").addEventListener("click",function(){
-      if(mt){clearInterval(mt);mt=null;this.textContent="Play";return;}
-      if(+$("apMlS").value>=12)$("apMlS").value=1;this.textContent="Pause";var b=this;
-      mt=setInterval(function(){var s=$("apMlS");if(+s.value>=12){clearInterval(mt);mt=null;b.textContent="Play";return;}s.value=+s.value+1;ml();},REDUCED?700:450);ml();
-    });
-    $("apMlReset").addEventListener("click",function(){if(mt){clearInterval(mt);mt=null;}$("apMlPlay").textContent="Play";$("apMlS").value=1;ml();});
-    ml();
-
-    /* 2. n and n squared */
-    var PA=GPlot($("apAl"),{x:[0,130],y:[0,17000],xstep:20,ystep:4000,ml:46,yfmt:function(y){return y===0?"0":(y/1000)+"k";},xlabel:"n",ylabel:"operations"}),at=null;
-    function al(){
-      var n=+$("apAlS").value;PA.clear().axes();
-      PA.curve(function(x){return x<=n?x*x:null;},0,130,CRt,2.4);PA.curve(function(x){return x<=n?x:null;},0,130,CL,2.4);
-      PA.vguide(n,CM);PA.dot(n,n*n,CRt,4.5);PA.dot(n,n,CL,4.5);
-      PA.text(Math.min(n,112)+2,Math.min(n*n,15500)+700,"n²",CRt,12,"start");PA.text(Math.min(n,112)+2,1200,"n",CL,12,"start");
-      $("apAlV").textContent="n = "+n;
-      $("apAlTxt").textContent="With n = "+n+": n takes "+n+" operations and n² takes "+(n*n).toLocaleString("en-GB")+"."+(n>1?" n² is "+n+" times bigger, and the gap keeps growing as n grows.":" They are equal here.");
+    function draw(){
+      var e=F(+$("muS").value,100),a=fsub(F(1),e),r=fadd(fmul(e,WX),fmul(a,WY));
+      while(svg.firstChild)svg.removeChild(svg.firstChild);
+      svg.appendChild(mk("line",{x1:10,y1:220,x2:390,y2:220,stroke:"var(--muted)","stroke-width":1.5}));
+      bar(0,["likes","energetic, x"],4.4,5,CL,"4.4");
+      bar(1,["likes","acoustic, y"],2.4,5,CL,"2.4");
+      bar(2,["predicted","rating"],fnum(r),5,CG,dec(r)+" ★");
+      $("muV").textContent=dec(fmul(e,F(100)))+"% energetic, "+dec(fmul(a,F(100)))+"% acoustic";
+      $("muTxt").textContent="Predicted rating = "+dec(e)+" × 4.4 + "+dec(a)+" × 2.4 = "+dec(r)+" stars.";
     }
-    $("apAlS").addEventListener("input",function(){if(at){clearInterval(at);at=null;$("apAlPlay").textContent="Play";}al();});
-    $("apAlPlay").addEventListener("click",function(){
-      if(at){clearInterval(at);at=null;this.textContent="Play";return;}
-      if(+$("apAlS").value>=130)$("apAlS").value=1;this.textContent="Pause";var b=this;
-      at=setInterval(function(){var s=$("apAlS");if(+s.value>=130){clearInterval(at);at=null;b.textContent="Play";return;}s.value=Math.min(130,+s.value+3);al();},REDUCED?250:60);
-    });
-    $("apAlReset").addEventListener("click",function(){if(at){clearInterval(at);at=null;}$("apAlPlay").textContent="Play";$("apAlS").value=5;al();});
-    al();
+    $("muS").addEventListener("input",draw);draw();
 
-    /* 3. rate of change: T(t) = 60 + t^3/50, from 60 °C at 0 s to 80 °C at 10 s */
-    var H=[5,2,1,0.5,0.1,0.01];
-    function T(tF){return fadd(F(60),fdiv(fpow(tF,3),F(50)));}
-    var PR=GPlot($("apRt"),{x:[0,10.6],y:[55,85],xstep:2,ystep:5,xlabel:"time (s)",ylabel:"°C"}),rt=null,hShown=5,stopR=null;
-    function rate(h){var hF=F(Math.round(h*100),100),t1=fsub(F(10),hF);return fdiv(fsub(T(F(10)),T(t1)),hF);}
-    function rt_(){
-      var i=+$("apRtS").value,h=hShown;
-      PR.clear().axes();PR.curve(function(t){return 60+t*t*t/50;},0,10.6,CF,2.4);
-      var t1=10-h,y1=60+t1*t1*t1/50,m=(80-y1)/h;
-      PR.line(t1-3,y1-3*m,10.6,80+0.6*m,CRt,1.8,true);PR.filled(t1,y1,CL);PR.filled(10,80,CRt);
-      PR.text(10,82.5,"t = 10 s",CRt,11,"end");
-      var r=rate(H[i]);
-      $("apRtV").textContent=String(H[i]).replace(/^0\./,"0.")+" s";
-      $("apRtTxt").textContent="Average rate over the last "+H[i]+" s: "+dec(r).replace("≈ ","about ")+" °C per second. Over the whole 10 s it was 2 °C per second. As the gap shrinks, watch the number the average settles near. That number is the rate at the moment t = 10 s.";
-    }
-    function goH(i){$("apRtS").value=i;if(stopR)stopR();var from=hShown,to=H[i];
-      stopR=tween(600,function(e){hShown=Math.exp(Math.log(from)*(1-e)+Math.log(to)*e);rt_();},function(){hShown=to;rt_();});}
-    $("apRtS").addEventListener("input",function(){if(rt){clearInterval(rt);rt=null;}goH(+this.value);});
-    $("apRtPlay").addEventListener("click",function(){
-      if(rt){clearInterval(rt);rt=null;return;}
-      if(+$("apRtS").value>=5)goH(0);
-      rt=setInterval(function(){var i=+$("apRtS").value;if(i>=5){clearInterval(rt);rt=null;return;}goH(i+1);},1100);
-    });
-    $("apRtReset").addEventListener("click",function(){if(rt){clearInterval(rt);rt=null;}goH(0);});
-    rt_();
-
-    /* one question after each card */
-    function numQ(inp,btn,out,ans,wrong){
+    function numQ(inp,btn,out,ans,ok,fn){
       $(btn).addEventListener("click",function(){
         var p=parseAns($(inp).value),say=$(out);say.hidden=false;
         if(!p){say.className="verdict no";say.textContent="Type a number.";return;}
-        if(matches(p,F(ans))){say.className="verdict ok";say.textContent=wrong.ok;}
-        else{say.className="verdict no";say.textContent=wrong.fn(p);}
+        if(matches(p,ans)){say.className="verdict ok";say.textContent=ok;}
+        else{say.className="verdict no";say.textContent=fn(p);}
       });
       $(inp).addEventListener("keydown",function(e){if(e.key==="Enter"){e.preventDefault();$(btn).click();}});
     }
-    numQ("cq1","cq1c","cq1s",0,{ok:"Correct. The error gets closer and closer to 0 as training goes on.",
-      fn:function(p){return isValue(p,0.5)?"0.5 is where the error starts. Move the slider to 12 steps and see where it is heading.":"Move the slider to 12 steps. Which number is the error getting close to?";}});
-    numQ("cq3","cq3c","cq3s",6,{ok:"Correct. As the two samples get closer, the average rate settles near 6 \u00b0C per second.",
-      fn:function(p){if(isValue(p,2))return "2 \u00b0C per second is the average over the whole 10 s. Bring the samples closer and watch the rate.";if(p.val>5.9&&p.val<6)return "That is one of the averages shown. Which whole number are they settling near?";return "Bring the samples closer, one step at a time, and watch the average rate.";}});
-    (function(){
-      var host=$("cq2"),why=$("cq2s"),done=false;
-      [{t:"It gets close to 1",w:"Not quite. \\(n^2 \\div n = n\\), and n does not settle near 1."},
-       {t:"It keeps growing, with no limit",ok:true,w:"Correct. \\(n^2 \\div n = n\\), which keeps growing as n grows. That is why n\u00b2 pulls further and further ahead of n."},
-       {t:"It gets close to 0",w:"Not quite. \\(n^2\\) is the bigger of the two, so \\(n^2 \\div n\\) gets larger, not smaller."}].forEach(function(o){
-        var b=document.createElement("button");b.className="opt";b.type="button";b.textContent=o.t;
-        b.addEventListener("click",function(){
-          if(done)return;host.querySelectorAll("button").forEach(function(x){x.classList.remove("wrong");});
-          if(o.ok){done=true;b.classList.add("right");host.querySelectorAll("button").forEach(function(x){x.disabled=true;});}else b.classList.add("wrong");
-          why.hidden=false;why.innerHTML=o.w;retex(why);
-        });host.appendChild(b);});
-    })();
+    numQ("cq1","cq1c","cq1s",F(17,5),"Correct. 0.5 × 4.4 + 0.5 × 2.4 = 2.2 + 1.2 = 3.4 stars. You can check it with the slider.",
+      function(p){return isValue(p,3.5)?"3.5 is the average of the two ratings, 4 and 3. Use x = 4.4 and y = 2.4 instead.":"Work out 0.5 × 4.4 + 0.5 × 2.4, or set the slider to 50%.";});
+    numQ("cq2","cq2c","cq2s",F(20),"Correct. x + (y + z) = 60 and y + z = 40, so x = 60 − 40 = 20 small coffees. The full system gives y = 5 and z = 35.",
+      function(p){return isValue(p,40)?"40 is y + z, the medium and large coffees. How many of the 60 are left?":"Put y + z = 40 into the first equation: x + 40 = 60.";});
   })();
 
   /* ================================================================
-     09. exit quiz: one question from each pair, chosen at random
+     10. exit quiz: one question from each pair, chosen at random
      ================================================================ */
   var BANK=[
-    [{q:"What does \\( \\displaystyle\\lim_{x \\to 4} f(x) = 10 \\) mean?",o:["As x gets close to 4, f(x) gets close to 10","f(4) must be 10","f(x) can never equal 10"],a:0,s:2,
-      w:"The limit describes what f(x) gets close to as x gets close to 4. It says nothing for certain about f(4) itself, and f(x) may equal 10."},
-     {q:"In \\( \\displaystyle\\lim_{x \\to 3} g(x) = 8 \\), which number is x getting close to?",o:["8","3","11"],a:1,s:2,
-      w:"The number under the arrow is where x is heading: 3. The 8 is the value that g(x) gets close to."}],
-    [{q:"A table gives f(1.9) = 3.61, f(1.99) = 3.9601, f(2.01) = 4.0401 and f(2.1) = 4.41. What is the best estimate of the limit as x → 2?",o:["3.9601","4.41","4"],a:2,s:3,
-      w:"From both sides, the values get close to 4. 3.9601 and 4.41 are single values from the table, not the number they head towards."},
-     {q:"To estimate a limit as x → 5 from a table, which x values should you use?",o:["Only 4.9, 4.99 and 4.999","Values just below and just above 5","Only x = 5"],a:1,s:3,
-      w:"Use both sides. A limit needs the values from the left and from the right to head towards the same number."}],
-    [{q:"A graph is the line y = x + 2 with an open circle at (3, 5). What is the limit as x → 3?",o:["5","It does not exist","Undefined"],a:0,s:4,
-      w:"Both sides of the line head towards 5. The open circle only means f(3) is not defined. The limit is still 5."},
-     {q:"A graph follows y = 2x, but at x = 1 the point is moved up to a filled dot at (1, 6). There is an open circle at (1, 2). What is the limit as x → 1?",o:["6","It does not exist","2"],a:2,s:4,
-      w:"Both sides of the line head towards 2, the open circle. 6 is f(1), the value at the point, not the limit."}],
-    [{q:"As x → 2 from the left, f(x) → 1. From the right, f(x) → 4. What is the limit as x → 2?",o:["It does not exist","4","2.5"],a:0,s:5,
-      w:"The two sides head towards different numbers, so the two-sided limit does not exist."},
-     {q:"What happens to f(x) = 1/x as x → 0?",o:["It gets close to 0","There is no finite two-sided limit","The limit is 1"],a:1,s:5,
-      w:"From the left, 1/x decreases without bound. From the right, it increases without bound. There is no finite two-sided limit."}],
-    [{q:"Find \\( \\displaystyle\\lim_{x \\to 3} (4x - 2) \\).",o:["12","10","1"],a:1,s:6,
-      w:"Substitute x = 3: 4(3) − 2 = 12 − 2 = 10. Substitution gives a number, so that is the limit."},
-     {q:"Find \\( \\displaystyle\\lim_{x \\to 1} (x^2 + 3x) \\).",o:["4","3","It does not exist"],a:0,s:6,
-      w:"Substitute x = 1: 1 + 3 = 4."}],
-    [{q:"Substituting into \\( \\frac{x^2 - 16}{x - 4} \\) at x = 4 gives \\( \\frac{0}{0} \\). What is the limit as x → 4?",o:["0","It does not exist","8"],a:2,s:6,
-      w:"0/0 means simplify first. (x² − 16)/(x − 4) = (x + 4)(x − 4)/(x − 4) = x + 4 for x ≠ 4. Then 4 + 4 = 8."},
-     {q:"Substitution gives \\( \\frac{0}{0} \\). What should you do next?",o:["Factorise and cancel, then substitute again","Give 0 as the answer","Give 1 as the answer"],a:0,s:6,
-      w:"0/0 does not give the answer. Factorise, cancel the common factor, then substitute into the simplified expression."}]
+    [{q:"What is a solution of a system of linear equations?",o:["Values of the unknowns that make every equation true at the same time","Values that make at least one equation true","The determinant of the coefficient matrix"],a:0,s:2,
+      w:"A solution must fit all the equations at once. On a graph, it is a point that lies on every line."},
+     {q:"Is \\(x = 2,\\ y = 1\\) a solution of \\(x + y = 3\\) and \\(x - y = 1\\)?",o:["Yes","No, it fits only the first equation","No, it fits neither equation"],a:0,s:2,
+      w:"2 + 1 = 3 and 2 − 1 = 1, so both equations are true."}],
+    [{q:"For \\(x + y = 7\\) and \\(x - y = 3\\), what do you get when you add the two equations?",o:["\\(2x = 10\\), so \\(x = 5\\)","\\(2y = 4\\), so \\(y = 2\\)","\\(2x = 4\\), so \\(x = 2\\)"],a:0,s:3,
+      w:"The y terms cancel: (x + y) + (x − y) = 2x, and 7 + 3 = 10. So x = 5, then y = 2."},
+     {q:"To solve \\(2x + 3y = 8\\) and \\(4x - y = 2\\) by elimination, why multiply the second equation by 3?",o:["So the y terms cancel when the equations are added","So the x terms become equal","To make the numbers on the right the same"],a:0,s:3,
+      w:"The second equation becomes 12x − 3y = 6. Adding it to 2x + 3y = 8 removes y."}],
+    [{q:"Which equation is linear?",o:["\\(3x - 2y = 5\\)","\\(x^2 + y = 1\\)","\\(xy = 4\\)"],a:0,s:4,
+      w:"In a linear equation, each unknown has power 1 and unknowns are not multiplied together."},
+     {q:"Which equation is not linear?",o:["\\(4x + y = 2\\)","\\(x + y^2 = 9\\)","\\(5y - 3z = 14\\)"],a:1,s:4,
+      w:"\\(y^2\\) has power 2, so \\(x + y^2 = 9\\) is not linear."}],
+    [{q:"The two lines of a 2 × 2 system are parallel and different. How many solutions are there?",o:["One","None","Infinitely many"],a:1,s:4,
+      w:"Parallel lines never meet, so no point lies on both. The system is inconsistent."},
+     {q:"For a 2 × 2 system, \\(\\det A = 0\\). What can you say?",o:["There is exactly one solution","There is no unique solution: either none or infinitely many","The solution is \\(x = 0,\\ y = 0\\)"],a:1,s:4,
+      w:"When det A = 0, A has no inverse. The lines are parallel (no solution) or the same line (infinitely many)."}],
+    [{q:"What is the coefficient matrix \\(A\\) for \\(2x + y = 5\\) and \\(x - 3y = 4\\)?",o:["\\( \\begin{pmatrix} 2 & 1 \\\\ 1 & -3 \\end{pmatrix} \\)","\\( \\begin{pmatrix} 2 & 1 \\\\ 1 & 3 \\end{pmatrix} \\)","\\( \\begin{pmatrix} 2 & 1 \\\\ -3 & 1 \\end{pmatrix} \\)"],a:0,s:5,
+      w:"Each row holds the coefficients of one equation, in the order x, y. The −3 keeps its sign."},
+     {q:"In a system with unknowns \\(x, y, z\\), which row of \\(A\\) matches \\(3x + z = 7\\)?",o:["\\( \\begin{pmatrix} 3 & 1 & 0 \\end{pmatrix} \\)","\\( \\begin{pmatrix} 3 & 0 & 1 \\end{pmatrix} \\)","\\( \\begin{pmatrix} 3 & 1 & 7 \\end{pmatrix} \\)"],a:1,s:5,
+      w:"There is no y term, so its coefficient is 0. The row is 3, 0, 1. The 7 goes in b."}],
+    [{q:"If \\(AX = b\\) and \\(A\\) has an inverse, what is \\(X\\)?",o:["\\(A^{-1}b\\)","\\(bA^{-1}\\)","\\(Ab\\)"],a:0,s:6,
+      w:"Multiply both sides on the left by \\(A^{-1}\\): \\(A^{-1}AX = A^{-1}b\\), so \\(X = A^{-1}b\\). The order matters."},
+     {q:"\\(A^{-1} = \\begin{pmatrix} 2 & -1 \\\\ -1 & 1 \\end{pmatrix}\\) and \\(b = \\begin{pmatrix} 3 \\\\ 1 \\end{pmatrix}\\). What is \\(X\\)?",o:["\\(x = 5,\\ y = -2\\)","\\(x = 7,\\ y = -2\\)","\\(x = 5,\\ y = 4\\)"],a:0,s:6,
+      w:"\\(X = A^{-1}b\\): x = 2(3) − 1(1) = 5 and y = −1(3) + 1(1) = −2."}]
   ];
   (function(){
     var qhost=$("quiz");if(!qhost)return;
     var answered=0,correct=0,wrongS={},set=[];
     function upd(){
-      $("score").textContent=answered===0?"0 of "+set.length+" answered":answered<set.length?answered+" of "+set.length+" answered":"All answered — "+correct+" of "+set.length+" correct";
+      $("score").textContent=answered===0?"0 of "+set.length+" answered":answered<set.length?answered+" of "+set.length+" answered":"All answered: "+correct+" of "+set.length+" correct";
       var rev=$("revisit");
       if(answered===set.length){var ss=Object.keys(wrongS).map(Number).sort();rev.hidden=false;
         rev.textContent=ss.length?"Worth another look: station"+(ss.length>1?"s ":" ")+ss.map(function(s){return "0"+s;}).join(", ")+". Use the panel to go back, or press New set of questions to try again.":"All six correct. Well done.";}
@@ -139,13 +82,14 @@
       set.forEach(function(item,i){
         var card=document.createElement("div");card.className="q";
         card.innerHTML="<div class='qt'><span class='qn'>"+(i+1)+".</span>"+item.q+"</div><div class='opts'></div><p class='why' hidden></p>";
-        card.querySelector(".why").textContent=item.w;
+        card.querySelector(".why").innerHTML=item.w;
         var opts=card.querySelector(".opts");
-        item.o.forEach(function(text,k){
-          var b=document.createElement("button");b.className="opt";b.type="button";b.textContent=text;
+        var ord=item.o.map(function(_,k){return k;});for(var r=ord.length-1;r>0;r--){var j=Math.floor(Math.random()*(r+1)),t=ord[r];ord[r]=ord[j];ord[j]=t;}
+        ord.forEach(function(k){var text=item.o[k];
+          var b=document.createElement("button");b.className="opt";b.type="button";b.innerHTML=text;
           b.addEventListener("click",function(){
             if(card.dataset.done)return;card.dataset.done="1";answered++;
-            opts.querySelectorAll("button").forEach(function(x,xi){x.disabled=true;if(xi===item.a)x.classList.add("right");});
+            opts.querySelectorAll("button").forEach(function(x,xi){x.disabled=true;if(ord[xi]===item.a)x.classList.add("right");});
             if(k!==item.a){b.classList.add("wrong");wrongS[item.s]=1;}else correct++;
             card.querySelector(".why").hidden=false;upd();
           });opts.appendChild(b);

@@ -1,6 +1,6 @@
 import re, base64, os
 
-# Week 5 reuses the Week 2 stylesheet and navigation, the Week 3 additions, and adds its own.
+# The Week 5 page (Linear Equations) reuses the Week 2 stylesheet and navigation, the Week 3 additions, and adds its own.
 src = open('matrix-lab.html', encoding='utf8').read()
 style = src[src.index('<style>'):src.index('</style>') + len('</style>')]
 
@@ -55,6 +55,16 @@ W5_CSS = """
 .verdict.info{background:var(--accent-soft);color:var(--fg);border:1px solid var(--accent)}
 .wl.new{animation:rowin .8s ease}
 .opt mjx-container{display:inline-block!important;margin:0!important}
+/* linear equations additions */
+.lnrow{padding:8px 0;border-bottom:1px solid var(--line)}
+.lneq{font-family:var(--mono);font-size:.95rem;min-width:9em}
+.lnfb{flex-basis:100%;font-size:.86rem;min-height:1.3em}
+.mx td input.vin{width:52px;text-align:center}
+.mx.wide td input.vin{width:64px}
+.wnote{font-size:.9rem;color:var(--muted);margin:2px 0 10px}
+.mflow{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 22px;margin:14px 0}
+.mflow .arr{color:var(--muted)}
+.vscore{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
 """
 
 def fontface(fam, file, weight):
@@ -76,7 +86,7 @@ shared = src[start:end]
 body = open('w5-body.html', encoding='utf8').read()
 app = ''.join(open('w5-app-%d.js' % i, encoding='utf8').read() for i in (1, 2, 3, 4))
 
-head = """<title>Week 5 Limits Lab</title>
+head = """<title>Week 5 Linear Equations Lab</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 
 """
@@ -87,5 +97,5 @@ mathjax = src[mj_block_start:mj_tag_end + len('</script>')]
 
 out = head + style + "\n" + body + "\n" + mathjax + "\n<script>\n(function(){\n  \"use strict\";\n\n" \
       + shared + app + "\n})();\n</script>\n"
-open('limits-lab.html', 'w', encoding='utf8').write(out)
-print('limits-lab.html', len(out))
+open('linear-lab.html', 'w', encoding='utf8').write(out)
+print('linear-lab.html', len(out))
