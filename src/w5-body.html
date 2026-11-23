@@ -36,7 +36,7 @@
     </div>
     <h1>Linear Equations</h1>
     <div class="compact-line" id="compactLine" hidden></div>
-    <p class="sub hero-intro">A system of linear equations is a set of equations that share the same unknowns. In this lesson, you will learn how to write a system in matrix form and solve it using the inverse matrix. You will also explore how linear systems are used in computing.</p>
+    <p class="sub hero-intro">A system of linear equations is two or more equations that we solve together, to find values that make all of them true. In this lesson, you will learn how to write a system in matrix form and solve it using the inverse matrix. You will also explore how linear systems are used in computing.</p>
   </header>
 
   <!-- ============ 1 ============ -->
@@ -180,10 +180,10 @@
       <p class="prose" style="font-size:.93rem">Suppose the caf&eacute; sells four items: muffins \(x\), coffee \(y\),
         baked potatoes \(p\) and mushroom soup \(q\).</p>
       <div class="math">\[ \begin{aligned} 2x + 3y &amp;= 8 \\ x + p &amp;= 4 \\ y + q &amp;= 6 \\ p + q &amp;= 7 \end{aligned} \]</div>
-      <p class="prose" style="font-size:.93rem">Elimination still works, but it takes many more steps. A delivery
-        company may have thousands of unknowns, and one slip ruins every line after it. Matrices give one method
-        that works for any number of unknowns: write the system as \(AX = b\), then \(X = A^{-1}b\). A computer can do
-        this very quickly.</p>
+      <p class="prose" style="font-size:.93rem">When there are more unknowns, solving equations by hand can take many
+        steps. Matrices help us organise the equations and solve them more systematically.</p>
+      <p class="prose" style="font-size:.93rem">In this lesson, you will learn to solve equations using the inverse
+        matrix, \(X = A^{-1}b\). This method works only when the coefficient matrix \(A\) has an inverse.</p>
     </div>
   </section>
 
@@ -191,9 +191,11 @@
   <section class="station" id="s4">
     <div class="station-head"><span class="num">04</span><h2>What a linear system is</h2><span class="eyebrow">30&ndash;40 min</span></div>
     <div class="lede">
-      <p>A <b>system of equations</b> is a group of equations that are solved together. An equation is
-        <b>linear</b> when each unknown has power 1. A system of \(n\) linear equations in \(n\) unknowns is an
-        \(n \times n\) linear system.</p>
+      <p>A <b>system of equations</b> is a group of equations that are solved together. In a <b>linear</b>
+        equation, the unknowns are not squared, multiplied together or divided into other numbers. For example,
+        \(2x + 3y = 8\) is linear, but \(x^2 + y = 4\) and \(xy = 6\) are not.</p>
+      <p style="margin-top:8px">Two equations with two unknowns form a 2&times;2 system. Three equations with three unknowns form a
+        3&times;3 system.</p>
     </div>
 
     <div class="panel">
@@ -345,7 +347,7 @@
       </div>
     </div>
     <details class="more" style="margin-top:16px">
-      <summary>Optional reading: where else matrices are used</summary>
+      <summary>Optional reading: other uses of matrices in computing</summary>
       <p class="prose" style="font-size:.9rem;margin-top:10px">Neural networks store their weights in matrices and
         multiply them on graphics cards. Game engines keep each object's position, rotation and size in a
         transformation matrix. Search engines rank web pages using a very large matrix of links. Data scientists

@@ -477,7 +477,7 @@ details.more[open] summary{margin-bottom:4px}
     </div>
     <h1>Linear Equations</h1>
     <div class="compact-line" id="compactLine" hidden></div>
-    <p class="sub hero-intro">A system of linear equations is a set of equations that share the same unknowns. In this lesson, you will learn how to write a system in matrix form and solve it using the inverse matrix. You will also explore how linear systems are used in computing.</p>
+    <p class="sub hero-intro">A system of linear equations is two or more equations that we solve together, to find values that make all of them true. In this lesson, you will learn how to write a system in matrix form and solve it using the inverse matrix. You will also explore how linear systems are used in computing.</p>
   </header>
 
   <!-- ============ 1 ============ -->
@@ -621,10 +621,10 @@ details.more[open] summary{margin-bottom:4px}
       <p class="prose" style="font-size:.93rem">Suppose the caf&eacute; sells four items: muffins \(x\), coffee \(y\),
         baked potatoes \(p\) and mushroom soup \(q\).</p>
       <div class="math">\[ \begin{aligned} 2x + 3y &amp;= 8 \\ x + p &amp;= 4 \\ y + q &amp;= 6 \\ p + q &amp;= 7 \end{aligned} \]</div>
-      <p class="prose" style="font-size:.93rem">Elimination still works, but it takes many more steps. A delivery
-        company may have thousands of unknowns, and one slip ruins every line after it. Matrices give one method
-        that works for any number of unknowns: write the system as \(AX = b\), then \(X = A^{-1}b\). A computer can do
-        this very quickly.</p>
+      <p class="prose" style="font-size:.93rem">When there are more unknowns, solving equations by hand can take many
+        steps. Matrices help us organise the equations and solve them more systematically.</p>
+      <p class="prose" style="font-size:.93rem">In this lesson, you will learn to solve equations using the inverse
+        matrix, \(X = A^{-1}b\). This method works only when the coefficient matrix \(A\) has an inverse.</p>
     </div>
   </section>
 
@@ -632,9 +632,11 @@ details.more[open] summary{margin-bottom:4px}
   <section class="station" id="s4">
     <div class="station-head"><span class="num">04</span><h2>What a linear system is</h2><span class="eyebrow">30&ndash;40 min</span></div>
     <div class="lede">
-      <p>A <b>system of equations</b> is a group of equations that are solved together. An equation is
-        <b>linear</b> when each unknown has power 1. A system of \(n\) linear equations in \(n\) unknowns is an
-        \(n \times n\) linear system.</p>
+      <p>A <b>system of equations</b> is a group of equations that are solved together. In a <b>linear</b>
+        equation, the unknowns are not squared, multiplied together or divided into other numbers. For example,
+        \(2x + 3y = 8\) is linear, but \(x^2 + y = 4\) and \(xy = 6\) are not.</p>
+      <p style="margin-top:8px">Two equations with two unknowns form a 2&times;2 system. Three equations with three unknowns form a
+        3&times;3 system.</p>
     </div>
 
     <div class="panel">
@@ -786,7 +788,7 @@ details.more[open] summary{margin-bottom:4px}
       </div>
     </div>
     <details class="more" style="margin-top:16px">
-      <summary>Optional reading: where else matrices are used</summary>
+      <summary>Optional reading: other uses of matrices in computing</summary>
       <p class="prose" style="font-size:.9rem;margin-top:10px">Neural networks store their weights in matrices and
         multiply them on graphics cards. Game engines keep each object's position, rotation and size in a
         transformation matrix. Search engines rank web pages using a very large matrix of links. Data scientists
@@ -1430,11 +1432,11 @@ window.MathJax={
      ================================================================ */
   (function(){
     var host=$("lnList");if(!host)return;
-    var E=[{t:"2x + 3y = 8",ok:true,w:"Linear. Each unknown has power 1."},
-           {t:"x² + y = 4",ok:false,w:"Not linear. x has power 2."},
+    var E=[{t:"2x + 3y = 8",ok:true,w:"Linear. No unknown is squared, multiplied by another or divided into a number."},
+           {t:"x² + y = 4",ok:false,w:"Not linear. x is squared."},
            {t:"xy = 6",ok:false,w:"Not linear. Two unknowns are multiplied together."},
-           {t:"5y − 3z = 14",ok:true,w:"Linear. Each unknown has power 1."},
-           {t:"1/x + y = 2",ok:false,w:"Not linear. 1/x is x to the power −1."},
+           {t:"5y − 3z = 14",ok:true,w:"Linear. No unknown is squared, multiplied by another or divided into a number."},
+           {t:"1/x + y = 2",ok:false,w:"Not linear. x is divided into 1."},
            {t:"3x + z = 10",ok:true,w:"Linear. y is missing, which is fine."}];
     var right={};
     E.forEach(function(e,i){
@@ -1829,9 +1831,9 @@ window.MathJax={
      {q:"To solve \\(2x + 3y = 8\\) and \\(4x - y = 2\\) by elimination, why multiply the second equation by 3?",o:["So the y terms cancel when the equations are added","So the x terms become equal","To make the numbers on the right the same"],a:0,s:3,
       w:"The second equation becomes 12x − 3y = 6. Adding it to 2x + 3y = 8 removes y."}],
     [{q:"Which equation is linear?",o:["\\(3x - 2y = 5\\)","\\(x^2 + y = 1\\)","\\(xy = 4\\)"],a:0,s:4,
-      w:"In a linear equation, each unknown has power 1 and unknowns are not multiplied together."},
+      w:"In a linear equation, the unknowns are not squared, multiplied together or divided into other numbers."},
      {q:"Which equation is not linear?",o:["\\(4x + y = 2\\)","\\(x + y^2 = 9\\)","\\(5y - 3z = 14\\)"],a:1,s:4,
-      w:"\\(y^2\\) has power 2, so \\(x + y^2 = 9\\) is not linear."}],
+      w:"\\(y\\) is squared, so \\(x + y^2 = 9\\) is not linear."}],
     [{q:"The two lines of a 2 × 2 system are parallel and different. How many solutions are there?",o:["One","None","Infinitely many"],a:1,s:4,
       w:"Parallel lines never meet, so no point lies on both. The system is inconsistent."},
      {q:"For a 2 × 2 system, \\(\\det A = 0\\). What can you say?",o:["There is exactly one solution","There is no unique solution: either none or infinitely many","The solution is \\(x = 0,\\ y = 0\\)"],a:1,s:4,

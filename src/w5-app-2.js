@@ -120,11 +120,11 @@
      ================================================================ */
   (function(){
     var host=$("lnList");if(!host)return;
-    var E=[{t:"2x + 3y = 8",ok:true,w:"Linear. Each unknown has power 1."},
-           {t:"x² + y = 4",ok:false,w:"Not linear. x has power 2."},
+    var E=[{t:"2x + 3y = 8",ok:true,w:"Linear. No unknown is squared, multiplied by another or divided into a number."},
+           {t:"x² + y = 4",ok:false,w:"Not linear. x is squared."},
            {t:"xy = 6",ok:false,w:"Not linear. Two unknowns are multiplied together."},
-           {t:"5y − 3z = 14",ok:true,w:"Linear. Each unknown has power 1."},
-           {t:"1/x + y = 2",ok:false,w:"Not linear. 1/x is x to the power −1."},
+           {t:"5y − 3z = 14",ok:true,w:"Linear. No unknown is squared, multiplied by another or divided into a number."},
+           {t:"1/x + y = 2",ok:false,w:"Not linear. x is divided into 1."},
            {t:"3x + z = 10",ok:true,w:"Linear. y is missing, which is fine."}];
     var right={};
     E.forEach(function(e,i){
